@@ -124,6 +124,7 @@ public class Enemy extends Entity{
 	}
 	public void destroySelf() {
 		Game.entities.remove(this);
+		Game.enemies.remove(this);
 	}
 
 	public int danoCompleto(int dano, int criticalChance, int criticalDamage) {

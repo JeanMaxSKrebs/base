@@ -2,6 +2,8 @@ package world;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+
 import javax.imageio.ImageIO;
 
 import base.Game;
@@ -11,7 +13,10 @@ import entities.Enemy;
 import entities.Entity;
 import entities.HpBag;
 import entities.Key;
+import entities.Player;
+import entities.Power;
 import entities.StamineBag;
+import graficos.Spritesheet;
 
 public class World {
 	
@@ -101,6 +106,22 @@ public class World {
 				(tiles[x2 + (y2*World.WIDTH)] instanceof Tilewall) ||
 				 (tiles[x3 + (y3*World.WIDTH)] instanceof Tilewall) ||
 				 (tiles[x4 + (y4*World.WIDTH)] instanceof Tilewall)); 
+	}
+	
+	public static void restartGame(String level) {
+		Game.entities.clear();
+		Game.powers.clear();
+		Game.tiledoors.clear();
+		Game.enemies.clear();
+		Game.powers = new ArrayList<Power>();
+		Game.tiledoors = new ArrayList<Tiledoor>();
+		Game.entities = new ArrayList<Entity>();
+		Game.enemies = new ArrayList<Enemy>();
+		Game.spritesheet = new Spritesheet("/spritesheet.png");
+		Game.player = new Player(0, 0, 32, 32, Game.spritesheet.getSprite(0, 32, 32, 32));
+		Game.entities.add(Game.player);
+		Game.world = new World("/"+level);
+		return;
 	}
 	
 	public void render(Graphics g){

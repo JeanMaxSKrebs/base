@@ -23,7 +23,7 @@ public class Player extends Entity{
 	private boolean hasBagpack = false;
 	
 	private int qtdSprites = 4;
-	private int frames = 0, maxFrames = 10, index = 0, maxIndex = (qtdSprites-1);
+	private int frames = 0, maxFrames = 20, index = 0, maxIndex = (qtdSprites-1);
 	private boolean moved;
 	
 	private BufferedImage[] rightPlayer;
@@ -133,8 +133,10 @@ public class Player extends Entity{
 			}
 			if(e instanceof DoorKey) {
 				if(Entity.isCollidding(this, e)) {
-					if(keys > 0)
+					if(keys > 0) {
 						Game.entities.remove(i);
+						Game.enemies.remove(i);						
+					}
 					return;
 				}
 			}

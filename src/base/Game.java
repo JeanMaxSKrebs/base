@@ -39,6 +39,8 @@ public class Game extends Canvas implements Runnable, KeyListener{
 	public static final int HEIGHT = 320;
 	public static final int SCALE = 2;
 
+	private int CUR_LEVEL = 1, MAX_LEVEL = 2;
+
 	private BufferedImage image;
 	
 	public static List<Entity> entities;
@@ -71,7 +73,8 @@ public class Game extends Canvas implements Runnable, KeyListener{
 		enemies = new ArrayList<Enemy>();
 		spritesheet = new Spritesheet("/spritesheet.png");
 		player = new Player(0, 0, 32, 32, spritesheet.getSprite(0, 32, 32, 32));
-		world = new World("/map.png");
+		world = new World("/teste.png");
+//		world = new World("/fase1.png");
 		entities.add(player);
 		
 	}
@@ -108,6 +111,11 @@ public class Game extends Canvas implements Runnable, KeyListener{
 	
 	public void tick() {
 		if(gameState == "NORMAL") {
+			System.out.println(tiledoors.size());
+			if(tiledoors.size() == 0) {
+				gameState = "NEXT";
+			}
+		
 			
 			for(int i=0; i<entities.size(); i++) {
 				Entity e = entities.get(i);
@@ -120,6 +128,15 @@ public class Game extends Canvas implements Runnable, KeyListener{
 			
 		} else if(gameState == "WIN") {
 			
+		} else if(gameState == "NEXT") {
+			CUR_LEVEL++;
+			if(CUR_LEVEL > MAX_LEVEL) {
+				CUR_LEVEL = 1;
+			}
+			String newWorld = "fase"+CUR_LEVEL+".png";
+			World.restartGame(newWorld);
+
+			gameState = "NORMAL";
 		}
 	}
 	
