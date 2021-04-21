@@ -103,7 +103,7 @@ public class Player extends Entity{
 			if(e instanceof BagPack) {
 				if(Entity.isCollidding(this, e)) {
 					hasBagpack = true;
-					speed = 3;
+					speed = 4;
 					Game.entities.remove(i);
 
 					return;
@@ -135,7 +135,6 @@ public class Player extends Entity{
 				if(Entity.isCollidding(this, e)) {
 					if(keys > 0) {
 						Game.entities.remove(i);
-						Game.enemies.remove(i);						
 					}
 					return;
 				}
@@ -165,6 +164,7 @@ public class Player extends Entity{
 					if(keys > 0) {
 						keys--;						
 						Game.tiledoors.remove(i);
+						Game.enemies.remove(i);						
 					} else {
 						if(dir == right_dir) {
 							 x =  x - speed;
@@ -205,8 +205,6 @@ public class Player extends Entity{
 			}
 		}
 
-		if(y + height >= Game.HEIGHT*Game.SCALE)
-			Game.gameState = "WIN";
 
 		setMoved(false);
 		if(right && World.isFree((int)(x + speed), this.getY())) {

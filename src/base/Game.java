@@ -73,8 +73,8 @@ public class Game extends Canvas implements Runnable, KeyListener{
 		enemies = new ArrayList<Enemy>();
 		spritesheet = new Spritesheet("/spritesheet.png");
 		player = new Player(0, 0, 32, 32, spritesheet.getSprite(0, 32, 32, 32));
-		world = new World("/teste.png");
-//		world = new World("/fase1.png");
+//		world = new World("/teste.png");
+		world = new World("/fase1.png");
 		entities.add(player);
 		
 	}
@@ -111,7 +111,8 @@ public class Game extends Canvas implements Runnable, KeyListener{
 	
 	public void tick() {
 		if(gameState == "NORMAL") {
-			System.out.println(tiledoors.size());
+//			System.out.println(enemies.size());
+//			System.out.println(tiledoors.size());
 			if(tiledoors.size() == 0) {
 				gameState = "NEXT";
 			}

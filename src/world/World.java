@@ -35,7 +35,6 @@ public class World {
 			int[] pixels = new int[WIDTH * HEIGHT];
 			tiles = new Tile[WIDTH *  HEIGHT];
 			
-			
 			map.getRGB(0, 0, WIDTH, HEIGHT, pixels, 0, WIDTH);
 			for (int xx = 0; xx < WIDTH; xx++) {
 				for (int yy = 0; yy < HEIGHT; yy++) {
