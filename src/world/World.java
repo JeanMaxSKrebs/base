@@ -50,7 +50,7 @@ public class World {
 						Game.tiledoors.add(td);
 						DoorKey dk = new DoorKey(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Entity.DOOR_EN);
 						Game.entities.add(dk);
-						Enemy en = new Enemy(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Entity.ENEMY_EN);
+						Enemy en = new Enemy(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Entity.ENEMY_EN, "padrao");
 						Game.enemies.add(en);
 					}
 					else if(pixelAtual == 0xFF000CFF) {
@@ -58,11 +58,16 @@ public class World {
 						Game.player.setX(xx*32);
 						Game.player.setY(yy*32);
 					} else if(pixelAtual == 0xFFFF1500) {
-						//enemy
-						Enemy en = new Enemy(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Entity.ENEMY_EN);
+						//normal enemy
+						Enemy en = new Enemy(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Entity.ENEMY_EN, "normal");
 						Game.entities.add(en);
 						Game.enemies.add(en);
-					}  else if(pixelAtual == 0xFFFF00A5) {
+					} else if(pixelAtual == 0xFFF75D16) {
+						//strong enemy
+						Enemy en = new Enemy(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Entity.ENEMY_EN, "strong");
+						Game.entities.add(en);
+						Game.enemies.add(en);
+					} else if(pixelAtual == 0xFFFF00A5) {
 						//key
 						Game.entities.add(new Key(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Entity.KEY_EN));
 					} else if(pixelAtual == 0xFF4E3333) {

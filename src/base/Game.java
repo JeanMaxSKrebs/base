@@ -70,11 +70,10 @@ public class Game extends Canvas implements Runnable, KeyListener{
 		tiledoors = new ArrayList<Tiledoor>();
 		entities = new ArrayList<Entity>();
 		enemies = new ArrayList<Enemy>();
-		enemies = new ArrayList<Enemy>();
 		spritesheet = new Spritesheet("/spritesheet.png");
 		player = new Player(0, 0, 32, 32, spritesheet.getSprite(0, 32, 32, 32));
 //		world = new World("/teste.png");
-		world = new World("/fase1.png");
+		world = new World("/fase2.png");
 		entities.add(player);
 		
 	}
@@ -116,7 +115,6 @@ public class Game extends Canvas implements Runnable, KeyListener{
 			if(tiledoors.size() == 0) {
 				gameState = "NEXT";
 			}
-		
 			
 			for(int i=0; i<entities.size(); i++) {
 				Entity e = entities.get(i);
