@@ -56,8 +56,11 @@ public class Game extends Canvas implements Runnable, KeyListener{
 	
 	public UI ui;
 	
+	private boolean restartGame = false;
 	public static String gameState = "NORMAL"; 
-		
+	private boolean showMessageGameOver = true;
+	private int framesGameOver = 0;
+	
 	public Game() {
 		addKeyListener(this);
 		this.setPreferredSize(new Dimension(WIDTH*SCALE, HEIGHT*SCALE));
@@ -109,9 +112,9 @@ public class Game extends Canvas implements Runnable, KeyListener{
 	}
 	
 	public void tick() {
+//		System.out.println(gameState);
 		if(gameState == "NORMAL") {
-//			System.out.println(enemies.size());
-//			System.out.println(tiledoors.size());
+			restartGame = false;
 			if(tiledoors.size() == 0) {
 				gameState = "NEXT";
 			}
@@ -123,8 +126,24 @@ public class Game extends Canvas implements Runnable, KeyListener{
 			for (int i = 0; i < powers.size(); i++) {
 				powers.get(i).tick();
 			}
-		} else if(gameState == "GAME OVER") {
+		} else if(gameState == "GAME_OVER") {
+			framesGameOver++;
 			
+			if(framesGameOver == 30) {
+				framesGameOver = 0;
+				if(showMessageGameOver)
+					showMessageGameOver = false;
+				else
+					showMessageGameOver = true;
+			}
+			if(restartGame) {
+				restartGame = false;
+				gameState = "NORMAL";
+				CUR_LEVEL = 1;
+				String newWorld = "fase"+CUR_LEVEL+".png";
+				World.restartGame(newWorld);
+
+			}
 		} else if(gameState == "WIN") {
 			
 		} else if(gameState == "NEXT") {
@@ -174,10 +193,12 @@ public class Game extends Canvas implements Runnable, KeyListener{
 			Graphics2D g2 = (Graphics2D) g;
 			g2.setColor(new Color(0, 0, 0, 100));
 			g2.fillRect(0, 0, WIDTH*SCALE, HEIGHT*SCALE);
-			g.setFont(new Font("Arial", Font.BOLD, 20));
+			g.setFont(new Font("Arial", Font.BOLD, 48));
 			g.fillRect(0, 0, WIDTH*SCALE, HEIGHT*SCALE);
-			g.setColor(Color.white);
-			g.drawString("GAME OVER",  WIDTH/2, HEIGHT/2);
+			g.setColor(Color.WHITE);
+			g.drawString("GAME OVER",  (WIDTH/2), (HEIGHT*SCALE/2));
+			if(showMessageGameOver)
+				g.drawString(">> PRESSIONE ENTER <<",  24, (HEIGHT*SCALE/2)+96);
 		}
 		if(gameState=="WIN") {
 			Graphics2D g2 = (Graphics2D) g;
@@ -240,8 +261,11 @@ public class Game extends Canvas implements Runnable, KeyListener{
 			player.left = true;
 		}
 		
-		if(e.getKeyCode() == KeyEvent.VK_ENTER||e.getKeyCode() == KeyEvent.VK_SPACE) {
+		if(e.getKeyCode() == KeyEvent.VK_SPACE) {
 			player.usingPower = true;
+		}
+		if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+			restartGame = true;
 		}
 	}
 

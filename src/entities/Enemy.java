@@ -1,6 +1,5 @@
 package entities;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 //import java.awt.Color;
@@ -185,7 +184,7 @@ public class Enemy extends Entity{
 	public void reloading() {
 
 //		System.out.println(reload);
-		System.out.println(reloadingTime);
+//		System.out.println(reloadingTime);
 		if(reload >= reloadingTime) {
 			setPreparedAttack(true);
 			reload = 0;

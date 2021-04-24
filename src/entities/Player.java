@@ -91,8 +91,10 @@ public class Player extends Entity{
 		return true;
 	}
 	public boolean iamDead() {
-		if(life <= 0)
+		if(life <= 0) {
+			life = 0;
 			return true;
+		}
 		
 		return false;
 	}
