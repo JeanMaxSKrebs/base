@@ -73,13 +73,13 @@ public class Game extends Canvas implements Runnable, KeyListener{
 		spritesheet = new Spritesheet("/spritesheet.png");
 		player = new Player(0, 0, 32, 32, spritesheet.getSprite(0, 32, 32, 32));
 //		world = new World("/teste.png");
-		world = new World("/fase2.png");
+		world = new World("/fase1.png");
 		entities.add(player);
 		
 	}
 
 	public void initFrame() {
-		frame = new JFrame("Danki");
+		frame = new JFrame("Pato");
 		frame.add(this);
 		frame.setResizable(false);
 		frame.pack();

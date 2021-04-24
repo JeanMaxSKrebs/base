@@ -5,7 +5,6 @@ import java.awt.image.BufferedImage;
 
 import base.Game;
 import world.Camera;
-import world.Tile;
 import world.Tiledoor;
 import world.World;
 
@@ -16,6 +15,8 @@ public class Player extends Entity{
 	public int dir = 1;
 	public double speed = 5;
 	public static int keys = 0;
+	public static int specialKeys = 0;
+	public static int premium = 0;
 	
 	private static int dodgeChance = 20;
 	private static int armor = 3;
@@ -139,45 +140,81 @@ public class Player extends Entity{
 					return;
 				}
 			}
+			if(e instanceof SpecialDoor) {
+				if(Entity.isCollidding(this, e)) {
+					if(specialKeys > 0) {
+						Game.entities.remove(i);
+					}
+					return;
+				}
+			}
 			// itens q são guardados
 			if(hasBagpack) {					
 				if(e instanceof Key) {
 					if(Entity.isCollidding(this, e)) {
-							keys++;
+						keys++;
 						Game.entities.remove(i);
 						return;
 					}
-					
+				}
+				if(e instanceof SpecialKey) {
+					if(Entity.isCollidding(this, e)) {
+						specialKeys++;
+						Game.entities.remove(i);
+						return;
+					}
+				}
+				if(e instanceof Premium) {
+					if(Entity.isCollidding(this, e)) {
+						premium++;
+						Game.entities.remove(i);
+						return;
+					}
 				}
 			}
-			
-
 		}
 	}
 	
 	public void checkDoor(){
+		
 		for (int i = 0; i < Game.tiledoors.size(); i++) {
-			Tile t = Game.tiledoors.get(i);
+			Tiledoor t = Game.tiledoors.get(i);
 
-			if(t instanceof Tiledoor) {
-				if(Tiledoor.isCollidding(this, t)) {
+			if(Tiledoor.isCollidding(this, t)) {
+				if(t.type == "key") {
 					if(keys > 0) {
 						keys--;						
-						Game.tiledoors.remove(i);
 						Game.enemies.remove(i);						
+						Game.tiledoors.remove(i);
 					} else {
 						if(dir == right_dir) {
 							 x =  x - speed;
 						 } else if(dir == left_dir){
-							 x = x - speed;
+							 x = x + speed;
 						 } else if(dir == down_dir) {
 							 y = y - speed;
 						 } else if(dir == up_dir) {
 							 y = y + speed;
 						 }
 					}
-					return;
+				} else if(t.type == "special") {
+					if(specialKeys > 0) {
+						specialKeys--;					
+						Game.enemies.remove(i);						
+						Game.tiledoors.remove(i);
+					} else {
+						if(dir == right_dir) {
+							 x =  x - speed;
+						 } else if(dir == left_dir){
+							 x = x + speed;
+						 } else if(dir == down_dir) {
+							 y = y - speed;
+						 } else if(dir == up_dir) {
+							 y = y + speed;
+						 }
+					}
 				}
+				return;
 			}
 		}
 	}

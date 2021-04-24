@@ -17,7 +17,7 @@ public class Enemy extends Entity{
 	protected static int dano = 5;
 	protected int criticalChance = 10;
 	protected int criticalDamage = 10;
-	protected static int reloadingTime = 180, reload = 0;
+	protected static int reloadingTime, reload = 0;
 	protected static boolean preparedAttack = true;
 	
 	protected int qtdDirecoes = 4;
@@ -83,12 +83,21 @@ public class Enemy extends Entity{
 	
 	
 	public void tick() {
+		//obs: pensar numa logica melhor
+		reloadingTime = 30 * Game.enemies.size();
 		moved = false;
 
 		if(isPreparedAttack() == false) {
 			reloading();
 		} else if(isColliddingWithPlayer() == true) {
 			reloading();
+			if(isWhichEnemy == "strong") {
+				dano = 30;
+			} else if(isWhichEnemy == "normal") {
+				dano = 5;
+			} else {
+				dano = 5;
+			}
 			Game.player.beingAttacked(this.danoCompleto(dano, this.criticalChance, this.criticalDamage));
 		}
 		
@@ -176,7 +185,7 @@ public class Enemy extends Entity{
 	public void reloading() {
 
 //		System.out.println(reload);
-//		System.out.println(reloadingTime);
+		System.out.println(reloadingTime);
 		if(reload >= reloadingTime) {
 			setPreparedAttack(true);
 			reload = 0;

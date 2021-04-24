@@ -9,13 +9,18 @@ import world.Camera;
 
 public class Entity {
 
-	public static BufferedImage HPBAG_EN = Game.spritesheet.getSprite(128, 32, 32, 32);
-	public static BufferedImage STAMINEBAG_EN = Game.spritesheet.getSprite(160, 32, 32, 32);
 	public static BufferedImage DOOR_EN = Game.spritesheet.getSprite(32, 224, 32, 32);
 	public static BufferedImage KEY_EN = Game.spritesheet.getSprite(64, 224, 32, 32);
-	public static BufferedImage BAGPACK_EN = Game.spritesheet.getSprite(192, 32, 32, 32);
+	public static BufferedImage SPECIALDOOR_EN = Game.spritesheet.getSprite(96, 224, 32, 32);
+	public static BufferedImage SPECIALKEY_EN = Game.spritesheet.getSprite(128, 224, 32, 32);
+	public static BufferedImage PREMIUM_EN = Game.spritesheet.getSprite(224, 32, 32, 32);
 
+	
 	public static BufferedImage ENEMY_EN = Game.spritesheet.getSprite(0, 224, 32, 32);
+
+	public static BufferedImage HPBAG_EN = Game.spritesheet.getSprite(128, 32, 32, 32);
+	public static BufferedImage STAMINEBAG_EN = Game.spritesheet.getSprite(160, 32, 32, 32);
+	public static BufferedImage BAGPACK_EN = Game.spritesheet.getSprite(192, 32, 32, 32);
 	
 	public static BufferedImage BAGPACK_RIGHT = Game.spritesheet.getSprite(160, 64, 32, 32);
 	public static BufferedImage BAGPACK_LEFT = Game.spritesheet.getSprite(192, 64, 32, 32);
