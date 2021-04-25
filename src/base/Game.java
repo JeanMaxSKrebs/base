@@ -56,8 +56,10 @@ public class Game extends Canvas implements Runnable, KeyListener{
 	
 	public UI ui;
 	
+	public Menu menu;
+	
 	private boolean restartGame = false;
-	public static String gameState = "NORMAL"; 
+	public static String gameState = "MENU"; 
 	private boolean showMessageGameOver = true;
 	private int framesGameOver = 0;
 	
@@ -75,10 +77,11 @@ public class Game extends Canvas implements Runnable, KeyListener{
 		enemies = new ArrayList<Enemy>();
 		spritesheet = new Spritesheet("/spritesheet.png");
 		player = new Player(0, 0, 32, 32, spritesheet.getSprite(0, 32, 32, 32));
+		entities.add(player);
 //		world = new World("/teste.png");
 		world = new World("/fase1.png");
-		entities.add(player);
 		
+		menu = new Menu();		
 	}
 
 	public void initFrame() {
@@ -155,6 +158,8 @@ public class Game extends Canvas implements Runnable, KeyListener{
 			World.restartGame(newWorld);
 
 			gameState = "NORMAL";
+		} else if(gameState == "MENU") {
+			menu.tick();
 		}
 	}
 	
@@ -189,7 +194,7 @@ public class Game extends Canvas implements Runnable, KeyListener{
 		g = bs.getDrawGraphics();
 		g.drawImage(image, 0, 0, WIDTH*SCALE, HEIGHT*SCALE, null);
 		
-		if(gameState=="GAME_OVER") {
+		if(gameState == "GAME_OVER") {
 			Graphics2D g2 = (Graphics2D) g;
 			g2.setColor(new Color(0, 0, 0, 100));
 			g2.fillRect(0, 0, WIDTH*SCALE, HEIGHT*SCALE);
@@ -199,15 +204,16 @@ public class Game extends Canvas implements Runnable, KeyListener{
 			g.drawString("GAME OVER",  (WIDTH/2), (HEIGHT*SCALE/2));
 			if(showMessageGameOver)
 				g.drawString(">> PRESSIONE ENTER <<",  24, (HEIGHT*SCALE/2)+96);
-		}
-		if(gameState=="WIN") {
+		} else if(gameState == "WIN") {
 			Graphics2D g2 = (Graphics2D) g;
 			g2.setColor(Color.GRAY);
 			g2.fillRect(0, 0, WIDTH*SCALE, HEIGHT*SCALE);
 			g.setFont(new Font("Arial", Font.BOLD, 20));
 			g.fillRect(0, 0, WIDTH*SCALE, HEIGHT*SCALE);
 			g.setColor(Color.white);
-			g.drawString("Parabéns  "+"Você pegou: "+Game.player.stamine+"StamineBags",  WIDTH/2, HEIGHT/2);
+			g.drawString("Parabéns  "+"Você pegou: "+Player.premium+"CRABS",  WIDTH/2, HEIGHT/2);
+		} else if(gameState == "MENU") {
+			menu.render(g);
 		}
 		
 		bs.show();
@@ -251,8 +257,14 @@ public class Game extends Canvas implements Runnable, KeyListener{
 
 		if(e.getKeyCode() == KeyEvent.VK_UP||e.getKeyCode() == KeyEvent.VK_W) {
 			player.up = true;
+			if(gameState == "MENU") {
+				menu.up = true;
+			}
 		} else if(e.getKeyCode() == KeyEvent.VK_DOWN||e.getKeyCode() == KeyEvent.VK_S){
 			player.down = true;
+			if(gameState == "MENU") {
+				menu.down = true;
+			}
 		}
 		
 		if(e.getKeyCode() == KeyEvent.VK_RIGHT||e.getKeyCode() == KeyEvent.VK_D) {
@@ -266,6 +278,13 @@ public class Game extends Canvas implements Runnable, KeyListener{
 		}
 		if(e.getKeyCode() == KeyEvent.VK_ENTER) {
 			restartGame = true;
+			if(gameState == "MENU") {
+				menu.enter = true;
+			}
+		}
+		if(e.getKeyCode() == KeyEvent.VK_ESCAPE || e.getKeyCode() == KeyEvent.VK_P) {
+			gameState = "MENU";
+			menu.pause = true;
 		}
 	}
 
