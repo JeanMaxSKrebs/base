@@ -89,7 +89,7 @@ public class World {
 						Game.entities.add(new SpecialKey(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Entity.SPECIALKEY_EN));
 					} else if(pixelAtual == 0xFF7F006E) {
 						//special door
-						Tiledoor td = new Tiledoor(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_DOOR, "special");
+						Tiledoor td = new Tiledoor(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_SPECIALDOOR, "special");
 						Game.tiledoors.add(td);
 						SpecialDoor sd = new SpecialDoor(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Entity.SPECIALDOOR_EN);
 						Game.entities.add(sd);
@@ -124,10 +124,12 @@ public class World {
 		int x4 = xNext / TILE_SIZE;
 		int y4 = (yNext + TILE_SIZE - 5) / TILE_SIZE;
 
-		return !((tiles[x1 + (y1*World.WIDTH)] instanceof Tilewall) ||
-				(tiles[x2 + (y2*World.WIDTH)] instanceof Tilewall) ||
+		return !(
+				 (tiles[x1 + (y1*World.WIDTH)] instanceof Tilewall) ||
+				 (tiles[x2 + (y2*World.WIDTH)] instanceof Tilewall) ||
 				 (tiles[x3 + (y3*World.WIDTH)] instanceof Tilewall) ||
-				 (tiles[x4 + (y4*World.WIDTH)] instanceof Tilewall)); 
+				 (tiles[x4 + (y4*World.WIDTH)] instanceof Tilewall)
+				 ); 
 	}
 	
 	public static void restartGame(String fase) {

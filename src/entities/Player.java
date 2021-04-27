@@ -198,13 +198,14 @@ public class Player extends Entity{
 						 } else if(dir == up_dir) {
 							 y = y + speed;
 						 }
-					}
+					}	
+					
 				} else if(t.type == "special") {
 					if(specialKeys > 0) {
 						specialKeys--;					
 						Game.enemies.remove(i);						
 						Game.tiledoors.remove(i);
-					} else {
+					}else {
 						if(dir == right_dir) {
 							 x =  x - speed;
 						 } else if(dir == left_dir){
@@ -214,7 +215,7 @@ public class Player extends Entity{
 						 } else if(dir == up_dir) {
 							 y = y + speed;
 						 }
-					}
+					}				
 				}
 				return;
 			}

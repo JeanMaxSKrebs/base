@@ -7,7 +7,7 @@ import entities.Entity;
 
 public class Tiledoor extends Tile {
 
-	public static String type;
+	public String type;
 
 	public Tiledoor(int x, int y, BufferedImage sprite, String newType) {
 		super(x, y, sprite);
