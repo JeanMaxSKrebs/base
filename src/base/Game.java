@@ -10,6 +10,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -57,6 +58,7 @@ public class Game extends Canvas implements Runnable, KeyListener{
 	public UI ui;
 	
 	public Menu menu;
+	public static boolean saveGame = false;
 	
 	private boolean restartGame = false;
 	public static String gameState = "MENU"; 
@@ -117,6 +119,13 @@ public class Game extends Canvas implements Runnable, KeyListener{
 	public void tick() {
 //		System.out.println(gameState);
 		if(gameState == "NORMAL") {
+			if(saveGame) {
+				saveGame = false;
+				String[] opt1 = {"fase"};
+				int[] opt2 = {this.CUR_LEVEL};
+				Menu.saveGame(opt1, opt2, 10);
+
+			}
 			restartGame = false;
 			if(tiledoors.size() == 0) {
 				gameState = "NEXT";
@@ -163,6 +172,8 @@ public class Game extends Canvas implements Runnable, KeyListener{
 		}
 	}
 	
+	
+	
 	public void render() {
 		BufferStrategy bs = this.getBufferStrategy();
 		if(bs == null) {
@@ -193,6 +204,12 @@ public class Game extends Canvas implements Runnable, KeyListener{
 		g.dispose();
 		g = bs.getDrawGraphics();
 		g.drawImage(image, 0, 0, WIDTH*SCALE, HEIGHT*SCALE, null);
+		
+		if(Game.saveGame == true) {
+			g.setColor(Color.black);
+			g.setFont(new Font("calibri", Font.BOLD, 48));
+			g.drawString("Jogo Salvo",  ((Game.WIDTH*Game.SCALE/3)), ((Game.HEIGHT*Game.SCALE/3)+50));
+		}
 		
 		if(gameState == "GAME_OVER") {
 			Graphics2D g2 = (Graphics2D) g;
@@ -284,7 +301,11 @@ public class Game extends Canvas implements Runnable, KeyListener{
 		}
 		if(e.getKeyCode() == KeyEvent.VK_ESCAPE || e.getKeyCode() == KeyEvent.VK_P) {
 			gameState = "MENU";
-			menu.pause = true;
+			Menu.pause = true;
+		}
+		if(e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
+			if(gameState == "NORMAL")
+				saveGame = true;
 		}
 	}
 

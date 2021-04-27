@@ -51,9 +51,8 @@ public class UI {
 		g.drawString("PA: "+Enemy.isPreparedAttack() , 0,  Game.HEIGHT-25);
 		g.drawString("Keys: "+Player.getKeys() , 0,  Game.HEIGHT-15);
 		g.drawString("St: "+Game.player.getStamine() , 0,  Game.HEIGHT-5);
-
-
 		
+
 		
 	}
 }

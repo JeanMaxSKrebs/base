@@ -130,7 +130,7 @@ public class World {
 				 (tiles[x4 + (y4*World.WIDTH)] instanceof Tilewall)); 
 	}
 	
-	public static void restartGame(String level) {
+	public static void restartGame(String fase) {
 		Game.entities.clear();
 		Game.powers.clear();
 		Game.tiledoors.clear();
@@ -142,7 +142,7 @@ public class World {
 		Game.spritesheet = new Spritesheet("/spritesheet.png");
 		Game.player = new Player(0, 0, 32, 32, Game.spritesheet.getSprite(0, 32, 32, 32));
 		Game.entities.add(Game.player);
-		Game.world = new World("/"+level);
+		Game.world = new World("/"+fase);
 		return;
 	}
 	
