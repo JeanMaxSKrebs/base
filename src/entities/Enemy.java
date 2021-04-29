@@ -2,8 +2,6 @@ package entities;
 
 import java.awt.Graphics;
 import java.awt.Rectangle;
-//import java.awt.Color;
-//import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
 import base.Game;
@@ -11,28 +9,23 @@ import world.Camera;
 //import world.Camera;
 import world.World;
 
-public class Enemy extends Entity{
+public abstract class Enemy extends Entity{
 	protected double speed = 1.7;
-	protected static int dano = 5;
-	protected int criticalChance = 10;
-	protected int criticalDamage = 10;
+	protected static int dano;
+	protected int criticalChance;
+	protected int criticalDamage;
 	protected static int reloadingTime, reload = 0;
 	protected static boolean preparedAttack = true;
 	
-	protected int qtdDirecoes = 4;
 	protected int frames = 0, maxFrames = 60, index = 0;
-//  protected int maxIndex = (qtdSprites-1);
 	
+	protected int qtdDirecoes = 4;
 	public int right_dir = 0, left_dir = 1, up_dir = 2, down_dir = 3;
 	public int dir = Game.random(qtdDirecoes);
 	
 	protected int life = 1;
 	
 	protected boolean moved;
-	
-
-	protected String isWhichEnemy = "padrao";
-	
 	
 	//padrao
 	public static BufferedImage[] ENEMY;
@@ -48,10 +41,8 @@ public class Enemy extends Entity{
 	
 //Game.spritesheet.getSprite(0, 256, 32, 32);
 
-	public Enemy(int x, int y, int width, int height, BufferedImage sprite, String isWhichEnemy) {
+	public Enemy(int x, int y, int width, int height, BufferedImage sprite) {
 		super(x, y, width, height, null);
-
-		this.isWhichEnemy = isWhichEnemy;
 		
 		//world error is here
 		ENEMY = new BufferedImage[1];
@@ -82,7 +73,6 @@ public class Enemy extends Entity{
 	
 	
 	public void tick() {
-		//obs: pensar numa logica melhor
 		reloadingTime = 30 * Game.enemies.size();
 		moved = false;
 
@@ -90,14 +80,18 @@ public class Enemy extends Entity{
 			reloading();
 		} else if(isColliddingWithPlayer() == true) {
 			reloading();
-			if(isWhichEnemy == "strong") {
-				dano = 30;
-			} else if(isWhichEnemy == "normal") {
-				dano = 5;
-			} else {
-				dano = 5;
+			if(this instanceof EnemyNormal) {
+				dano = EnemyNormal.getDano();
+				criticalChance = EnemyNormal.getCriticalChance();
+				criticalDamage = EnemyNormal.getCriticalDamage();
+			} else if(this instanceof EnemyStrong) {
+				dano = EnemyStrong.getDano();
+				criticalChance = EnemyStrong.getCriticalChance();
+				criticalDamage = EnemyStrong.getCriticalDamage();
 			}
+
 			Game.player.beingAttacked(this.danoCompleto(dano, this.criticalChance, this.criticalDamage));
+			
 		}
 		
 		switch (dir) {
@@ -232,7 +226,7 @@ public class Enemy extends Entity{
 	}
 	
 	public void render(Graphics g) {
-		if(isWhichEnemy == "normal") {
+		if(this instanceof EnemyNormal) {
 			if(dir == right_dir) {
 				g.drawImage(rightNormalEnemy[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
 			} else if(dir == left_dir) {
@@ -243,7 +237,7 @@ public class Enemy extends Entity{
 				g.drawImage(downNormalEnemy[0], this.getX() - Camera.x, this.getY() - Camera.y, null);
 			}
 			
-		} else if(isWhichEnemy == "strong") {
+		} else if(this instanceof EnemyStrong) {
 			if(dir == right_dir) {				
 				g.drawImage(Enemy.STRONGENEMY[0], this.getX() - Camera.x, this.getY() - Camera.y, null);			
 			} else if(dir == left_dir) {
@@ -260,8 +254,8 @@ public class Enemy extends Entity{
 
 		
 		
-//		g.setColor(Color.BLUE);
-//		g.fillRect(this.getX() - Camera.x, this.getY() - Camera.y, World.TILE_SIZE, World.TILE_SIZE);
+//		g.setColor(Color.blue);
+//		g.fillRect(this.getX() + maskx - Camera.x, this.getY() + masky - Camera.y, mwidth, mheight);
 		
 		
 	}

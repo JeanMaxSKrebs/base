@@ -8,15 +8,15 @@ import javax.imageio.ImageIO;
 
 import base.Game;
 import entities.BagPack;
-import entities.DoorKey;
 import entities.Enemy;
+import entities.EnemyNormal;
+import entities.EnemyStrong;
 import entities.Entity;
 import entities.HpBag;
 import entities.Key;
 import entities.Player;
 import entities.Power;
 import entities.Premium;
-import entities.SpecialDoor;
 import entities.SpecialKey;
 import entities.StamineBag;
 import graficos.Spritesheet;
@@ -49,33 +49,41 @@ public class World {
 						tiles[xx+(yy*WIDTH)] =  new Tilewall(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_WALL);
 					} else if(pixelAtual == 0xFF7F0037) {
 						//door
-						Tiledoor td = new Tiledoor(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_DOOR, "key");
-						Game.tiledoors.add(td);
-						DoorKey dk = new DoorKey(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Entity.DOOR_EN);
-						Game.entities.add(dk);
-						Enemy en = new Enemy(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Entity.ENEMY_EN, "padrao");
-						Game.enemies.add(en);
-					}
-					else if(pixelAtual == 0xFF000CFF) {
+						Tiledoor door = new Normaldoor(xx * TILE_SIZE, yy * TILE_SIZE, Tiledoor.TILE_NORMALDOOR);
+						Game.tiledoors.add(door);
+					} else if(pixelAtual == 0xFF7F006E) {
+						//special door
+						Tiledoor door = new Specialdoor(xx * TILE_SIZE, yy * TILE_SIZE, Tiledoor.TILE_SPECIALDOOR);		 
+						Game.tiledoors.add(door);
+					} else if(pixelAtual == 0xFF000CFF) {
 						//player
 						Game.player.setX(xx*32);
 						Game.player.setY(yy*32);
+						Game.player.setMask(5, 5, 24, 24);
+						
 					} else if(pixelAtual == 0xFFFF1500) {
 						//normal enemy
-						Enemy en = new Enemy(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Entity.ENEMY_EN, "normal");
+						Enemy en = new EnemyNormal(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Entity.ENEMY_EN);
+						en.setMask(7, 0, 18, 32);
 						Game.entities.add(en);
 						Game.enemies.add(en);
 					} else if(pixelAtual == 0xFFF75D16) {
 						//strong enemy
-						Enemy en = new Enemy(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Entity.ENEMY_EN, "strong");
+						Enemy en = new EnemyStrong(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Entity.ENEMY_EN);
+						en.setMask(4, 10, 24, 16);
 						Game.entities.add(en);
 						Game.enemies.add(en);
 					} else if(pixelAtual == 0xFFFF00A5) {
 						//key
-						Game.entities.add(new Key(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Entity.KEY_EN));
+						Key key = new Key(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Entity.KEY_EN);
+						key.setMask(6, 10, 18, 10);
+						Game.entities.add(key);
+
 					} else if(pixelAtual == 0xFF4E3333) {
 						//bagpack
-						Game.entities.add(new BagPack(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Entity.BAGPACK_EN));
+						BagPack bagpack = new BagPack(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Entity.BAGPACK_EN);
+						bagpack.setMask(7, 7, 18, 18);
+						Game.entities.add(bagpack);
 					} else if(pixelAtual == 0xFF00FF15) {
 						//hpbag
 						HpBag hpbag = new HpBag(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Entity.HPBAG_EN);
@@ -83,19 +91,14 @@ public class World {
 						Game.entities.add(hpbag);
 					} else if(pixelAtual == 0xFFFFFF00) {
 						//staminebag
-						Game.entities.add(new StamineBag(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Entity.STAMINEBAG_EN));
+						StamineBag staminebag = new  StamineBag(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Entity.STAMINEBAG_EN);
+						staminebag.setMask(0, 10, 32, 16);
+						Game.entities.add(staminebag);
 					} else if(pixelAtual == 0xFFF0BAFF) {
 						//specialkey
-						Game.entities.add(new SpecialKey(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Entity.SPECIALKEY_EN));
-					} else if(pixelAtual == 0xFF7F006E) {
-						//special door
-						Tiledoor td = new Tiledoor(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_SPECIALDOOR, "special");
-						Game.tiledoors.add(td);
-						SpecialDoor sd = new SpecialDoor(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Entity.SPECIALDOOR_EN);
-						Game.entities.add(sd);
-						Enemy en = new Enemy(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Entity.ENEMY_EN, "padrao");
-						Game.enemies.add(en);
-												
+						SpecialKey specialkey = new SpecialKey(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Entity.SPECIALKEY_EN);
+						specialkey.setMask(6, 10, 18, 10);
+						Game.entities.add(specialkey);
 					} else if(pixelAtual == 0xFF8300FF) {
 						//premium
 						Game.entities.add(new Premium(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Entity.PREMIUM_EN));

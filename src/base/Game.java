@@ -80,8 +80,8 @@ public class Game extends Canvas implements Runnable, KeyListener{
 		spritesheet = new Spritesheet("/spritesheet.png");
 		player = new Player(0, 0, 32, 32, spritesheet.getSprite(0, 32, 32, 32));
 		entities.add(player);
-//		world = new World("/teste.png");
-		world = new World("/fase1.png");
+		world = new World("/teste.png");
+//		world = new World("/fase4.png");
 		
 		menu = new Menu();		
 	}
@@ -192,6 +192,16 @@ public class Game extends Canvas implements Runnable, KeyListener{
 		for(int i=0; i<entities.size(); i++) {
 			Entity e = entities.get(i);
 			e.render(g);
+		}
+		//render enemies
+		for(int i=0; i<enemies.size(); i++) {
+			Enemy e = enemies.get(i);
+			e.render(g);
+		}
+		//render tiledoors
+		for(int i=0; i<tiledoors.size(); i++) {
+			Tiledoor t = tiledoors.get(i);
+			t.render(g);
 		}
 		//render power
 		for (int i = 0; i < powers.size(); i++) {

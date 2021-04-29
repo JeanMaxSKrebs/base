@@ -10,8 +10,6 @@ public class Tile {
 	public static BufferedImage TILE_FLOOR = Game.spritesheet.getSprite(128, 0, 32, 32);
 	public static BufferedImage TILE_WALL  = Game.spritesheet.getSprite(160, 0, 32, 32);
 	public static BufferedImage TILE_DOOR = Game.spritesheet.getSprite(32, 224, 32, 32);
-	public static BufferedImage TILE_SPECIALDOOR = Game.spritesheet.getSprite(96, 224, 32, 32);
-
 	
 	protected BufferedImage sprite;
 	protected int x, y;
@@ -24,5 +22,8 @@ public class Tile {
 	
 	public void render(Graphics g) {
 		g.drawImage(sprite, x - Camera.x, y - Camera.y, null);
+		
+//		g.setColor(Color.green);
+//		g.fillRect(this.x - Camera.x, this.y - Camera.y, Game.WIDTH, Game.HEIGHT);
 	}
 }

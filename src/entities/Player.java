@@ -1,10 +1,13 @@
 package entities;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
 import base.Game;
 import world.Camera;
+import world.Normaldoor;
+import world.Specialdoor;
 import world.Tiledoor;
 import world.World;
 
@@ -19,7 +22,7 @@ public class Player extends Entity{
 	public static int premium = 0;
 	
 	private static int dodgeChance = 20;
-	private static int armor = 3;
+	private static int armor = 0;
 	
 	private boolean hasBagpack = false;
 	
@@ -64,7 +67,7 @@ public class Player extends Entity{
 		}
 
 	}
-	public int danoRecebido(int dano, int dodgeChance, int armor) {
+	public int danoRecebido(int dano) {
 		
 		int danoRecebido = dano - armor;
 		
@@ -76,11 +79,10 @@ public class Player extends Entity{
 	}
 	
 	public boolean beingAttacked(int dano) {
-		int danoReal = danoRecebido(dano, dodgeChance, armor);
+		int danoReal = danoRecebido(dano);
 		
 		if(danoReal > 0) {
 			life = life - danoReal;
-			
 		}
 		
 //		System.out.println(danoReal);
@@ -106,7 +108,9 @@ public class Player extends Entity{
 			if(e instanceof BagPack) {
 				if(Entity.isCollidding(this, e)) {
 					hasBagpack = true;
-					speed = 4;
+					speed = speed - 1 ;
+					armor = armor + 6;
+					
 					Game.entities.remove(i);
 
 					return;
@@ -134,22 +138,24 @@ public class Player extends Entity{
 					return;
 				}
 			}
-			if(e instanceof DoorKey) {
-				if(Entity.isCollidding(this, e)) {
-					if(keys > 0) {
-						Game.entities.remove(i);
-					}
-					return;
-				}
-			}
-			if(e instanceof SpecialDoor) {
-				if(Entity.isCollidding(this, e)) {
-					if(specialKeys > 0) {
-						Game.entities.remove(i);
-					}
-					return;
-				}
-			}
+//			if(e instanceof DoorKey) {
+//				if(Entity.isCollidding(this, e)) {
+//					if(keys > 0) {
+//						System.out.println("teste");
+//						Game.entities.remove(i);
+//					}
+//					return;
+//				}
+//			}
+//			if(e instanceof SpecialDoor) {
+//				if(Entity.isCollidding(this, e)) {
+//					if(specialKeys > 0) {
+//						System.out.println("teste");
+//						Game.entities.remove(i);
+//					}
+//					return;
+//				}
+//			}
 			// itens q são guardados
 			if(hasBagpack) {					
 				if(e instanceof Key) {
@@ -178,15 +184,14 @@ public class Player extends Entity{
 	}
 	
 	public void checkDoor(){
-		
 		for (int i = 0; i < Game.tiledoors.size(); i++) {
 			Tiledoor t = Game.tiledoors.get(i);
 
 			if(Tiledoor.isCollidding(this, t)) {
-				if(t.type == "key") {
+				if(t instanceof Normaldoor) {
 					if(keys > 0) {
-						keys--;						
-						Game.enemies.remove(i);						
+						keys--;
+						System.out.println("teste1");
 						Game.tiledoors.remove(i);
 					} else {
 						if(dir == right_dir) {
@@ -198,14 +203,15 @@ public class Player extends Entity{
 						 } else if(dir == up_dir) {
 							 y = y + speed;
 						 }
-					}	
-					
-				} else if(t.type == "special") {
+					}
+				}
+
+				if(t instanceof Specialdoor) {
 					if(specialKeys > 0) {
-						specialKeys--;					
-						Game.enemies.remove(i);						
+						specialKeys--;
+						System.out.println("teste2");
 						Game.tiledoors.remove(i);
-					}else {
+					} else {
 						if(dir == right_dir) {
 							 x =  x - speed;
 						 } else if(dir == left_dir){
@@ -215,12 +221,17 @@ public class Player extends Entity{
 						 } else if(dir == up_dir) {
 							 y = y + speed;
 						 }
-					}				
+					}
 				}
 				return;
 			}
+					
+
+							
+
 		}
 	}
+	
 	public void tick() {
 		
 		if(usingPower) {
@@ -308,6 +319,10 @@ public class Player extends Entity{
 		
 		else if(dir == down_dir)
 			g.drawImage(downPlayer[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
+		
+		g.setColor(Color.black);
+		g.fillRect(this.getX() + Game.player.maskx - Camera.x, this.getY() + Game.player.masky - Camera.y, mwidth, mheight);
+
 		
 	}
 	public double getLife() {
