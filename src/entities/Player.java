@@ -104,11 +104,12 @@ public class Player extends Entity{
 	public void checkItems() {
 		for (int i = 0; i < Game.entities.size(); i++) {
 			Entity e = Game.entities.get(i);
+			if(hasBagpack)
+				speed = 4;
 			
 			if(e instanceof BagPack) {
 				if(Entity.isCollidding(this, e)) {
 					hasBagpack = true;
-					speed = speed - 1 ;
 					armor = armor + 6;
 					
 					Game.entities.remove(i);
@@ -138,24 +139,7 @@ public class Player extends Entity{
 					return;
 				}
 			}
-//			if(e instanceof DoorKey) {
-//				if(Entity.isCollidding(this, e)) {
-//					if(keys > 0) {
-//						System.out.println("teste");
-//						Game.entities.remove(i);
-//					}
-//					return;
-//				}
-//			}
-//			if(e instanceof SpecialDoor) {
-//				if(Entity.isCollidding(this, e)) {
-//					if(specialKeys > 0) {
-//						System.out.println("teste");
-//						Game.entities.remove(i);
-//					}
-//					return;
-//				}
-//			}
+
 			// itens q são guardados
 			if(hasBagpack) {					
 				if(e instanceof Key) {
@@ -186,14 +170,16 @@ public class Player extends Entity{
 	public void checkDoor(){
 		for (int i = 0; i < Game.tiledoors.size(); i++) {
 			Tiledoor t = Game.tiledoors.get(i);
-
+			System.out.println(speed);
 			if(Tiledoor.isCollidding(this, t)) {
+				speed = 0;
+
 				if(t instanceof Normaldoor) {
 					if(keys > 0) {
 						keys--;
-						System.out.println("teste1");
 						Game.tiledoors.remove(i);
 					} else {
+						speed = 5;
 						if(dir == right_dir) {
 							 x =  x - speed;
 						 } else if(dir == left_dir){
@@ -204,14 +190,12 @@ public class Player extends Entity{
 							 y = y + speed;
 						 }
 					}
-				}
-
-				if(t instanceof Specialdoor) {
+				} else if(t instanceof Specialdoor) {
 					if(specialKeys > 0) {
 						specialKeys--;
-						System.out.println("teste2");
 						Game.tiledoors.remove(i);
 					} else {
+						speed = 5;
 						if(dir == right_dir) {
 							 x =  x - speed;
 						 } else if(dir == left_dir){
@@ -222,12 +206,10 @@ public class Player extends Entity{
 							 y = y + speed;
 						 }
 					}
-				}
+				} 
 				return;
-			}
-					
 
-							
+			}
 
 		}
 	}
