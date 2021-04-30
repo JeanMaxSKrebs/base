@@ -168,9 +168,11 @@ public class Player extends Entity{
 	}
 	
 	public void checkDoor(){
+		
+		
 		for (int i = 0; i < Game.tiledoors.size(); i++) {
 			Tiledoor t = Game.tiledoors.get(i);
-			System.out.println(speed);
+
 			if(Tiledoor.isCollidding(this, t)) {
 				speed = 0;
 
@@ -240,23 +242,29 @@ public class Player extends Entity{
 
 
 		setMoved(false);
-		if(right && World.isFree((int)(x + speed), this.getY())) {
+
+		int plusx = (int)(x + speed);
+		int minusx = (int)(x - speed);
+		int plusy = (int)(y + speed);
+		int minusy = (int)(y - speed);
+		
+		if(right && World.isFree(plusx, this.getY())) {
 			setMoved(true);
 			dir = right_dir;
 			x += speed;
 		}
-		else if(left && World.isFree((int)(x - speed), this.getY())) {
+		else if(left && World.isFree(minusx, this.getY())) {
 			setMoved(true);
 			dir = left_dir;
 			x -= speed;
 		}
 		
-		if(down && World.isFree(this.getX(), (int)(y + speed))) {
+		if(down && World.isFree(this.getX(), plusy)) {
 			setMoved(true);
 			dir = down_dir;		
 			y += speed;
 		}
-		else if(up && World.isFree(this.getX(),  (int)(y - speed))) {
+		else if(up && World.isFree(this.getX(),  minusy)) {
 			setMoved(true);
 			dir = up_dir;
 			y -= speed;
@@ -273,6 +281,7 @@ public class Player extends Entity{
 		}
 		checkItems();
 		checkDoor();
+			
 		
 		Camera.x = Camera.clamp(this.getX() - (Game.WIDTH/2), 0, World.WIDTH * 32 - Game.WIDTH);
 		Camera.y = Camera.clamp(this.getY() - (Game.HEIGHT/2), 0, World.HEIGHT * 32 - Game.HEIGHT);

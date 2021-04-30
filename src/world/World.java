@@ -118,14 +118,14 @@ public class World {
 		int x1 = xNext / TILE_SIZE;
 		int y1 = yNext / TILE_SIZE;
 		
-		int x2 = (xNext + TILE_SIZE - 4) / TILE_SIZE;
-		int y2 = (yNext + TILE_SIZE - 5) / TILE_SIZE;
+		int x2 = (xNext + TILE_SIZE - 3) / TILE_SIZE;
+		int y2 = (yNext + TILE_SIZE - 2) / TILE_SIZE;
 		
-		int x3 = (xNext + TILE_SIZE - 4)/ TILE_SIZE;
+		int x3 = (xNext + TILE_SIZE - 2)/ TILE_SIZE;
 		int y3 = yNext / TILE_SIZE;
 
 		int x4 = xNext / TILE_SIZE;
-		int y4 = (yNext + TILE_SIZE - 5) / TILE_SIZE;
+		int y4 = (yNext + TILE_SIZE - 2) / TILE_SIZE;
 
 		return !(
 				 (tiles[x1 + (y1*World.WIDTH)] instanceof Tilewall) ||
