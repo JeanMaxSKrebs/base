@@ -40,7 +40,6 @@ public class Game extends Canvas implements Runnable, KeyListener{
 	public static final int HEIGHT = 320;
 	public static final int SCALE = 2;
 
-	private int CUR_LEVEL = 1, MAX_LEVEL = 3;
 
 	private BufferedImage image;
 	
@@ -65,6 +64,8 @@ public class Game extends Canvas implements Runnable, KeyListener{
 	private boolean showMessageGameOver = true;
 	private int framesGameOver = 0;
 	
+	private int CUR_LEVEL = 1, MAX_LEVEL = 5;
+	
 	public Game() {
 		addKeyListener(this);
 		this.setPreferredSize(new Dimension(WIDTH*SCALE, HEIGHT*SCALE));
@@ -81,7 +82,7 @@ public class Game extends Canvas implements Runnable, KeyListener{
 		player = new Player(0, 0, 32, 32, spritesheet.getSprite(0, 32, 32, 32));
 		entities.add(player);
 //		world = new World("/teste.png");
-		world = new World("/fase1.png");
+		world = new World("/fase"+CUR_LEVEL+".png");
 		
 		menu = new Menu();		
 	}
@@ -128,7 +129,9 @@ public class Game extends Canvas implements Runnable, KeyListener{
 			}
 			restartGame = false;
 			if(tiledoors.size() == 0) {
-				gameState = "NEXT";
+				if(CUR_LEVEL != MAX_LEVEL) {
+					gameState = "NEXT";									
+				}
 			}
 			
 			for(int i=0; i<entities.size(); i++) {
@@ -238,7 +241,7 @@ public class Game extends Canvas implements Runnable, KeyListener{
 			g.setFont(new Font("Arial", Font.BOLD, 20));
 			g.fillRect(0, 0, WIDTH*SCALE, HEIGHT*SCALE);
 			g.setColor(Color.white);
-			g.drawString("Parabéns  "+"Você pegou: "+Player.premium+"CRABS",  WIDTH/2, HEIGHT/2);
+			g.drawString("Parabéns  "+"Você Derrotou o Boss com: "+Player.getPremium()+"CRABS",  WIDTH/2, HEIGHT/2);
 		} else if(gameState == "MENU") {
 			menu.render(g);
 		}

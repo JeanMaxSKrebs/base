@@ -50,7 +50,7 @@ public class UI {
 		g.drawString("DI: "+Enemy.getDano() , 0,  Game.HEIGHT-35);
 		g.drawString("PA: "+Enemy.isPreparedAttack() , 0,  Game.HEIGHT-25);
 		g.drawString("Keys: "+Player.getKeys() , 0,  Game.HEIGHT-15);
-		g.drawString("S.Keys: "+Player.specialKeys , 0,  Game.HEIGHT-5);
+		g.drawString("S.Keys: "+Player.getSpecialKeys() , 0,  Game.HEIGHT-5);
 		
 
 		

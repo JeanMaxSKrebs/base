@@ -17,9 +17,9 @@ public class Player extends Entity{
 	public int right_dir = 1, left_dir = 2, up_dir = 3, down_dir = 4;
 	public int dir = 1;
 	public double speed = 5;
-	public static int keys = 0;
-	public static int specialKeys = 0;
-	public static int premium = 0;
+	private static int keys = 0;
+	private static int specialKeys = 0;
+	private static int premium = 0;
 	
 	private static int dodgeChance = 20;
 	private static int armor = 0;
@@ -40,6 +40,7 @@ public class Player extends Entity{
 	public double stamine = 0;
 	public static double maxStamine = 3;
 	
+
 	public boolean usingPower = false;
 
 	public Player(int x, int y, int width, int height, BufferedImage sprite) {
@@ -151,14 +152,14 @@ public class Player extends Entity{
 				}
 				if(e instanceof SpecialKey) {
 					if(Entity.isCollidding(this, e)) {
-						specialKeys++;
+						setSpecialKeys(getSpecialKeys() + 1);
 						Game.entities.remove(i);
 						return;
 					}
 				}
 				if(e instanceof Premium) {
 					if(Entity.isCollidding(this, e)) {
-						premium++;
+						setPremium(getPremium() + 1);
 						Game.entities.remove(i);
 						return;
 					}
@@ -193,8 +194,8 @@ public class Player extends Entity{
 						 }
 					}
 				} else if(t instanceof Specialdoor) {
-					if(specialKeys > 0) {
-						specialKeys--;
+					if(getSpecialKeys() > 0) {
+						setSpecialKeys(getSpecialKeys() - 1);
 						Game.tiledoors.remove(i);
 					} else {
 						speed = 5;
@@ -363,6 +364,18 @@ public class Player extends Entity{
 	}
 	public void setMoved(boolean moved) {
 		this.moved = moved;
+	}
+	public static int getSpecialKeys() {
+		return specialKeys;
+	}
+	public static void setSpecialKeys(int specialKeys) {
+		Player.specialKeys = specialKeys;
+	}
+	public static int getPremium() {
+		return premium;
+	}
+	public static void setPremium(int premium) {
+		Player.premium = premium;
 	}
 
 	
