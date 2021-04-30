@@ -17,6 +17,7 @@ import java.util.Random;
 
 import javax.swing.JFrame;
 
+import entities.Bala;
 import entities.Enemy;
 import entities.Entity;
 import entities.Player;
@@ -47,12 +48,16 @@ public class Game extends Canvas implements Runnable, KeyListener{
 	public static List<Enemy> enemies;
 	public static List<Tiledoor> tiledoors;
 	public static List<Power> powers;	
+	public static List<Bala> balas;	
 	
 	public static Spritesheet spritesheet;
 	
 	public static World world;
 	
 	public static Player player;
+	
+	public static int PREMIUM = 0;
+	private boolean boss = false;
 	
 	public UI ui;
 	
@@ -64,7 +69,8 @@ public class Game extends Canvas implements Runnable, KeyListener{
 	private boolean showMessageGameOver = true;
 	private int framesGameOver = 0;
 	
-	private int CUR_LEVEL = 1, MAX_LEVEL = 5;
+	private static int CUR_LEVEL = 4;
+	private static int MAX_LEVEL = 5;
 	
 	public Game() {
 		addKeyListener(this);
@@ -74,6 +80,7 @@ public class Game extends Canvas implements Runnable, KeyListener{
 		ui = new UI();
 		image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
 		
+		balas = new ArrayList<Bala>();
 		powers = new ArrayList<Power>();
 		tiledoors = new ArrayList<Tiledoor>();
 		entities = new ArrayList<Entity>();
@@ -81,8 +88,8 @@ public class Game extends Canvas implements Runnable, KeyListener{
 		spritesheet = new Spritesheet("/spritesheet.png");
 		player = new Player(0, 0, 32, 32, spritesheet.getSprite(0, 32, 32, 32));
 		entities.add(player);
-//		world = new World("/teste.png");
-		world = new World("/fase"+CUR_LEVEL+".png");
+		world = new World("/testep.png");
+//		world = new World("/fase"+CUR_LEVEL+".png");
 		
 		menu = new Menu();		
 	}
@@ -123,7 +130,7 @@ public class Game extends Canvas implements Runnable, KeyListener{
 			if(saveGame) {
 				saveGame = false;
 				String[] opt1 = {"fase"};
-				int[] opt2 = {this.CUR_LEVEL};
+				int[] opt2 = {CUR_LEVEL};
 				Menu.saveGame(opt1, opt2, 10);
 
 			}
@@ -131,12 +138,17 @@ public class Game extends Canvas implements Runnable, KeyListener{
 			if(tiledoors.size() == 0) {
 				if(CUR_LEVEL != MAX_LEVEL) {
 					gameState = "NEXT";									
+				} else if(!boss){
+					gameState = "BOSS";									
 				}
 			}
 			
 			for(int i=0; i<entities.size(); i++) {
 				Entity e = entities.get(i);
 				e.tick();
+			}
+			for (int i = 0; i < balas.size(); i++) {
+				balas.get(i).tick();
 			}
 			for (int i = 0; i < powers.size(); i++) {
 				powers.get(i).tick();
@@ -162,7 +174,7 @@ public class Game extends Canvas implements Runnable, KeyListener{
 		} else if(gameState == "WIN") {
 			
 		} else if(gameState == "NEXT") {
-			CUR_LEVEL++;
+			CUR_LEVEL = CUR_LEVEL + 1;
 			if(CUR_LEVEL > MAX_LEVEL) {
 				CUR_LEVEL = 1;
 			}
@@ -172,7 +184,16 @@ public class Game extends Canvas implements Runnable, KeyListener{
 			gameState = "NORMAL";
 		} else if(gameState == "MENU") {
 			menu.tick();
+		} else if(gameState == "BOSS") {
+			if(boss == false) {
+				boss = true;
+				Game.player.balas = PREMIUM * 100;
+				PREMIUM = 0;
+				gameState = "NORMAL";
+			}
 		}
+			
+
 	}
 	
 	
@@ -209,6 +230,10 @@ public class Game extends Canvas implements Runnable, KeyListener{
 		//render power
 		for (int i = 0; i < powers.size(); i++) {
 			powers.get(i).render(g);
+		}
+		//render balas
+		for (int i = 0; i < balas.size(); i++) {
+			balas.get(i).render(g);
 		}
 		
 		ui.render(g);
@@ -304,7 +329,12 @@ public class Game extends Canvas implements Runnable, KeyListener{
 		}
 		
 		if(e.getKeyCode() == KeyEvent.VK_SPACE) {
-			player.usingPower = true;
+			if(iamMAX_LEVEL()) {
+				player.atirar = true;
+			} else {				
+				player.usingPower = true;
+			}
+			
 		}
 		if(e.getKeyCode() == KeyEvent.VK_ENTER) {
 			restartGame = true;
@@ -340,5 +370,14 @@ public class Game extends Canvas implements Runnable, KeyListener{
 		Random random = new Random();
 		int r = random.nextInt(value);
 		return r;
+	}
+
+
+	public static boolean iamMAX_LEVEL() {
+		if(CUR_LEVEL == MAX_LEVEL) {			
+			return true;
+		} else {
+			return false;
+		}
 	}
 }

@@ -42,6 +42,9 @@ public class Player extends Entity{
 	
 
 	public boolean usingPower = false;
+	public boolean atirar = false;
+	public double balas = 0;
+	public double maxBalas = 600;
 
 	public Player(int x, int y, int width, int height, BufferedImage sprite) {
 		super(x, y, width, height, sprite);
@@ -218,6 +221,32 @@ public class Player extends Entity{
 	}
 	
 	public void tick() {
+		if(Game.iamMAX_LEVEL())
+			System.out.println(balas);
+			if(atirar) {
+				atirar = false;
+				if(balas > 0) {
+					System.out.println("teste");
+					balas--;
+					atirar = false;
+					 int dx = 0;
+					 int dy = 0;
+					 if(dir == right_dir) {
+						 dx = 1;
+					 } else if(dir == left_dir){
+						 dx = -1;
+					 } else if(dir == down_dir) {
+						 dy = 1;
+					 } else if(dir == up_dir) {
+						 dy = -1;
+					 }
+					 
+					 Bala bala = new Bala(this.getX(), this.getY(), 5, 5, null, dx, dy);
+					 Game.balas.add(bala);
+				}	
+			}
+
+		
 		
 		if(usingPower) {
 			usingPower = false;
@@ -240,8 +269,7 @@ public class Player extends Entity{
 				 Game.powers.add(power);
 			}
 		}
-
-
+		
 		setMoved(false);
 
 		int plusx = (int)(x + speed);

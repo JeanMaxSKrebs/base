@@ -145,6 +145,7 @@ public class World {
 		Game.entities = new ArrayList<Entity>();
 		Game.enemies = new ArrayList<Enemy>();
 		Game.spritesheet = new Spritesheet("/spritesheet.png");
+		Game.PREMIUM = Player.getPremium();
 		Game.player = new Player(0, 0, 32, 32, Game.spritesheet.getSprite(0, 32, 32, 32));
 		Game.entities.add(Game.player);
 		Game.world = new World("/"+fase);
