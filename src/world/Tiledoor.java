@@ -28,4 +28,5 @@ public abstract class Tiledoor extends Tile implements Door {
 //		g.setColor(Color.cyan);
 //		g.fillRect(x - Camera.x, y - Camera.y, 32, 32);
 	}
+	
 }

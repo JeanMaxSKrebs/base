@@ -1,5 +1,6 @@
 package entities;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
@@ -7,7 +8,7 @@ import java.awt.image.BufferedImage;
 import base.Game;
 import world.Camera;
 
-public class Entity {
+public abstract class Entity {
 
 	public static BufferedImage KEY_EN = Game.spritesheet.getSprite(64, 224, 32, 32);
 	public static BufferedImage SPECIALKEY_EN = Game.spritesheet.getSprite(128, 224, 32, 32);
@@ -51,7 +52,6 @@ public class Entity {
 	}
 
 	public static boolean isCollidding(Entity e1, Entity e2) {
-
 		Rectangle e1Mask = new Rectangle(e1.getX() + e1.maskx, e1.getY()+e1.masky, e1.mwidth, e1.mheight);
 		Rectangle e2Mask = new Rectangle(e2.getX() + e2.maskx, e2.getY()+e2.masky, e2.mwidth, e2.mheight);
 		
@@ -60,6 +60,7 @@ public class Entity {
 	
 	public void render(Graphics g) {
 		g.drawImage(sprite, this.getX() - Camera.x, this.getY() - Camera.y, null);
+		
 //		g.setColor(Color.red);
 //		g.fillRect(this.getX() + maskx - Camera.x, this.getY() + masky - Camera.y, mwidth, mheight);
 	}

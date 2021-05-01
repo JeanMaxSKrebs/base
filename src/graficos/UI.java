@@ -59,10 +59,9 @@ public class UI {
 		g.setFont(new Font("calibri", Font.BOLD, 10));
 		g.drawString("A: "+Player.getArmor(), 0,  Game.HEIGHT-55);
 		g.drawString("Dod: "+Player.getDodgeChance() , 0,  Game.HEIGHT-45);
-		g.drawString("PA: "+Enemy.isPreparedAttack() , 0,  Game.HEIGHT-35);
-		g.drawString("Key: "+Player.getKeys() , 0,  Game.HEIGHT-25);
-		g.drawString("S.Key: "+Player.getSpecialKeys() , 0,  Game.HEIGHT-15);
-		g.drawString("Prem: "+Game.PREMIUM , 0,  Game.HEIGHT-5);
+		g.drawString("Key: "+Player.getKeys() , 0,  Game.HEIGHT-35);
+		g.drawString("S.Key: "+Player.getSpecialKeys() , 0,  Game.HEIGHT-25);
+		g.drawString("Prem: "+Game.PREMIUM , 0,  Game.HEIGHT-15);
 		
 
 		

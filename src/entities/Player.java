@@ -222,11 +222,11 @@ public class Player extends Entity{
 	
 	public void tick() {
 		if(Game.iamMAX_LEVEL())
-			System.out.println(balas);
+//			System.out.println(balas);
 			if(atirar) {
 				atirar = false;
 				if(balas > 0) {
-					System.out.println("teste");
+//					System.out.println("teste");
 					balas--;
 					atirar = false;
 					 int dx = 0;
@@ -336,12 +336,11 @@ public class Player extends Entity{
 				g.drawImage(Entity.BAGPACK_UP, this.getX() - Camera.x, this.getY() - Camera.y, null);
 			}			
 		}
-		
 		else if(dir == down_dir)
 			g.drawImage(downPlayer[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
 		
-		g.setColor(Color.black);
-		g.fillRect(this.getX() + Game.player.maskx - Camera.x, this.getY() + Game.player.masky - Camera.y, mwidth, mheight);
+//		g.setColor(Color.black);
+//		g.fillRect(this.getX() + Game.player.maskx - Camera.x, this.getY() + Game.player.masky - Camera.y, mwidth, mheight);
 
 		
 	}

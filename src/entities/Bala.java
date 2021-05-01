@@ -11,6 +11,7 @@ public class Bala extends Entity {
 	
 	private int dx, dy;
 	private double speed = 3.5;
+	private int dano = 1;
 	
 	private int life = 100, curLife = 0;
 
@@ -30,10 +31,23 @@ public class Bala extends Entity {
 			Game.balas.remove(this);
 			return;
 		}
+		
+		colidi();
 	}
+	public void colidi() {
+		for (int i = 0; i < Game.enemies.size(); i++) {
+			Enemy e = Game.enemies.get(i);
+			
+			if(isCollidding(this, e)) {
+				e.life -= this.dano;
+				return;
+			}
+		}
+	}
+
 
 	public void render(Graphics g) {
 		g.setColor(Color.yellow);
-		g.fillOval(this.getX() - Camera.x, this.getY() - Camera.y, width, height);
+		g.fillOval(this.getX() - Camera.x + 13, this.getY() - Camera.y + 13, width, height);
 	}
 }

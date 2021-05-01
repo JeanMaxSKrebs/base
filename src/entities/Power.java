@@ -11,7 +11,7 @@ public class Power extends Entity {
 	
 	private int dx, dy;
 	private double speed = 3.5;
-	
+	private int dano = 50;
 	private int life = 100, curLife = 0;
 
 	public Power(int x, int y, int width, int height, BufferedImage sprite, int dx, int dy) {
@@ -30,7 +30,19 @@ public class Power extends Entity {
 			Game.powers.remove(this);
 			return;
 		}
-	}
+		colidi();
+		}
+	
+		public void colidi() {
+			for (int i = 0; i < Game.enemies.size(); i++) {
+				Enemy e = Game.enemies.get(i);
+				
+				if(isCollidding(this, e)) {
+					e.life -= this.dano;
+					return;
+				}
+			}
+		}
 
 	public void render(Graphics g) {
 		g.setColor(Color.yellow);

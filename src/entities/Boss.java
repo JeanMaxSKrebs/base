@@ -1,14 +1,33 @@
 package entities;
 
+import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
-public class Boss extends Enemy {
+import base.Game;
+import world.Camera;
 
-	private static int dano = 10;
-	private static int criticalChance = 10;
-	private static int criticalDamage = 10;
+public class Boss extends Enemy {
+	
+	public static BufferedImage[] BOSS;
 	
 	public Boss(int x, int y, int width, int height, BufferedImage sprite) {
 		super(x, y, width, height, sprite);
+		
+		BOSS = new BufferedImage[1];
+		
+		BOSS[0] = Game.spritesheet.getSprite(0, 224, 32, 32);
 	}
+	
+	public void tick() {
+		moved = false;
+		iamAlive();
+		
+		verificaMovimento();
+	}
+	public void render(Graphics g) {
+		g.drawImage(BOSS[0], this.getX() - Camera.x, this.getY() - Camera.y, null);
+//		g.setColor(Color.red);
+//		g.fillRect(this.getX() + maskx - Camera.x, this.getY() + masky - Camera.y, mwidth, mheight);
+	}
+
 }

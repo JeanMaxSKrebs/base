@@ -26,4 +26,8 @@ public class Tile {
 //		g.setColor(Color.green);
 //		g.fillRect(this.x - Camera.x, this.y - Camera.y, Game.WIDTH, Game.HEIGHT);
 	}
+	
+	public void tick() {
+	}
+
 }
