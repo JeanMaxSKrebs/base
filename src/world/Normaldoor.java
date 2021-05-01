@@ -5,8 +5,6 @@ import java.awt.image.BufferedImage;
 
 public class Normaldoor extends Tiledoor {
 
-	public String type;
-
 	public Normaldoor(int x, int y, BufferedImage sprite) {
 		super(x, y, sprite);
 	}

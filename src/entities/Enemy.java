@@ -6,10 +6,9 @@ import java.awt.image.BufferedImage;
 
 import base.Game;
 import world.Camera;
-//import world.Camera;
 import world.World;
 
-public abstract class Enemy extends Entity{
+public abstract class Enemy extends Entity {
 	protected double speed = 1.7;
 	protected static int dano;
 	protected int criticalChance;
@@ -27,50 +26,27 @@ public abstract class Enemy extends Entity{
 	
 	protected boolean moved;
 	
-	//padrao
-	public static BufferedImage[] ENEMY;
+	public static BufferedImage NORMALENEMY = Game.spritesheet.getSprite(0, 224, 32, 32);
+	public static BufferedImage STRONGENEMY = Game.spritesheet.getSprite(0, 224, 32, 32);
+	public static BufferedImage ENEMY_X = Game.spritesheet.getSprite(0, 224, 32, 32);
+	public static BufferedImage ENEMY_Y = Game.spritesheet.getSprite(0, 224, 32, 32);
+	public static BufferedImage BOSS = Game.spritesheet.getSprite(0, 224, 32, 32);
+	
 
 	//normal
-	private BufferedImage[] rightNormalEnemy;
-	private BufferedImage[] leftNormalEnemy;
-	private BufferedImage[] upNormalEnemy;
-	private BufferedImage[] downNormalEnemy;
+//	private BufferedImage[] rightNormalEnemy;
+//	private BufferedImage[] leftNormalEnemy;
+//	private BufferedImage[] upNormalEnemy;
+//	private BufferedImage[] downNormalEnemy;
 		
 	//strong
-	public static BufferedImage[] STRONGENEMY;
+//	public static BufferedImage[] STRONGENEMY;
 	
 //Game.spritesheet.getSprite(0, 256, 32, 32);
-
+	
 	public Enemy(int x, int y, int width, int height, BufferedImage sprite) {
-		super(x, y, width, height, null);
-		
-		//world error is here
-		ENEMY = new BufferedImage[1];
-		STRONGENEMY = new BufferedImage[4];
-		rightNormalEnemy = new BufferedImage[4];
-		leftNormalEnemy = new BufferedImage[4];
-		upNormalEnemy = new BufferedImage[1];
-		downNormalEnemy = new BufferedImage[1];
-		
-		ENEMY[0] = Game.spritesheet.getSprite(0, 224, 32, 32);
-		
-		
-		for(int i=0; i<qtdDirecoes; i++) {
-			rightNormalEnemy[i] = Game.spritesheet.getSprite((i*32), 160, 32, 32);			
-		}
-		
-		for(int i=0; i<qtdDirecoes; i++) {
-			leftNormalEnemy[i] = Game.spritesheet.getSprite((i*32), 192, 32, 32);			
-		}
-		upNormalEnemy[0] = Game.spritesheet.getSprite(32, 128, 32, 32);
-		downNormalEnemy[0] = Game.spritesheet.getSprite(0, 128, 32, 32);
-		
-		for(int i=0; i<qtdDirecoes; i++) {
-			STRONGENEMY[i] = Game.spritesheet.getSprite((i*32), 256, 32, 32);			
-		}	
+		super(x, y, width, height, sprite);
 	}
-	
-	
 	
 	public void tick() {
 		reloadingTime = 30 * Game.enemies.size();
@@ -88,6 +64,16 @@ public abstract class Enemy extends Entity{
 				dano = EnemyStrong.getDano();
 				criticalChance = EnemyStrong.getCriticalChance();
 				criticalDamage = EnemyStrong.getCriticalDamage();
+			} else if(this instanceof EnemyX) {
+				dano = EnemyX.getDano();
+				criticalChance = EnemyX.getCriticalChance();
+				criticalDamage = EnemyX.getCriticalDamage();
+			} else if(this instanceof EnemyY) {
+				dano = EnemyY.getDano();
+				criticalChance = EnemyY.getCriticalChance();
+				criticalDamage = EnemyY.getCriticalDamage();
+			} else if(this instanceof Boss) {
+				
 			}
 
 			Game.player.beingAttacked(this.danoCompleto(dano, this.criticalChance, this.criticalDamage));
@@ -226,39 +212,46 @@ public abstract class Enemy extends Entity{
 	}
 	
 	public void render(Graphics g) {
-		if(this instanceof EnemyNormal) {
-			if(dir == right_dir) {
-				g.drawImage(rightNormalEnemy[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
-			} else if(dir == left_dir) {
-				g.drawImage(leftNormalEnemy[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
-			} else if(dir == up_dir) {
-				g.drawImage(upNormalEnemy[0], this.getX() - Camera.x, this.getY() - Camera.y, null);	
-			} else if(dir == down_dir) {				
-				g.drawImage(downNormalEnemy[0], this.getX() - Camera.x, this.getY() - Camera.y, null);
-			}
-			
-		} else if(this instanceof EnemyStrong) {
-			if(dir == right_dir) {				
-				g.drawImage(Enemy.STRONGENEMY[0], this.getX() - Camera.x, this.getY() - Camera.y, null);			
-			} else if(dir == left_dir) {
-				g.drawImage(Enemy.STRONGENEMY[1], this.getX() - Camera.x, this.getY() - Camera.y, null);			
-			} else if(dir == up_dir) {
-				g.drawImage(Enemy.STRONGENEMY[2], this.getX() - Camera.x, this.getY() - Camera.y, null);			
-			} else if(dir == down_dir) {
-				g.drawImage(Enemy.STRONGENEMY[3], this.getX() - Camera.x, this.getY() - Camera.y, null);			
-			} 
-		} else {
-			g.drawImage(Enemy.ENEMY[index], this.getX() - Camera.x, this.getY() - Camera.y, null);			
-		}
+		g.drawImage(sprite, x - Camera.x, y - Camera.y, null);
 		
-
-		
-		
-//		g.setColor(Color.blue);
-//		g.fillRect(this.getX() + maskx - Camera.x, this.getY() + masky - Camera.y, mwidth, mheight);
-		
-		
+//		g.setColor(Color.cyan);
+//		g.fillRect(x - Camera.x, y - Camera.y, 32, 32);
 	}
+	
+//	public void render(Graphics g) {
+//		if(this instanceof EnemyNormal) {
+//			if(dir == right_dir) {
+//				g.drawImage(rightNormalEnemy[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
+//			} else if(dir == left_dir) {
+//				g.drawImage(leftNormalEnemy[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
+//			} else if(dir == up_dir) {
+//				g.drawImage(upNormalEnemy[0], this.getX() - Camera.x, this.getY() - Camera.y, null);	
+//			} else if(dir == down_dir) {				
+//				g.drawImage(downNormalEnemy[0], this.getX() - Camera.x, this.getY() - Camera.y, null);
+//			}
+//			
+//		} else if(this instanceof EnemyStrong) {
+//			if(dir == right_dir) {				
+//				g.drawImage(Enemy.STRONGENEMY[0], this.getX() - Camera.x, this.getY() - Camera.y, null);			
+//			} else if(dir == left_dir) {
+//				g.drawImage(Enemy.STRONGENEMY[1], this.getX() - Camera.x, this.getY() - Camera.y, null);			
+//			} else if(dir == up_dir) {
+//				g.drawImage(Enemy.STRONGENEMY[2], this.getX() - Camera.x, this.getY() - Camera.y, null);			
+//			} else if(dir == down_dir) {
+//				g.drawImage(Enemy.STRONGENEMY[3], this.getX() - Camera.x, this.getY() - Camera.y, null);			
+//			} 
+//		} else {
+//			g.drawImage(Enemy.ENEMY[0], this.getX() - Camera.x, this.getY() - Camera.y, null);			
+//		}
+//		
+//
+//		
+//		
+////		g.setColor(Color.blue);
+////		g.fillRect(this.getX() + maskx - Camera.x, this.getY() + masky - Camera.y, mwidth, mheight);
+//		
+//		
+//	}
 
 	public static int getDano() {
 		return dano;

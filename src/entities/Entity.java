@@ -32,7 +32,6 @@ public class Entity {
 	protected int maskx, masky, mwidth, mheight;
 	
 	public Entity(int x, int y, int width, int height, BufferedImage sprite) {
-		super();
 		this.x = x;
 		this.y = y;
 		this.width = width;

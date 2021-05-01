@@ -13,8 +13,6 @@ public abstract class Tiledoor extends Tile implements Door {
 	public static BufferedImage TILE_NORMALDOOR = Game.spritesheet.getSprite(32, 224, 32, 32);
 	public static BufferedImage TILE_SPECIALDOOR = Game.spritesheet.getSprite(96, 224, 32, 32);
 
-	public String type;
-
 	public Tiledoor(int x, int y, BufferedImage sprite) {
 		super(x, y, sprite);
 	}

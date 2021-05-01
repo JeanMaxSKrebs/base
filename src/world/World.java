@@ -8,9 +8,12 @@ import javax.imageio.ImageIO;
 
 import base.Game;
 import entities.BagPack;
+import entities.Boss;
 import entities.Enemy;
 import entities.EnemyNormal;
 import entities.EnemyStrong;
+import entities.EnemyX;
+import entities.EnemyY;
 import entities.Entity;
 import entities.HpBag;
 import entities.Key;
@@ -63,13 +66,28 @@ public class World {
 						
 					} else if(pixelAtual == 0xFFFF1500) {
 						//normal enemy
-						Enemy en = new EnemyNormal(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Entity.ENEMY_EN);
+						Enemy en = new EnemyNormal(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Enemy.ENEMY_EN);
 						en.setMask(7, 0, 18, 32);
 						Game.entities.add(en);
 						Game.enemies.add(en);
 					} else if(pixelAtual == 0xFFF75D16) {
 						//strong enemy
-						Enemy en = new EnemyStrong(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Entity.ENEMY_EN);
+						Enemy en = new EnemyStrong(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Enemy.STRONGENEMY);
+						en.setMask(4, 10, 24, 16);
+						Game.entities.add(en);
+						Game.enemies.add(en);
+					} else if(pixelAtual == 0xFF8CC100) {
+						Enemy en = new EnemyY(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Enemy.ENEMY_Y);
+						en.setMask(4, 10, 24, 16);
+						Game.entities.add(en);
+						Game.enemies.add(en);
+					} else if(pixelAtual == 0xFF8C1500) {
+						Enemy en = new EnemyX(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Enemy.ENEMY_X);
+						en.setMask(4, 10, 24, 16);
+						Game.entities.add(en);
+						Game.enemies.add(en);
+					} else if(pixelAtual == 0xFFBF0092) {
+						Enemy en = new Boss(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Enemy.BOSS);
 						en.setMask(4, 10, 24, 16);
 						Game.entities.add(en);
 						Game.enemies.add(en);
