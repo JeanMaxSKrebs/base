@@ -241,7 +241,8 @@ public class Player extends Entity{
 						 dy = -1;
 					 }
 					 
-					 Bala bala = new Bala(this.getX(), this.getY(), 5, 5, null, dx, dy);
+					 Bala bala = new Bala(this.getX(), this.getY(), 6, 6, null, dx, dy);
+					 bala.setMask(13, 13, 6, 6);
 					 Game.balas.add(bala);
 				}	
 			}
@@ -266,6 +267,7 @@ public class Player extends Entity{
 				 }
 				 
 				 Power power = new Power(this.getX(), this.getY(), 32, 32, null, dx, dy);
+				 power.setMask(6, 6, 20, 20);
 				 Game.powers.add(power);
 			}
 		}
@@ -339,8 +341,9 @@ public class Player extends Entity{
 		else if(dir == down_dir)
 			g.drawImage(downPlayer[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
 		
-//		g.setColor(Color.black);
-//		g.fillRect(this.getX() + Game.player.maskx - Camera.x, this.getY() + Game.player.masky - Camera.y, mwidth, mheight);
+
+		g.setColor(Color.black);
+		g.fillOval(this.getX() + maskx - Camera.x, this.getY() + masky - Camera.y, mwidth, mheight);
 
 		
 	}

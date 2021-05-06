@@ -8,6 +8,7 @@ import javax.imageio.ImageIO;
 
 import base.Game;
 import entities.BagPack;
+import entities.Bala;
 import entities.Boss;
 import entities.Enemy;
 import entities.EnemyNormal;
@@ -62,7 +63,9 @@ public class World {
 						//player
 						Game.player.setX(xx*32);
 						Game.player.setY(yy*32);
-						Game.player.setMask(5, 5, 24, 24);
+						Game.player.setWidth(24);
+						Game.player.setHeight(24);
+						Game.player.setMask(3, 3, 26, 26);
 						
 					} else if(pixelAtual == 0xFFFF1500) {
 						//normal enemy
@@ -72,7 +75,7 @@ public class World {
 						Game.enemies.add(en);
 					} else if(pixelAtual == 0xFFF75D16) {
 						//strong enemy
-						Enemy en = new EnemyStrong(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Entity.ENEMY_EN);
+						Enemy en = new EnemyStrong(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE*2, TILE_SIZE*2, Entity.ENEMY_EN);
 						en.setMask(4, 10, 24, 16);
 //						Game.entities.add(en);
 						Game.enemies.add(en);
@@ -136,14 +139,14 @@ public class World {
 		int x1 = xNext / TILE_SIZE;
 		int y1 = yNext / TILE_SIZE;
 		
-		int x2 = (xNext + TILE_SIZE - 3) / TILE_SIZE;
-		int y2 = (yNext + TILE_SIZE - 3) / TILE_SIZE;
+		int x2 = (xNext + TILE_SIZE - 0) / TILE_SIZE;
+		int y2 = (yNext + TILE_SIZE - 0) / TILE_SIZE;
 		
-		int x3 = (xNext + TILE_SIZE - 3)/ TILE_SIZE;
+		int x3 = (xNext + TILE_SIZE - 0)/ TILE_SIZE;
 		int y3 = yNext / TILE_SIZE;
 
 		int x4 = xNext / TILE_SIZE;
-		int y4 = (yNext + TILE_SIZE - 3) / TILE_SIZE;
+		int y4 = (yNext + TILE_SIZE - 0) / TILE_SIZE;
 
 		return !(
 				 (tiles[x1 + (y1*World.WIDTH)] instanceof Tilewall) ||
@@ -156,16 +159,19 @@ public class World {
 	public static void restartGame(String fase) {
 		Game.entities.clear();
 		Game.powers.clear();
+		Game.balas.clear();
 		Game.tiledoors.clear();
 		Game.enemies.clear();
 		Game.powers = new ArrayList<Power>();
 		Game.tiledoors = new ArrayList<Tiledoor>();
 		Game.entities = new ArrayList<Entity>();
+		Game.balas = new ArrayList<Bala>();
 		Game.enemies = new ArrayList<Enemy>();
 		Game.spritesheet = new Spritesheet("/spritesheet.png");
 		Game.PREMIUM = Player.getPremium();
 		Game.player = new Player(0, 0, 32, 32, Game.spritesheet.getSprite(0, 32, 32, 32));
 		Game.entities.add(Game.player);
+		System.out.println(fase);
 		Game.world = new World("/"+fase);
 		return;
 	}

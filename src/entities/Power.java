@@ -46,6 +46,6 @@ public class Power extends Entity {
 
 	public void render(Graphics g) {
 		g.setColor(Color.yellow);
-		g.fillOval(this.getX() - Camera.x, this.getY() - Camera.y, width, height);
+		g.fillOval(this.getX() + maskx - Camera.x, this.getY() + masky - Camera.y, mwidth, mheight);
 	}
 }

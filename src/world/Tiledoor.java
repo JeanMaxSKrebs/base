@@ -1,5 +1,6 @@
 package world;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
@@ -25,8 +26,8 @@ public abstract class Tiledoor extends Tile implements Door {
 	public void render(Graphics g) {
 		g.drawImage(sprite, x - Camera.x, y - Camera.y, null);
 		
-//		g.setColor(Color.cyan);
-//		g.fillRect(x - Camera.x, y - Camera.y, 32, 32);
+		g.setColor(Color.cyan);
+		g.fillRect(x - Camera.x, y - Camera.y, 32, 32);
 	}
 	
 }

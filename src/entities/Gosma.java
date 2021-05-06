@@ -49,7 +49,10 @@ public class Gosma extends Entity {
 	}
 	
 	public void render(Graphics g) {
+//		g.setColor(Color.red);
+//		g.fillRect(this.getX() - Camera.x, this.getY() - Camera.y, width, height);
+//		
 		g.setColor(Color.black);
-		g.fillOval(this.getX() - Camera.x + 13, this.getY() - Camera.y + 13, width, height);
+		g.fillRect(this.getX() + maskx - Camera.x, this.getY() + masky - Camera.y, mwidth, mheight);
 	}
 }

@@ -1,10 +1,12 @@
 package entities;
 
 
+import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 import base.Game;
+import world.Camera;
 import world.World;
 
 public abstract class Enemy extends Entity{
@@ -118,21 +120,21 @@ public abstract class Enemy extends Entity{
 	}
 	
 	public boolean isColliddingWithPlayer() {
-		Rectangle enemyCurrent = new Rectangle(this.getX(), this.getY(), World.TILE_SIZE, World.TILE_SIZE);
-		Rectangle player = new Rectangle(Game.player.getX(), Game.player.getY(), World.TILE_SIZE, World.TILE_SIZE);
+		Rectangle enemyCurrent = new Rectangle(this.getX() + maskx, this.getY()  + masky, mwidth, mheight);
+		Rectangle player = new Rectangle(Game.player.getX() + maskx, Game.player.getY() + masky,  mwidth, mheight);
 		
 		return enemyCurrent.intersects(player);
 	}
 
 	public boolean isCollidding(int xNext, int yNext) {
-		Rectangle enemyCurrent = new Rectangle(xNext, yNext, World.TILE_SIZE, World.TILE_SIZE);
+		Rectangle enemyCurrent = new Rectangle(xNext + this.maskx, yNext + this.masky, mwidth, mheight);
 		for(int i = 0; i < Game.enemies.size(); i++) {
 			Enemy e = Game.enemies.get(i);
 			
 			if(e == this) {
 				continue;
 			}
-			Rectangle targetEnemy = new Rectangle(e.getX(), e.getY(), World.TILE_SIZE, World.TILE_SIZE);
+			Rectangle targetEnemy = new Rectangle(e.getX() + e.maskx, e.getY() + e.masky, mwidth, mheight);
 			if(enemyCurrent.intersects(targetEnemy)) {
 				return true;
 			}
@@ -140,6 +142,16 @@ public abstract class Enemy extends Entity{
 		}
 		
 		return false;
+	}
+	
+	public abstract void reloading();
+	public abstract void preparadoAtacar();
+	
+	public void render(Graphics g) {
+		g.drawImage(sprite, this.getX() - Camera.x, this.getY() - Camera.y, width, height, null);
+		
+//		g.setColor(Color.yellow);
+//		g.fillRect(this.getX() + maskx - Camera.x, this.getY() + masky - Camera.y, mwidth, mheight);
 	}
 
 	public static int getDano() {

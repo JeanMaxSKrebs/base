@@ -1,6 +1,5 @@
 package entities;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
@@ -46,7 +45,7 @@ public class EnemyNormal extends Enemy {
 
 		preparadoAtacar();
 		
-		movimentar();
+//		movimentar();
 		verificaMovimento();
 		
 	}
@@ -85,8 +84,8 @@ public class EnemyNormal extends Enemy {
 			g.drawImage(downNormalEnemy[0], this.getX() - Camera.x, this.getY() - Camera.y, null);
 		}
 		
-		g.setColor(Color.red);
-		g.fillRect(this.getX() + maskx - Camera.x, this.getY() + masky - Camera.y, mwidth, mheight);
+//		g.setColor(Color.red);
+//		g.fillRect(this.getX() + maskx - Camera.x, this.getY() + masky - Camera.y, mwidth, mheight);
 	}
 			
 	public static boolean isPreparedAttack() {

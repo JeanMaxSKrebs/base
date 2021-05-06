@@ -30,4 +30,15 @@ public class Boss extends Enemy {
 //		g.fillRect(this.getX() + maskx - Camera.x, this.getY() + masky - Camera.y, mwidth, mheight);
 	}
 
+	@Override
+	public void reloading() {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void preparadoAtacar() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

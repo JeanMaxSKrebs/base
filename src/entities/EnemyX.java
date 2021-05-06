@@ -37,7 +37,8 @@ public class EnemyX extends Enemy {
 			reloading();
 
 			Gosma gosma = new Gosma(this.getX(), this.getY(), 6, 6, null, "x");
-			Game.gosmas.add(gosma);		
+			gosma.setMask(13, 13, 6, 6);
+			Game.gosmas.add(gosma);
 		}
 	}
 	
@@ -55,7 +56,7 @@ public class EnemyX extends Enemy {
 	}
 	
 	public void render(Graphics g) {
-		g.drawImage(ENEMY_X[0], this.getX() - Camera.x, this.getY() - Camera.y, null);			
+		g.drawImage(ENEMY_X[0], this.getX() - Camera.x, this.getY() - Camera.y, width, height, null);	
 	}
 			
 	public static boolean isPreparedAttack() {

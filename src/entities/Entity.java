@@ -61,8 +61,8 @@ public abstract class Entity {
 	public void render(Graphics g) {
 		g.drawImage(sprite, this.getX() - Camera.x, this.getY() - Camera.y, null);
 		
-//		g.setColor(Color.red);
-//		g.fillRect(this.getX() + maskx - Camera.x, this.getY() + masky - Camera.y, mwidth, mheight);
+		g.setColor(Color.black);
+		g.fillRect(this.getX() + maskx - Camera.x, this.getY() + masky - Camera.y, mwidth, mheight);
 	}
 	
 	public int getX() {
@@ -84,7 +84,7 @@ public abstract class Entity {
 	public int getWidth() {
 		return width;
 	}
-
+ 
 	public void setWidth(int width) {
 		this.width = width;
 	}
