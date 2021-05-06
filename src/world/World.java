@@ -135,7 +135,7 @@ public class World {
 		}
 	}
 	
-	public static boolean isFree(int xNext, int yNext) {
+	public static boolean isDoor(int xNext, int yNext) {
 		int x1 = xNext / TILE_SIZE;
 		int y1 = yNext / TILE_SIZE;
 		
@@ -149,11 +149,45 @@ public class World {
 		int y4 = (yNext + TILE_SIZE - 0) / TILE_SIZE;
 
 		return !(
-				 (tiles[x1 + (y1*World.WIDTH)] instanceof Tilewall) ||
-				 (tiles[x2 + (y2*World.WIDTH)] instanceof Tilewall) ||
-				 (tiles[x3 + (y3*World.WIDTH)] instanceof Tilewall) ||
-				 (tiles[x4 + (y4*World.WIDTH)] instanceof Tilewall)
+				 (tiles[x1 + (y1*World.WIDTH)] instanceof Tiledoor) ||
+				 (tiles[x2 + (y2*World.WIDTH)] instanceof Tiledoor) ||
+				 (tiles[x3 + (y3*World.WIDTH)] instanceof Tiledoor) ||
+				 (tiles[x4 + (y4*World.WIDTH)] instanceof Tiledoor)
 				 ); 
+	}
+	
+	public static boolean isFree(int xNext, int yNext) {
+		int x1 = xNext / TILE_SIZE;
+		int y1 = yNext / TILE_SIZE;
+		
+		int x2 = (xNext + TILE_SIZE) / TILE_SIZE;
+		int y2 = yNext / TILE_SIZE;
+		
+		int x3 = xNext / TILE_SIZE;
+		int y3 = (yNext + TILE_SIZE) / TILE_SIZE;
+
+		int x4 = (xNext + TILE_SIZE ) / TILE_SIZE - 1;
+		int y4 = (yNext + TILE_SIZE) / TILE_SIZE;
+		if(
+		    (tiles[x1 + (y1*World.WIDTH)] instanceof Tilewall) ||
+		    (tiles[x2 + (y2*World.WIDTH)] instanceof Tilewall) ||
+		    (tiles[x3 + (y3*World.WIDTH)] instanceof Tilewall) ||
+		    (tiles[x4 + (y4*World.WIDTH)] instanceof Tilewall)
+		  ) {
+			System.out.println("parede");
+			return false;
+		} else if(
+			(tiles[x1 + (y1*World.WIDTH)] instanceof Tiledoor) ||
+			(tiles[x2 + (y2*World.WIDTH)] instanceof Tiledoor) ||
+			(tiles[x3 + (y3*World.WIDTH)] instanceof Tiledoor) ||
+			(tiles[x4 + (y4*World.WIDTH)] instanceof Tiledoor)
+		  ) {
+			System.out.println("door");
+			return false;
+		} else {
+			System.out.println("livre");
+			return true;
+		}
 	}
 	
 	public static void restartGame(String fase) {

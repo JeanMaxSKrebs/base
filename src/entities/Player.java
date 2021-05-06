@@ -279,23 +279,23 @@ public class Player extends Entity{
 		int plusy = (int)(y + speed);
 		int minusy = (int)(y - speed);
 		
-		if(right && World.isFree(plusx, this.getY())) {
+		if(right && World.isFree(plusx + maskx, this.getY() + masky)) {
 			setMoved(true);
 			dir = right_dir;
 			x += speed;
 		}
-		else if(left && World.isFree(minusx, this.getY())) {
+		else if(left && World.isFree(minusx + maskx, this.getY() + masky)) {
 			setMoved(true);
 			dir = left_dir;
 			x -= speed;
 		}
 		
-		if(down && World.isFree(this.getX(), plusy)) {
+		if(down && World.isFree(this.getX() + maskx, plusy + masky)) {
 			setMoved(true);
 			dir = down_dir;		
 			y += speed;
 		}
-		else if(up && World.isFree(this.getX(),  minusy)) {
+		else if(up && World.isFree(this.getX() + maskx,  minusy  + masky)) {
 			setMoved(true);
 			dir = up_dir;
 			y -= speed;
@@ -343,7 +343,7 @@ public class Player extends Entity{
 		
 
 		g.setColor(Color.black);
-		g.fillOval(this.getX() + maskx - Camera.x, this.getY() + masky - Camera.y, mwidth, mheight);
+		g.fillRect(this.getX() + maskx - Camera.x, this.getY() + masky - Camera.y, mwidth, mheight);
 
 		
 	}
