@@ -44,7 +44,7 @@ public abstract class Enemy extends Entity{
 	public void movimentar() {
 		switch (dir) {
 		   case 0:
-			   if(World.isFree((int)(x + speed), this.getY())
+			   if(World.isFree((int)(x + speed), this.getY(), "right")
 					   &&!isCollidding((int)(x + speed), this.getY())) {
 				   moved = true;
 					x+=speed;
@@ -56,7 +56,7 @@ public abstract class Enemy extends Entity{
 			   break;
 
 		   case 1:
-				if(World.isFree((int)(x - speed), this.getY())
+				if(World.isFree((int)(x - speed), this.getY(), "left")
 						&&!isCollidding((int)(x - speed), this.getY())) {
 					moved = true;
 					x-=speed;
@@ -68,7 +68,7 @@ public abstract class Enemy extends Entity{
 				break;
 
 		   case 2:
-			   if(World.isFree(this.getX(), (int)(y + speed))
+			   if(World.isFree(this.getX(), (int)(y + speed), "down")
 					   &&!isCollidding(this.getX(), (int)(y + speed))) {				   
 				   moved = true;
 				   y+=speed;
@@ -80,7 +80,7 @@ public abstract class Enemy extends Entity{
 			   break;
 		           
 		   case 3:
-				if(World.isFree(this.getX(),  (int)(y - speed))
+				if(World.isFree(this.getX(),  (int)(y - speed), "up")
 						&&!isCollidding(this.getX(),  (int)(y - speed))) {
 					moved = true;
 					y-=speed;

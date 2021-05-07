@@ -29,7 +29,10 @@ public class World {
 	
 	public static Tile[] tiles;
 	public static int WIDTH , HEIGHT;
-
+	
+	public static boolean isDoor = false;
+	public static int xDoor = 0;
+	public static int yDoor = 0;
 	
 	public static final int TILE_SIZE = 32;
 	
@@ -40,7 +43,7 @@ public class World {
 			WIDTH = map.getWidth();
 			HEIGHT = map.getHeight();
 			int[] pixels = new int[WIDTH * HEIGHT];
-			tiles = new Tile[WIDTH *  HEIGHT];
+			tiles = new Tile[WIDTH * HEIGHT];
 			
 			map.getRGB(0, 0, WIDTH, HEIGHT, pixels, 0, WIDTH);
 			for (int xx = 0; xx < WIDTH; xx++) {
@@ -53,10 +56,12 @@ public class World {
 						tiles[xx+(yy*WIDTH)] =  new Tilewall(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_WALL);
 					} else if(pixelAtual == 0xFF7F0037) {
 						//door
+						tiles[xx+(yy*WIDTH)] = new Normaldoor(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_FLOOR);
 						Tiledoor door = new Normaldoor(xx * TILE_SIZE, yy * TILE_SIZE, Tiledoor.TILE_NORMALDOOR);
 						Game.tiledoors.add(door);
 					} else if(pixelAtual == 0xFF7F006E) {
 						//special door
+						tiles[xx+(yy*WIDTH)] = new Specialdoor(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_FLOOR);
 						Tiledoor door = new Specialdoor(xx * TILE_SIZE, yy * TILE_SIZE, Tiledoor.TILE_SPECIALDOOR);		 
 						Game.tiledoors.add(door);
 					} else if(pixelAtual == 0xFF000CFF) {
@@ -135,57 +140,43 @@ public class World {
 		}
 	}
 	
-	public static boolean isDoor(int xNext, int yNext) {
-		int x1 = xNext / TILE_SIZE;
-		int y1 = yNext / TILE_SIZE;
-		
-		int x2 = (xNext + TILE_SIZE - 0) / TILE_SIZE;
-		int y2 = (yNext + TILE_SIZE - 0) / TILE_SIZE;
-		
-		int x3 = (xNext + TILE_SIZE - 0)/ TILE_SIZE;
-		int y3 = yNext / TILE_SIZE;
+	public static boolean isDoor() {
+		if(isDoor) {
+			isDoor = false;
+			return true;
+		} else 
+			return isDoor;
+	}
 
-		int x4 = xNext / TILE_SIZE;
-		int y4 = (yNext + TILE_SIZE - 0) / TILE_SIZE;
-
-		return !(
-				 (tiles[x1 + (y1*World.WIDTH)] instanceof Tiledoor) ||
-				 (tiles[x2 + (y2*World.WIDTH)] instanceof Tiledoor) ||
-				 (tiles[x3 + (y3*World.WIDTH)] instanceof Tiledoor) ||
-				 (tiles[x4 + (y4*World.WIDTH)] instanceof Tiledoor)
-				 ); 
+	public static void troca() {
+		tiles[xDoor+(yDoor*WIDTH)] = new Tilefloor(xDoor * TILE_SIZE, yDoor * TILE_SIZE, Tile.TILE_FLOOR);
 	}
 	
-	public static boolean isFree(int xNext, int yNext) {
-		int x1 = xNext / TILE_SIZE;
-		int y1 = yNext / TILE_SIZE;
+	public static boolean isFree(int xNext, int yNext, String dir) {
+		int x1 = 0, y1 = 0;
 		
-		int x2 = (xNext + TILE_SIZE) / TILE_SIZE;
-		int y2 = yNext / TILE_SIZE;
-		
-		int x3 = xNext / TILE_SIZE;
-		int y3 = (yNext + TILE_SIZE) / TILE_SIZE;
-
-		int x4 = (xNext + TILE_SIZE ) / TILE_SIZE - 1;
-		int y4 = (yNext + TILE_SIZE) / TILE_SIZE;
-		if(
-		    (tiles[x1 + (y1*World.WIDTH)] instanceof Tilewall) ||
-		    (tiles[x2 + (y2*World.WIDTH)] instanceof Tilewall) ||
-		    (tiles[x3 + (y3*World.WIDTH)] instanceof Tilewall) ||
-		    (tiles[x4 + (y4*World.WIDTH)] instanceof Tilewall)
-		  ) {
-			System.out.println("parede");
+		if(dir == "right") {
+			x1 = (xNext) / TILE_SIZE;
+			y1 = yNext / TILE_SIZE;
+		} else if(dir == "left") {
+			x1 = (xNext) / TILE_SIZE;
+			y1 = yNext / TILE_SIZE;
+		} else if(dir == "up") {
+			x1 = xNext / TILE_SIZE;
+			y1 = (yNext) / TILE_SIZE;
+		} else if(dir == "down") {
+			x1 = xNext / TILE_SIZE;
+			y1 = (yNext) / TILE_SIZE;
+		}
+//		System.out.println(tiles[x1 + (y1*World.WIDTH)]);
+		if(tiles[x1 + (y1*World.WIDTH)] instanceof Tilewall) {
 			return false;
-		} else if(
-			(tiles[x1 + (y1*World.WIDTH)] instanceof Tiledoor) ||
-			(tiles[x2 + (y2*World.WIDTH)] instanceof Tiledoor) ||
-			(tiles[x3 + (y3*World.WIDTH)] instanceof Tiledoor) ||
-			(tiles[x4 + (y4*World.WIDTH)] instanceof Tiledoor)
-		  ) {
-			System.out.println("door");
+		} else if(tiles[x1 + (y1*World.WIDTH)] instanceof Tiledoor) {
+			xDoor = x1;
+			yDoor = y1;
+			isDoor = true;
 			return false;
 		} else {
-			System.out.println("livre");
 			return true;
 		}
 	}
@@ -204,9 +195,9 @@ public class World {
 		Game.spritesheet = new Spritesheet("/spritesheet.png");
 		Game.PREMIUM = Player.getPremium();
 		Game.player = new Player(0, 0, 32, 32, Game.spritesheet.getSprite(0, 32, 32, 32));
-		Game.entities.add(Game.player);
 		System.out.println(fase);
 		Game.world = new World("/"+fase);
+		Game.entities.add(Game.player);
 		return;
 	}
 	

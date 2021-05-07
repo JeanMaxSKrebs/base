@@ -71,7 +71,7 @@ public class Game extends Canvas implements Runnable, KeyListener{
 	private boolean showMessageGameOver = true;
 	private int framesGameOver = 0;
 	
-	private static int CUR_LEVEL = 4;
+	private static int CUR_LEVEL = 2;
 	private static int MAX_LEVEL = 5;
 	
 	public Game() {
@@ -90,9 +90,9 @@ public class Game extends Canvas implements Runnable, KeyListener{
 		enemies = new ArrayList<Enemy>();
 		spritesheet = new Spritesheet("/spritesheet.png");
 		player = new Player(0, 0, 32, 32, spritesheet.getSprite(0, 32, 32, 32));
+//		world = new World("/teste.png");
+		world = new World("/fase"+CUR_LEVEL+".png");
 		entities.add(player);
-		world = new World("/teste.png");
-//		world = new World("/fase"+CUR_LEVEL+".png");
 		
 		menu = new Menu();		
 	}
@@ -243,6 +243,7 @@ public class Game extends Canvas implements Runnable, KeyListener{
 //		Graphics2D g2 = (Graphics2D) g;
 		//render mundo
 		world.render(g);
+		
 		//render entidades
 		for(int i=0; i<entities.size(); i++) {
 			Entity e = entities.get(i);

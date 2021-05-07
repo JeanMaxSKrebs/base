@@ -33,7 +33,7 @@ public class EnemyStrong extends Enemy {
 		
 		preparadoAtacar();
 		
-//		movimentar();
+		movimentar();
 		verificaMovimento();
 	}
 	

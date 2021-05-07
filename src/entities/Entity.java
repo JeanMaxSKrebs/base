@@ -1,6 +1,5 @@
 package entities;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
@@ -44,6 +43,7 @@ public abstract class Entity {
 		this.mwidth = width;
 		this.mheight = height;
 	}
+	
 	public void setMask(int maskx, int masky, int mwidth, int mheight) {
 		this.maskx = maskx;
 		this.masky = masky;
@@ -61,8 +61,8 @@ public abstract class Entity {
 	public void render(Graphics g) {
 		g.drawImage(sprite, this.getX() - Camera.x, this.getY() - Camera.y, null);
 		
-		g.setColor(Color.black);
-		g.fillRect(this.getX() + maskx - Camera.x, this.getY() + masky - Camera.y, mwidth, mheight);
+//		g.setColor(Color.black);
+//		g.fillRect(this.getX() + maskx - Camera.x, this.getY() + masky - Camera.y, mwidth, mheight);
 	}
 	
 	public int getX() {

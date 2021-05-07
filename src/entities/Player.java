@@ -1,6 +1,5 @@
 package entities;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
@@ -172,45 +171,24 @@ public class Player extends Entity{
 	}
 	
 	public void checkDoor(){
-		
-		
 		for (int i = 0; i < Game.tiledoors.size(); i++) {
 			Tiledoor t = Game.tiledoors.get(i);
-
-			if(Tiledoor.isCollidding(this, t)) {
-				speed = 0;
-
+			
+//			System.out.println(Game.tiledoors.size());
+			if(Tiledoor.willCollide(this, t, (int)speed)) {
+//				System.out.println("teste");
 				if(t instanceof Normaldoor) {
 					if(keys > 0) {
 						keys--;
 						Game.tiledoors.remove(i);
-					} else {
-						speed = 5;
-						if(dir == right_dir) {
-							 x =  x - speed;
-						 } else if(dir == left_dir){
-							 x = x + speed;
-						 } else if(dir == down_dir) {
-							 y = y - speed;
-						 } else if(dir == up_dir) {
-							 y = y + speed;
-						 }
+						World.troca();
+						
 					}
 				} else if(t instanceof Specialdoor) {
 					if(getSpecialKeys() > 0) {
 						setSpecialKeys(getSpecialKeys() - 1);
 						Game.tiledoors.remove(i);
-					} else {
-						speed = 5;
-						if(dir == right_dir) {
-							 x =  x - speed;
-						 } else if(dir == left_dir){
-							 x = x + speed;
-						 } else if(dir == down_dir) {
-							 y = y - speed;
-						 } else if(dir == up_dir) {
-							 y = y + speed;
-						 }
+						World.troca();
 					}
 				} 
 				return;
@@ -274,31 +252,48 @@ public class Player extends Entity{
 		
 		setMoved(false);
 
-		int plusx = (int)(x + speed);
-		int minusx = (int)(x - speed);
-		int plusy = (int)(y + speed);
-		int minusy = (int)(y - speed);
+		int midy = (int)(y + masky + mheight/2);
+		int plusy = (int)(y + masky + mheight);
+		int minusy = (int)(y + masky);
 		
-		if(right && World.isFree(plusx + maskx, this.getY() + masky)) {
+		int midx = (int)(x + maskx + mwidth/2);
+		int plusx = (int)(x + maskx + mwidth);
+		int minusx = (int)(x + maskx);
+		
+		
+		if(right) {
 			setMoved(true);
 			dir = right_dir;
-			x += speed;
+			if(World.isFree(plusx, midy, "right"))				
+				x += speed;
+			else if(World.isDoor())
+					checkDoor();
+			
 		}
-		else if(left && World.isFree(minusx + maskx, this.getY() + masky)) {
+		else if(left) {
 			setMoved(true);
 			dir = left_dir;
-			x -= speed;
+			if(World.isFree(minusx, midy, "left"))
+				x -= speed;
+			else if(World.isDoor())
+				checkDoor();
 		}
-		
-		if(down && World.isFree(this.getX() + maskx, plusy + masky)) {
+
+		if(down) {
 			setMoved(true);
-			dir = down_dir;		
-			y += speed;
+			dir = down_dir;
+			if(World.isFree(midx, plusy, "down"))
+				y += speed;
+			else if(World.isDoor())
+				checkDoor();
 		}
-		else if(up && World.isFree(this.getX() + maskx,  minusy  + masky)) {
+		else if(up) {
 			setMoved(true);
 			dir = up_dir;
-			y -= speed;
+			if(World.isFree(midx, minusy, "up"))
+				y -= speed;
+			else if(World.isDoor())
+				checkDoor();
 		}
 		
 		if(moved) {
@@ -311,7 +306,6 @@ public class Player extends Entity{
 			}
 		}
 		checkItems();
-		checkDoor();
 			
 		
 		Camera.x = Camera.clamp(this.getX() - (Game.WIDTH/2), 0, World.WIDTH * 32 - Game.WIDTH);
@@ -341,9 +335,12 @@ public class Player extends Entity{
 		else if(dir == down_dir)
 			g.drawImage(downPlayer[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
 		
-
-		g.setColor(Color.black);
-		g.fillRect(this.getX() + maskx - Camera.x, this.getY() + masky - Camera.y, mwidth, mheight);
+//		g.setColor(Color.red);
+//		g.fillRect(this.getX() + maskx - (int)speed - Camera.x, this.getY() + masky - (int)speed - Camera.y, mwidth, mheight);
+//		g.fillRect(this.getX() + maskx - Camera.x, this.getY() + masky - Camera.y, mwidth + (int)speed, mheight + (int)speed);
+//
+//		g.setColor(Color.black);
+//		g.fillRect(this.getX() + maskx - Camera.x, this.getY() + masky - Camera.y, mwidth, mheight);
 
 		
 	}

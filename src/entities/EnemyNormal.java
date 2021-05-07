@@ -45,7 +45,7 @@ public class EnemyNormal extends Enemy {
 
 		preparadoAtacar();
 		
-//		movimentar();
+		movimentar();
 		verificaMovimento();
 		
 	}
