@@ -70,8 +70,10 @@ public class Game extends Canvas implements Runnable, KeyListener{
 	public static String gameState = "MENU"; 
 	private boolean showMessageGameOver = true;
 	private int framesGameOver = 0;
+	private double LIFE = 100;
+	private double STAMINE = 0;
 	
-	private static int CUR_LEVEL = 2;
+	private static int CUR_LEVEL = 1;
 	private static int MAX_LEVEL = 5;
 	
 	public Game() {
@@ -209,8 +211,13 @@ public class Game extends Canvas implements Runnable, KeyListener{
 			if(CUR_LEVEL > MAX_LEVEL) {
 				CUR_LEVEL = 1;
 			}
+			LIFE = Game.player.getLife();
+			STAMINE = Game.player.getStamine();
 			String newWorld = "fase"+CUR_LEVEL+".png";
 			World.restartGame(newWorld);
+			Game.player.setLife((int) LIFE);
+			Game.player.setStamine(STAMINE);
+			Game.player.setArmor(0);
 
 			gameState = "NORMAL";
 		} else if(gameState == "MENU") {
