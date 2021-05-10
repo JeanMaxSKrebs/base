@@ -51,7 +51,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	public MenuCriacao menu_criacao;
 
 	
-	public static String gameState = "MENU_PRINCIPAL";
+	public static String gameState = "MENU_CRIACAO";
 	public static int maximumDodge = 100;
 	public static int maximumCritic = 100;
 	private boolean restartGame;
@@ -113,7 +113,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	}
 	
 	public static void main(String[] args) {
-		System.out.println("teste");
+//		System.out.println("teste");
 		Game game = new Game();
 		game.start();
 	}

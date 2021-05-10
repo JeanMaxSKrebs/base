@@ -207,4 +207,7 @@ public class Player extends Entity{
 	public void setMoved(boolean moved) {
 		this.moved = moved;
 	}
+	public static void createPlayer() {
+		
+	}
 }
