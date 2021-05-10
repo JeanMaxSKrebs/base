@@ -46,7 +46,9 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	public static Player player;
 	
 	public UI ui;
-	public Menu menu;
+	public MenuPrincipal menu_principal;
+	public MenuPersonagem menu_personagem;
+	public MenuCriacao menu_criacao;
 
 	
 	public static String gameState = "MENU_PRINCIPAL";
@@ -79,8 +81,10 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		world = new World("/fase"+CUR_LEVEL+".png");
 		entities.add(player);
 		
-		menu = new Menu();		
-
+		menu_principal = new MenuPrincipal();
+		menu_personagem = new MenuPersonagem();
+		menu_criacao = new MenuCriacao();
+		
 	}
 
 	public void initFrame() {
@@ -116,7 +120,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	
 	
 	public void tick() {
-		System.out.println("Tick");
+//		System.out.println("Tick");
 		if(gameState  == "NORMAL") {
 			if(saveGame) {
 				saveGame = false;
@@ -131,7 +135,11 @@ public class Game extends Canvas implements Runnable, KeyListener {
 //				e.tick();
 //			}
 		} else if(gameState  == "MENU_PRINCIPAL") {
-			menu.tick();
+			menu_principal.tick();
+		} else if(gameState  == "MENU_PERSONAGEM") {
+			menu_personagem.tick();
+		} else if(gameState  == "MENU_CRIACAO") {
+			menu_criacao.tick();
 		} else if(gameState == "NEXT") {
 			CUR_LEVEL = CUR_LEVEL + 1;
 			if(CUR_LEVEL > MAX_LEVEL) {
@@ -186,8 +194,10 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		//render UI
 		ui.render(g);
 		
-		g.dispose();
+		g.dispose();		
+
 		g = bs.getDrawGraphics();
+		g.setColor(new Color(51, 51, 51));
 		g.drawImage(image, 0, 0, WIDTH*SCALE, HEIGHT*SCALE, null);
 		
 		if(Game.saveGame == true) {
@@ -217,7 +227,11 @@ public class Game extends Canvas implements Runnable, KeyListener {
 			if(showMessageGameOver)
 				g.drawString(">> PRESSIONE ENTER <<",  WIDTH*SCALE/5, (HEIGHT*SCALE/2)+96);
 		} else if(gameState == "MENU_PRINCIPAL") {
-			menu.render(g);
+			menu_principal.render(g);
+		} else if(gameState == "MENU_PERSONAGEM") {
+			menu_personagem.render(g);
+		} else if(gameState  == "MENU_CRIACAO") {
+			menu_criacao.render(g);
 		}
 		
 		bs.show();
@@ -262,12 +276,20 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		if(e.getKeyCode() == KeyEvent.VK_UP||e.getKeyCode() == KeyEvent.VK_W) {
 			player.up = true;
 			if(gameState == "MENU_PRINCIPAL") {
-				menu.up = true;
+				menu_principal.up = true;
+			} else if(gameState == "MENU_PERSONAGEM") {
+				menu_personagem.up = true;
+			} else if(gameState == "MENU_CRIACAO") {
+				menu_criacao.up = true;
 			}
 		} else if(e.getKeyCode() == KeyEvent.VK_DOWN||e.getKeyCode() == KeyEvent.VK_S){
 			player.down = true;
 			if(gameState == "MENU_PRINCIPAL") {
-				menu.down = true;
+				menu_principal.down = true;
+			} else if(gameState == "MENU_PERSONAGEM") {
+				menu_personagem.down = true;
+			} else if(gameState == "MENU_CRIACAO") {
+				menu_criacao.down = true;
 			}
 		}
 		
@@ -280,7 +302,11 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		if(e.getKeyCode() == KeyEvent.VK_ENTER) {
 			restartGame = true;
 			if(gameState == "MENU_PRINCIPAL") {
-				menu.enter = true;
+				menu_principal.enter = true;
+			} else if(gameState == "MENU_PERSONAGEM") {
+				menu_personagem.enter = true;
+			}  else if(gameState == "MENU_CRIACAO") {
+				menu_criacao.enter = true;
 			}
 		}
 		if(e.getKeyCode() == KeyEvent.VK_ESCAPE || e.getKeyCode() == KeyEvent.VK_P) {

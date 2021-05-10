@@ -1,7 +1,5 @@
 package base;
 
-import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -13,7 +11,7 @@ import java.io.IOException;
 
 import world.World;
 
-public class Menu {
+public abstract class Menu {
 	
 	public String[] options = {"novo jogo", "carregar", "sair"};
 	
@@ -27,45 +25,8 @@ public class Menu {
 	public static boolean saveExists = false;
 	public static boolean saveGame = false;
 
-	public void tick() {
-		File file = new File("save.txt");
-		if(file.exists())
-			saveExists = true;
-		else
-			saveExists = false; 
-		
-		if(up) {
-			up = false;
-			currentOption--;
-			if(currentOption < 0) {
-				currentOption = maxOption;
-			}
-		}
-		if(down) {
-			down = false;
-			currentOption++;
-			if(currentOption > maxOption) {
-				currentOption = 0;
-			}
-		}
-		if(enter) {
-			enter = false;
-			if(options[currentOption] == "novo jogo" || options[currentOption] == "continuar" ) {
-				Game.gameState = "NORMAL";
-				pause = false;
-				file = new File("save.txt");
-				file.delete();
-			} else if(options[currentOption] == "carregar") {
-				file = new File("save.txt");
-				if(file.exists()) {
-					String saver = loadGame(10);
-					applySave(saver);
-				}
-			} else if(options[currentOption] == "sair") {
-				System.exit(1);
-			}
-		}
-	}
+	public abstract void tick();
+	
 	public static void applySave(String str) {
 		String[] spl = str.split("/");
 		for (int i = 0; i < spl.length; i++) {
@@ -139,29 +100,5 @@ public class Menu {
 		} catch (IOException e) {}
 	}
 	
-	public void render(Graphics g) {
-		g.setFont(new Font("Arial", Font.BOLD, 48));
-		g.fillRect(0, 0,Game.WIDTH*Game.SCALE, Game.HEIGHT*Game.SCALE);
-		g.setColor(Color.WHITE);
-		g.drawString("Nome do Jogo",  ((Game.WIDTH*Game.SCALE/4)), (Game.HEIGHT*Game.SCALE/5));
-
-		g.setFont(new Font("Arial", Font.BOLD, 36));
-		
-		if(pause == false)
-			g.drawString("Novo Jogo",  ((Game.WIDTH*Game.SCALE/3)), ((Game.HEIGHT*Game.SCALE/3)+50));
-		else 
-			g.drawString("Continuar",  ((Game.WIDTH*Game.SCALE/3)), ((Game.HEIGHT*Game.SCALE/3)+50));
-
-		g.drawString("Carregar Jogo",  ((Game.WIDTH*Game.SCALE/3)), ((Game.HEIGHT*Game.SCALE/3)+100));
-		g.drawString("Sair",  ((Game.WIDTH*Game.SCALE/3)), ((Game.HEIGHT*Game.SCALE/3)+150));
-		
-		if(options[currentOption] == "novo jogo") {
-			g.drawString(" > ",  (((Game.WIDTH*Game.SCALE/3)-50)), ((Game.HEIGHT*Game.SCALE/3)+50));
-		} else if(options[currentOption] == "carregar") {
-			g.drawString(" > ",  (((Game.WIDTH*Game.SCALE/3)-50)), ((Game.HEIGHT*Game.SCALE/3)+100));
-		} else if(options[currentOption] == "sair") {
-			g.drawString(" > ",  (((Game.WIDTH*Game.SCALE/3)-50)), ((Game.HEIGHT*Game.SCALE/3)+150));
-		}
-
-	}
+	public abstract void render(Graphics g);
 }
