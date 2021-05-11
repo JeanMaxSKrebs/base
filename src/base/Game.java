@@ -51,7 +51,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	public MenuCriacao menu_criacao;
 	
 //	public Cutscene cutscene;
-	public static String cutsceneState = "jogando";
+	public static String cutsceneState = "entrada";
 	public static String entrada = "entrada";
 	public static String comecar = "comecar";
 	public static String jogando = "jogando";
@@ -83,7 +83,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 
 		spritesheet = new Spritesheet("/spritesheet.png");
 		player = new Player(0, 0, 32, 32, spritesheet.getSprite(0, 32, 32, 32));
-//		world = new World("/teste.png");
+		//		world = new World("/teste.png");
 		world = new World("/fase"+CUR_LEVEL+".png");
 		entities.add(player);
 		
@@ -126,6 +126,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	
 	
 	public void tick() {
+//		System.out.println(Game.player);
 //		System.out.println("Tick");
 		if(gameState  == "NORMAL") {
 			if(saveGame) {
@@ -137,18 +138,32 @@ public class Game extends Canvas implements Runnable, KeyListener {
 			}
 			restartGame = false;
 			if(cutsceneState == entrada) {
+				Player p = Game.player;
+				p.speed = 1;
+				p.tick();
+				int xPlayer = p.getX();
+
+				if(p.getX() < 500) {
+					p.right = true;
+				} else {
+					p.right = false;
+					cutsceneState = "jogando";
+				}
 				
+				if(p.getY() > 500) {
+					p.up = true;
+				} else {
+					p.up = false;
+				}
 			} else if(cutsceneState == comecar) {
 				
 			} else if(cutsceneState == jogando) {
+				Game.player.speed = 5;
 				
 				for(int i=0; i<entities.size(); i++) {
 					Entity e = entities.get(i);
 					e.tick();
 				}
-//				int newy = Game.player.getY();
-//				newy++;
-//				Game.player.setY(newy);
 			}
 		} else if(gameState  == "MENU_PRINCIPAL") {
 			menu_principal.tick();

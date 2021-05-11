@@ -5,8 +5,6 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.io.File;
 
-import entities.Player;
-
 public class MenuCriacao extends Menu {
 	
 	public String[] options = {"idade", "atributos", "resetar", "criar", "voltar"};
@@ -124,9 +122,9 @@ public class MenuCriacao extends Menu {
 				} else if(options[currentOption] == "criar") {
 					if(pontos == 0) {
 						System.out.println("CRIOU PERSONAGEM");
-						Player.createPlayer(atributos, idades[currentIdade]);
+						Game.player.createPlayer(atributos, idades[currentIdade]);
 						Game.gameState = "NORMAL";
-						Game.cutsceneState = "entrada";
+						Game.cutsceneState = "jogando";
 					} else {
 						System.out.println("UTILIZE SEUS PONTOS");
 					}

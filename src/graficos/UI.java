@@ -40,7 +40,7 @@ public class UI {
 
 		} else {
 			boxWidth = 25;
-			g.drawString("   T", Game.WIDTH - boxWidth, 60);
+			g.drawString(Game.player.getAtributos()+" T", Game.WIDTH - boxWidth, 60);
 			boxHeight = 62;
 		}
 
