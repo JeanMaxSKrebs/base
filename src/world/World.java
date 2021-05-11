@@ -40,11 +40,13 @@ public class World {
 					if(pixelAtual == 0xFF00FF00) {
 						//floor
 						tiles[xx+(yy*WIDTH)] = new Tilefloor(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_FLOOR);
-					} 
-					if(pixelAtual == 0xFF000000) {
+					} else if(pixelAtual == 0xFF000000) {
 						//wall
 						tiles[xx+(yy*WIDTH)] = new Tilewall(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_WALL);
-					} else if(pixelAtual == 0xFF000CFF) {
+					}  else if(pixelAtual == 0xFFD28143) {
+						//wall
+						tiles[xx+(yy*WIDTH)] = new Tileground(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_GROUND);
+					}else if(pixelAtual == 0xFF000CFF) {
 						//player
 						Game.player.setX(xx*32);
 						Game.player.setY(yy*32);
@@ -92,6 +94,8 @@ public class World {
 		if(tiles[x1 + (y1*World.WIDTH)] instanceof Tilewall) {
 			return false;
 		} else if(tiles[x1 + (y1*World.WIDTH)] instanceof Tilefloor) { 
+			return false;
+		}  else if(tiles[x1 + (y1*World.WIDTH)] instanceof Tileground) { 
 			return false;
 		} else {
 			return true;

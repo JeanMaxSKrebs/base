@@ -146,9 +146,9 @@ public class Game extends Canvas implements Runnable, KeyListener {
 					Entity e = entities.get(i);
 					e.tick();
 				}
-				int newy = Game.player.getY();
-				newy++;
-				Game.player.setY(newy);
+//				int newy = Game.player.getY();
+//				newy++;
+//				Game.player.setY(newy);
 			}
 		} else if(gameState  == "MENU_PRINCIPAL") {
 			menu_principal.tick();
@@ -167,7 +167,6 @@ public class Game extends Canvas implements Runnable, KeyListener {
 			World.restartGame(newWorld);
 			Game.player.setLife((int) LIFE);
 			Game.player.setStamine(STAMINE);
-			Game.player.setArmor(0);
 
 			gameState = "NORMAL";
 		} else if(gameState == "GAME_OVER") {
@@ -288,7 +287,9 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	}
 
 	public void keyPressed(KeyEvent e) {
-
+		if(e.getKeyCode() == KeyEvent.VK_T) {
+			ui.atributosBox();
+		}
 		if(e.getKeyCode() == KeyEvent.VK_UP||e.getKeyCode() == KeyEvent.VK_W) {
 			player.up = true;
 			if(gameState == "MENU_PRINCIPAL") {

@@ -14,11 +14,11 @@ public class Player extends Entity{
 	public int right_dir = 1, left_dir = 2, up_dir = 3, down_dir = 4;
 	public int dir = 1;
 	public double speed = 5;
-	private int criatividade = 0, inteligencia = 0, forca = 0, agilidade = 0, armadura = 0;
-	
-	private static int dodgeChance = 20;
-	private static int armor = 0;
-		
+	private int criatividade = 10, inteligencia = 10, forca = 10, agilidade = 10, armadura = 10;
+	private int nivel = 1;
+	private int atributos = 50;
+	private int atributosMax = 500;
+			
 	private int qtdSprites = 4;
 	private int frames = 0, maxFrames = 20, index = 0, maxIndex = (qtdSprites-1);
 	private boolean moved;
@@ -69,11 +69,11 @@ public class Player extends Entity{
 	}
 	public int danoRecebido(int dano) {
 		
-		int danoRecebido = dano - armor;
+		int danoRecebido = dano - armadura;
 		
-		if(Game.random(Game.maximumDodge) <= dodgeChance) {
-			return 0;
-		}
+//		if(Game.random(Game.maximumDodge) <= dodgeChance) {
+//			return 0;
+//		}
 		
 		return danoRecebido;
 	}
@@ -193,18 +193,6 @@ public class Player extends Entity{
 	public static double getMaxStamine() {
 		return maxStamine;
 	}
-	public static int getDodgeChance() {
-		return dodgeChance;
-	}
-	public void setDodgeChance(int newDodgeChance) {
-		Player.dodgeChance = newDodgeChance;
-	}
-	public static int getArmor() {
-		return armor;
-	}
-	public void setArmor(int newArmor) {
-		Player.armor = newArmor;
-	}
 	public boolean isMoved() {
 		return moved;
 	}
@@ -215,5 +203,41 @@ public class Player extends Entity{
 		Game.player = new Player(0, 0, 32, 32, Game.spritesheet.getSprite(0, 32, 32, 32), idade, atributo[0], atributo[1], atributo[2], atributo[3], atributo[4]);
 		Game.entities.add(Game.player);
 		return;
+	}
+	public int getCriatividade() {
+		return criatividade;
+	}
+	public void setCriatividade(int criatividade) {
+		this.criatividade = criatividade;
+	}
+	public int getInteligencia() {
+		return inteligencia;
+	}
+	public void setInteligencia(int inteligencia) {
+		this.inteligencia = inteligencia;
+	}
+	public int getForca() {
+		return forca;
+	}
+	public void setForca(int forca) {
+		this.forca = forca;
+	}
+	public int getAgilidade() {
+		return agilidade;
+	}
+	public void setAgilidade(int agilidade) {
+		this.agilidade = agilidade;
+	}
+	public int getArmadura() {
+		return armadura;
+	}
+	public void setArmadura(int armadura) {
+		this.armadura = armadura;
+	}
+	public int getNivel() {
+		return nivel;
+	}
+	public void setNivel(int nivel) {
+		this.nivel = nivel;
 	}
 }

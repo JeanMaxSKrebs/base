@@ -9,38 +9,57 @@ import entities.Player;
 
 public class UI {
 	
-	int frame;
+	private int boxWidth = 10;
+	private int boxHeight = 62;
+	private boolean openAtributosBox = false;
 	
 	public void render(Graphics g) {
 		g.setColor(Color.black);
-		g.fillRect(16, 8, 66, 32);
+		g.fillRect(0, 0, 64, 32);
 		g.setColor(Color.green);
-		g.fillRect(24, 16, (int)((Game.player.life / Player.maxLife) * 50), 16);
+		g.fillRect(6, 6, (int)((Game.player.life / Player.maxLife) * 52), 20);
 		g.setColor(Color.white);
 		g.setFont(new Font("arial", Font.BOLD, 11));
-		g.drawString((int)(Game.player.life)+" / "+(int)(Player.maxLife),  26, 28);
+		g.drawString((int)(Game.player.life)+" / "+(int)(Player.maxLife),  10, 20);
 		
 
-
-		if(Game.player.stamine == Player.getMaxStamine()) {
-			if(frame >= 10) {	
-					g.setColor(Color.yellow);
-					g.fillRect(84, 8, 16, 32);
-					g.setColor(Color.black);
-					g.fillRect(88, 12, 8, (int)((Game.player.stamine / Player.maxStamine) * 24));
-					frame = 0;
-			}
-			frame++;
-		}
-		
+			
 		g.setColor(Color.gray);
-		g.fillRect(0, Game.HEIGHT-64, 32, 64);
-		g.setColor(Color.white);
-		g.setFont(new Font("calibri", Font.BOLD, 10));
-		g.drawString("A: "+Player.getArmor(), 0,  Game.HEIGHT-55);
-		g.drawString("Dod: "+Player.getDodgeChance() , 0,  Game.HEIGHT-45);
-		
+		g.fillRect(Game.WIDTH - boxWidth, 0, boxWidth, boxHeight);
+		g.setColor(Color.black);
+		g.setFont(new Font("arial", Font.BOLD, 10));
+		g.drawString(Game.player.getCriatividade() + " Criatividade", Game.WIDTH - boxWidth, 10);
+		g.drawString(Game.player.getInteligencia() + " Inteligência", Game.WIDTH - boxWidth, 20);
+		g.drawString(Game.player.getForca() + " Força", Game.WIDTH - boxWidth, 30);
+		g.drawString(Game.player.getAgilidade() + " Agilidade", Game.WIDTH - boxWidth, 40);
+		g.drawString(Game.player.getArmadura() + " Armadura", Game.WIDTH - boxWidth, 50);
+		g.setFont(new Font("arial", Font.BOLD, 9));
+		if(isOpenAtributosBox()) {
+			boxWidth = 85;
+			boxHeight = 52;
+
+		} else {
+			boxWidth = 25;
+			g.drawString("   T", Game.WIDTH - boxWidth, 60);
+			boxHeight = 62;
+		}
 
 		
+	}
+
+	public boolean isOpenAtributosBox() {
+		return openAtributosBox;
+	}
+
+	public void setOpenAtributosBox(boolean openAtributosBox) {
+		this.openAtributosBox = openAtributosBox;
+	}
+
+	public void atributosBox() {
+		if(openAtributosBox) {
+			openAtributosBox = false;
+		} else {
+			openAtributosBox = true;
+		}
 	}
 }
