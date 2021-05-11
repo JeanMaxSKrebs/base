@@ -13,6 +13,7 @@ public class Player extends Entity{
 	public int right_dir = 1, left_dir = 2, up_dir = 3, down_dir = 4;
 	public int dir = 1;
 	public double speed = 5;
+	private int criatividade = 0, inteligencia = 0, forca = 0, agilidade = 0, armadura = 0;
 	
 	private static int dodgeChance = 20;
 	private static int armor = 0;
@@ -56,6 +57,14 @@ public class Player extends Entity{
 			downPlayer[i] = Game.spritesheet.getSprite((i*32), 96, 32, 32);
 		}
 
+	}
+	public Player(int x, int y, int width, int height, BufferedImage sprite, String idade, int criatividade, int inteligencia, int forca, int agilidade, int armadura) {
+		super(x, y, width, height, sprite);
+		criatividade = this.criatividade;
+		inteligencia = this.inteligencia;
+		forca = this.forca;
+		agilidade = this.agilidade;
+		armadura = this.armadura;
 	}
 	public int danoRecebido(int dano) {
 		
@@ -207,7 +216,9 @@ public class Player extends Entity{
 	public void setMoved(boolean moved) {
 		this.moved = moved;
 	}
-	public static void createPlayer() {
-		
+	public static void createPlayer(int[] atributo, String idade) {
+		Game.player = new Player(0, 0, 32, 32, Game.spritesheet.getSprite(0, 32, 32, 32), idade, atributo[0], atributo[1], atributo[2], atributo[3], atributo[4]);
+		Game.entities.add(Game.player);
+		return;
 	}
 }

@@ -9,7 +9,7 @@ import entities.Player;
 
 public class MenuCriacao extends Menu {
 	
-	public String[] options = {"idade", "atributos", "criar", "voltar"};
+	public String[] options = {"idade", "atributos", "resetar", "criar", "voltar"};
 	public String[] idades = {"5", "25", "45", "65"};
 	public String[] tipoAtributos = {"Criatividade", "Inteligencia", "Forca", "Agilidade", "Armadura"};
 	private int[] atributos = {5, 5, 5, 5, 5};
@@ -23,7 +23,7 @@ public class MenuCriacao extends Menu {
 	public int currentIdade = 0;
 	public int maxIdade = idades.length - 1;
 	public int currentAtributo = 0;
-	public int maxAtributos = tipoAtributos.length - 1;
+	public int maxAtributos = tipoAtributos.length;
 	
 	public boolean up, down, enter;
 	private boolean showOptions = false;
@@ -36,6 +36,7 @@ public class MenuCriacao extends Menu {
 	public static boolean saveGame = false;
 	
 	public void tick() {
+		
 		File file = new File("save.txt");
 		if(file.exists())
 			saveExists = true;
@@ -81,11 +82,16 @@ public class MenuCriacao extends Menu {
 			}
 			if(enter) {
 				enter = false;
-				if(pontos  <= 0) {
+				if(currentAtributo == maxAtributos) {
 					showAlterOptions = false;
 				} else {
-					if(adicionaAtributos())
-						pontos--;
+					if(pontos  <= 0) {
+						showAlterOptions = false;
+					} else {
+						if(adicionaAtributos()) {							
+							pontos--;
+						}
+					}
 				}
 			}
 		} else {
@@ -109,9 +115,20 @@ public class MenuCriacao extends Menu {
 					showOptions = true;
 				} else if(options[currentOption] == "atributos") {
 					showAlterOptions = true;
-				}  else if(options[currentOption] == "criar") {
-					System.out.println("CRIOU PERSONAGEM");
-					Player.createPlayer(); 
+				} else if(options[currentOption] == "resetar") {
+					for (int i = 0; i < atributos.length; i++) {
+						pontos = 25;
+						atributos[i] = 5;
+						atributosExtras[i] = 0;
+					}
+				} else if(options[currentOption] == "criar") {
+					if(pontos == 0) {
+						System.out.println("CRIOU PERSONAGEM");
+						Player.createPlayer(atributos, idades[currentIdade]);
+						Game.gameState = "CUTSCENE";
+					} else {
+						System.out.println("UTILIZE SEUS PONTOS");
+					}
 				} else if(options[currentOption] == "voltar") {
 					Game.gameState = "MENU_PERSONAGEM";
 				}
@@ -120,12 +137,13 @@ public class MenuCriacao extends Menu {
 	}
 	
 	private boolean adicionaAtributos() {
-		System.out.println(atributosExtras[currentAtributo]);
-		if(atributosExtras[currentAtributo] > atributosExtrasMax[currentAtributo]) {
-			System.out.println("Atributo no maximo"+tipoAtributos[currentAtributo]);
+//		System.out.println(atributosExtras[currentAtributo]);
+		if(atributos[currentAtributo] >= atributosExtrasMax[currentAtributo]) {
+			System.out.println("Atributo no maximo: "+tipoAtributos[currentAtributo]);
 			return false;
 		} else {			
 			atributosExtras[currentAtributo]++;
+//			System.out.println(atributosExtras[currentAtributo]);
 			System.out.println("adiciona atributo "+tipoAtributos[currentAtributo]);
 			return true;
 		}
@@ -145,17 +163,17 @@ public class MenuCriacao extends Menu {
 			atributos[3] = 6 + atributosExtras[3];
 			atributos[4] = 3 + atributosExtras[4];
 		} else if(idade == "45") {
-			atributos[0] = 3 + atributosExtras[0];;
-			atributos[1] = 7 + atributosExtras[1];;
-			atributos[2] = 5 + atributosExtras[2];;
-			atributos[3] = 3 + atributosExtras[3];;
-			atributos[4] = 7 + atributosExtras[4];;	
+			atributos[0] = 3 + atributosExtras[0];
+			atributos[1] = 7 + atributosExtras[1];
+			atributos[2] = 5 + atributosExtras[2];
+			atributos[3] = 3 + atributosExtras[3];
+			atributos[4] = 7 + atributosExtras[4];	
 		} if(idade == "65") {
-			atributos[0] = 5 + atributosExtras[0];;
-			atributos[1] = 5 + atributosExtras[1];;
-			atributos[2] = 5 + atributosExtras[2];;
-			atributos[3] = 5 + atributosExtras[3];;
-			atributos[4] = 5 + atributosExtras[4];;
+			atributos[0] = 5 + atributosExtras[0];
+			atributos[1] = 5 + atributosExtras[1];
+			atributos[2] = 5 + atributosExtras[2];
+			atributos[3] = 5 + atributosExtras[3];
+			atributos[4] = 5 + atributosExtras[4];
 		}
 	}
 
@@ -176,14 +194,16 @@ public class MenuCriacao extends Menu {
 		g.setFont(new Font("Arial", Font.BOLD, 32));
 		
 		if(!showAlterOptions && !showOptions) {
-			g.drawString("Idade", width, (height));			
-			g.drawString("Atributos", width, (height + multi));			
+			g.drawString("Idade", width, height);			
+			g.drawString("Atributos", width, (height + multi));
+			g.drawString("Resetar", width, (height + multi * 2));
 		} else if(!showAlterOptions) {
-			g.drawString("Idade", width, (height));			
+			g.drawString("Idade", width, height);			
 		} else if(!showOptions) {
-			g.drawString("Atributos", width, (height));			
+			g.drawString("Atributos", width, height);
+			g.drawString("Pontos :"+pontos+"/25", (width + soma * 2), height);
 		}
-			
+		
 		g.drawString("Criar", (width + multi), (Game.HEIGHT * Game.SCALE - soma/2));
 
 		g.drawString("Voltar", (width + multi * 5), (Game.HEIGHT * Game.SCALE - soma/2));
@@ -202,7 +222,7 @@ public class MenuCriacao extends Menu {
 				g.setFont(new Font("Arial", Font.BOLD, 24));
 				for (int i = 0; i < tipoAtributos.length; i++) {
 					g.drawString(tipoAtributos[i],  width, (height + soma/2 + multi * i - 10));
-					g.fillRect(width, (height + soma/2 + multi * i), 500, multi/2);
+					g.fillRect(width, (height + soma/2 + multi * i), 510, multi/2);
 				}
 				
 				if(atributos[0] != 0) {
@@ -217,25 +237,31 @@ public class MenuCriacao extends Menu {
 		} else if(options[currentOption] == "atributos") {
 			if(showAlterOptions) {
 //				System.out.println(tipoAtributos[currentAtributo]);
-				if(tipoAtributos[currentAtributo] == tipoAtributos[currentAtributo]) {
+				g.drawString("Criação",  width, (height + soma/2 + multi * 5));
+				if(currentAtributo == 5) {
+					g.drawString(" > ",  (width-50), (height + soma/2 + multi * currentAtributo));
+				} else if(tipoAtributos[currentAtributo] == tipoAtributos[currentAtributo]) {
 					g.drawString(" > ",  (width-50), (height + soma/2 + multi * currentAtributo - 10));
 				}
 				
 				g.setFont(new Font("Arial", Font.BOLD, 24));
 				for (int i = 0; i < tipoAtributos.length; i++) {
 					g.drawString(tipoAtributos[i],  width, (height + soma/2 + multi * i - 10));
-					g.fillRect(width, (height + soma/2 + multi * i), 500, multi/2);
+					g.fillRect(width, (height + soma/2 + multi * i), 510, multi/2);
 				}
 				if(atributos[0] != 0) {
 					g.setColor(new Color(51, 51, 51));
 //					System.out.println(atributos.length);
 					for (int i = 0; i < atributos.length; i++) {
-						g.fillRect(5 + width, 5 + (height + soma/2 + multi * i), ((atributos[i] + atributosExtras[i]) * 500 / 15), (multi/2 - 10));
+//						System.out.println(atributos[i]+atributosExtras[i]);
+						g.fillRect(5 + width, 5 + (height + soma/2 + multi * i), (atributos[i] * 500 / 15), (multi/2 - 10));
 					}
 				}
 			} else {
 				g.drawString(" > ",  (width-50), (height + multi));
 			}
+		} else if(options[currentOption] == "resetar") {
+			g.drawString(" > ",  (width - 50), (height + multi * 2));
 		} else if(options[currentOption] == "criar") {
 			g.drawString(" > ",  (width + multi - 50), (Game.HEIGHT * Game.SCALE - soma/2));
 		} else if(options[currentOption] == "voltar") {
