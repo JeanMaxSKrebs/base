@@ -1,5 +1,6 @@
 package entities;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
@@ -169,13 +170,7 @@ public class Player extends Entity{
 		}
 		
 //		g.setColor(Color.red);
-//		g.fillRect(this.getX() + maskx - (int)speed - Camera.x, this.getY() + masky - (int)speed - Camera.y, mwidth, mheight);
-//		g.fillRect(this.getX() + maskx - Camera.x, this.getY() + masky - Camera.y, mwidth + (int)speed, mheight + (int)speed);
-//
-//		g.setColor(Color.black);
 //		g.fillRect(this.getX() + maskx - Camera.x, this.getY() + masky - Camera.y, mwidth, mheight);
-
-		
 	}
 	public double getLife() {
 		return life;

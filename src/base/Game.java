@@ -49,9 +49,15 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	public MenuPrincipal menu_principal;
 	public MenuPersonagem menu_personagem;
 	public MenuCriacao menu_criacao;
+	
+//	public Cutscene cutscene;
+	public static String cutsceneState = "jogando";
+	public static String entrada = "entrada";
+	public static String comecar = "comecar";
+	public static String jogando = "jogando";
 
 	
-	public static String gameState = "MENU_CRIACAO";
+	public static String gameState = "NORMAL";
 	public static int maximumDodge = 100;
 	public static int maximumCritic = 100;
 	private boolean restartGame;
@@ -130,10 +136,20 @@ public class Game extends Canvas implements Runnable, KeyListener {
 
 			}
 			restartGame = false;
-//			for(int i=0; i<entities.size(); i++) {
-//				Entity e = entities.get(i);
-//				e.tick();
-//			}
+			if(cutsceneState == entrada) {
+				
+			} else if(cutsceneState == comecar) {
+				
+			} else if(cutsceneState == jogando) {
+				
+				for(int i=0; i<entities.size(); i++) {
+					Entity e = entities.get(i);
+					e.tick();
+				}
+				int newy = Game.player.getY();
+				newy++;
+				Game.player.setY(newy);
+			}
 		} else if(gameState  == "MENU_PRINCIPAL") {
 			menu_principal.tick();
 		} else if(gameState  == "MENU_PERSONAGEM") {

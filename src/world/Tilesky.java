@@ -3,9 +3,9 @@ package world;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
-public class Tilefloor extends Tile{
+public class Tilesky extends Tile {
 
-	public Tilefloor(int x, int y, BufferedImage sprite) {
+	public Tilesky(int x, int y, BufferedImage sprite) {
 		super(x, y, sprite);
 	}
 	

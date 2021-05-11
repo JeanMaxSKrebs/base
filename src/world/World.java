@@ -35,11 +35,15 @@ public class World {
 			for (int xx = 0; xx < WIDTH; xx++) {
 				for (int yy = 0; yy < HEIGHT; yy++) {
 					int pixelAtual = pixels[xx+(yy*WIDTH)];
-					tiles[xx+(yy*WIDTH)] =  new Tilefloor(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_FLOOR);
+					tiles[xx+(yy*WIDTH)] =  new Tilesky(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_SKY);
 
-					if(pixelAtual == 0xFFFFFFFF) {
+					if(pixelAtual == 0xFF00FF00) {
+						//floor
+						tiles[xx+(yy*WIDTH)] = new Tilefloor(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_FLOOR);
+					} 
+					if(pixelAtual == 0xFF000000) {
 						//wall
-						tiles[xx+(yy*WIDTH)] =  new Tilewall(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_WALL);
+						tiles[xx+(yy*WIDTH)] = new Tilewall(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_WALL);
 					} else if(pixelAtual == 0xFF000CFF) {
 						//player
 						Game.player.setX(xx*32);
@@ -47,10 +51,7 @@ public class World {
 						Game.player.setWidth(24);
 						Game.player.setHeight(24);
 						Game.player.setMask(3, 3, 26, 26);
-					} else {						
-						//floor
-						tiles[xx+(yy*WIDTH)] =  new Tilefloor(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_FLOOR);
-					} 
+					}
 
 				}
 			}
@@ -89,6 +90,8 @@ public class World {
 		}
 //		System.out.println(tiles[x1 + (y1*World.WIDTH)]);
 		if(tiles[x1 + (y1*World.WIDTH)] instanceof Tilewall) {
+			return false;
+		} else if(tiles[x1 + (y1*World.WIDTH)] instanceof Tilefloor) { 
 			return false;
 		} else {
 			return true;
