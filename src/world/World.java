@@ -37,22 +37,23 @@ public class World {
 					int pixelAtual = pixels[xx+(yy*WIDTH)];
 					tiles[xx+(yy*WIDTH)] =  new Tilesky(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_SKY);
 
-					if(pixelAtual == 0xFF00FF00) {
-						//floor
-						tiles[xx+(yy*WIDTH)] = new Tilefloor(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_FLOOR);
-					} else if(pixelAtual == 0xFF000000) {
+
+					if(pixelAtual == 0xFF000000) {
 						//wall
-						tiles[xx+(yy*WIDTH)] = new Tilewall(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_WALL);
-					}  else if(pixelAtual == 0xFFD28143) {
-						//wall
-						tiles[xx+(yy*WIDTH)] = new Tileground(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_GROUND);
-					}else if(pixelAtual == 0xFF000CFF) {
+						tiles[xx+(yy*WIDTH)] = new Tilewall(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_FLOOR);
+						if(yy - 1 > 0 && pixels[xx+( (yy-1) * map.getWidth())] == 0xFF000000) {
+							tiles[xx+(yy*WIDTH)] = new Tilewall(xx * TILE_SIZE,  yy * TILE_SIZE, Tile.TILE_GROUND);
+							if(xx == 0 || yy == HEIGHT - 1 ||  xx == WIDTH - 1) {
+								tiles[xx+(yy*WIDTH)] = new Tilewall(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_WALL);
+							}
+						}
+					} else if(pixelAtual == 0xFF000CFF) {
 						//player
 						Game.player.setX(xx*32);
 						Game.player.setY(yy*32);
 						Game.player.setWidth(24);
 						Game.player.setHeight(24);
-						Game.player.setMask(3, 3, 26, 26);
+						Game.player.setMask(0, 4, 32, 24);						
 					}
 
 				}
@@ -127,5 +128,22 @@ public class World {
 				tile.render(g);
 			}
 		}
+	}
+
+	public static void renderMinimapa() {
+		for (int i = 0; i < Game.minimapaPixels.length; i++) {
+			Game.minimapaPixels[i] = 0x0000ff;
+		}
+		for (int xx = 0; xx < WIDTH; xx++) {
+			for (int yy = 0; yy < HEIGHT; yy++) {
+				if(tiles[xx + (yy * WIDTH)] instanceof Tilewall) {
+					Game.minimapaPixels[xx + (yy * WIDTH)] = 0;
+				}
+			}
+		}
+		int xPlayer = Game.player.getX()/32;
+		int yPlayer = Game.player.getY()/32;
+
+		Game.minimapaPixels[xPlayer + (yPlayer * WIDTH)] = 0xffffff;
 	}
 }

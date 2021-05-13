@@ -49,21 +49,29 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	public MenuPrincipal menu_principal;
 	public MenuPersonagem menu_personagem;
 	public MenuCriacao menu_criacao;
+	public MenuPause menu_pause;
+	
+	public int[] pixels;
+	public static int[] minimapaPixels;
+	public static BufferedImage minimapa;
 	
 //	public Cutscene cutscene;
-	public static String cutsceneState = "entrada";
+	public static String cutsceneState = "jogando";
 	public static String entrada = "entrada";
 	public static String comecar = "comecar";
 	public static String jogando = "jogando";
 
 	
-	public static String gameState = "NORMAL";
+	public static String gameState = "MENU_PRINCIPAL";
+	public static double gravidade = 5;
 	public static int maximumDodge = 100;
 	public static int maximumCritic = 100;
 	private boolean restartGame;
 	private static boolean saveGame;
 	private int framesGameOver;
 	private boolean showMessageGameOver = false;
+	private int saveGamecont = 60;
+	private int saveGamemax = 60;
 	
 	public static double LIFE = 100;
 	public static double STAMINE = 0;
@@ -141,24 +149,26 @@ public class Game extends Canvas implements Runnable, KeyListener {
 				Player p = Game.player;
 				p.speed = 1;
 				p.tick();
-				int xPlayer = p.getX();
+//				int xPlayer = p.getX();
 
 				if(p.getX() < 500) {
 					p.right = true;
 				} else {
 					p.right = false;
-					cutsceneState = "jogando";
 				}
 				
-				if(p.getY() > 500) {
+				if(p.getY() > 900) {
 					p.up = true;
 				} else {
 					p.up = false;
 				}
+				if(p.right == false && p.up == false) {
+					cutsceneState = "jogando";
+				}
+
 			} else if(cutsceneState == comecar) {
 				
 			} else if(cutsceneState == jogando) {
-				Game.player.speed = 5;
 				
 				for(int i=0; i<entities.size(); i++) {
 					Entity e = entities.get(i);
@@ -253,7 +263,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 			g.setFont(new Font("Arial", Font.BOLD, 32));
 			g.fillRect(0, 0, WIDTH*SCALE, HEIGHT*SCALE);
 			g.setColor(Color.white);
-			g.drawString("Parabéns você Finalizou o Jogo",  WIDTH*SCALE/8, HEIGHT*SCALE/2);
+			g.drawString("Parabï¿½ns vocï¿½ Finalizou o Jogo",  WIDTH*SCALE/8, HEIGHT*SCALE/2);
 			if(showMessageGameOver)
 				g.drawString(">> PRESSIONE ENTER <<",  WIDTH*SCALE/5, (HEIGHT*SCALE/2)+96);
 		} else if(gameState == "MENU_PRINCIPAL") {
