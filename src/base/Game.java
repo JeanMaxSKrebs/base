@@ -333,6 +333,8 @@ public class Game extends Canvas implements Runnable, KeyListener {
 			} else if(gameState == "MENU_CRIACAO") {
 				menu_criacao.down = true;
 			}
+		if(e.getKeyCode() == KeyEvent.VK_SPACE) {
+			player.jump = true;
 		}
 		
 		if(e.getKeyCode() == KeyEvent.VK_RIGHT||e.getKeyCode() == KeyEvent.VK_D) {

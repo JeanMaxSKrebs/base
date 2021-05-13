@@ -1,6 +1,5 @@
 package entities;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
@@ -13,12 +12,21 @@ public class Player extends Entity{
 	public boolean left, right, up, down;
 	public int right_dir = 1, left_dir = 2, up_dir = 3, down_dir = 4;
 	public int dir = 1;
-	public double speed = 5;
+	
+	public boolean jump = false;
+	
+	public boolean isJumping = false;
+	public int jumpHeight = 32;
+	public int jumpFrames = 0;
+	
+	
+	
+	public double speed = 3.5;
 	private String idade = "5";
 	private int criatividade = 10, inteligencia = 10, forca = 10, agilidade = 10, armadura = 10;
 	private int nivel = 1;
 	private int atributos = 50;
-	private int atributosMax = 500;
+//	private int atributosMax = 500;
 			
 	private int qtdSprites = 4;
 	private int frames = 0, maxFrames = 20, index = 0, maxIndex = (qtdSprites-1);
@@ -62,7 +70,6 @@ public class Player extends Entity{
 	}
 	public Player(int x, int y, int width, int height, BufferedImage sprite, String idade, int criatividade, int inteligencia, int forca, int agilidade, int armadura) {
 		super(x, y, width, height, sprite);
-		System.out.println(x+" "+y);
 		criatividade = this.criatividade;
 		inteligencia = this.inteligencia;
 		forca = this.forca;
@@ -104,6 +111,7 @@ public class Player extends Entity{
 	}
 	
 	public void tick() {
+		
 		setMoved(false);
 
 		int midy = (int)(y + masky + mheight/2);
@@ -114,6 +122,9 @@ public class Player extends Entity{
 		int plusx = (int)(x + maskx + mwidth);
 		int minusx = (int)(x + maskx);
 		
+		if(World.isFree(midx, (int)(plusy + Game.gravidade), "down") && isJumping == false) {
+			y+=Game.gravidade;
+		}
 		
 		if(right) {
 			setMoved(true);
@@ -121,27 +132,41 @@ public class Player extends Entity{
 			if(World.isFree(plusx, midy, "right"))				
 				x += speed;
 			
-		}
-		else if(left) {
+		} else if(left) {
 			setMoved(true);
 			dir = left_dir;
 			if(World.isFree(minusx, midy, "left"))
 				x -= speed;
 		}
 
-		if(down) {
-			setMoved(true);
-			dir = down_dir;
-			if(World.isFree(midx, plusy, "down"))
-				y += speed;
-		}
-		else if(up) {
-			setMoved(true);
-			dir = up_dir;
-			if(World.isFree(midx, minusy, "up"))
-				y -= speed;
+
+		if(jump) {
+
+			if(!World.isFree(midx, (int)(plusy + Game.gravidade), "down")) {
+				setMoved(true);
+				dir = up_dir;
+				isJumping = true;
+			} else {				
+				jump = false;
+			}
 		}
 		
+		if(isJumping) {
+//			System.out.println(World.isFree(midx, (minusy - 2), "up"));
+			if(World.isFree(midx, (int)(minusy - Game.gravidade), "up")) {
+				y -= Game.gravidade;
+				jumpFrames += 2;
+				if(jumpFrames >= jumpHeight) {
+					isJumping = false;
+					jump = false;
+					jumpFrames = 0;
+				}
+			} else {
+				isJumping = false;
+				jump = false;
+				jumpFrames = 0;
+			}
+		}
 		if(moved) {
 			frames++;
 			if(frames == maxFrames) {
