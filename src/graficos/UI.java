@@ -43,7 +43,6 @@ public class UI {
 			g.drawString(Game.player.getAtributos()+" T", Game.WIDTH - boxWidth, 60);
 			boxHeight = 62;
 		}
-
 		
 	}
 

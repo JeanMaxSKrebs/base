@@ -4,9 +4,8 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 
-public class MenuPersonagem extends Menu {
-	
-	public String[] options = {"usar", "criar", "voltar"};
+public class MenuPause extends Menu {
+	public String[] options = {"continuar", "trocar", "menu"};
 	
 	public int currentOption = 0;
 	public int maxOption = options.length - 1;
@@ -28,16 +27,17 @@ public class MenuPersonagem extends Menu {
 		}
 		if(enter) {
 			enter = false;
-			if(options[currentOption] == "usar") {
+			if(options[currentOption] == "continuar") {
+				Game.gameState = "NORMAL";
+			} else if(options[currentOption] == "trocar") {
 //				Game.gameState = "MENU_ESCOLHA";
-			} else if(options[currentOption] == "criar") {
-				Game.gameState = "MENU_CRIACAO";
-			} else if(options[currentOption] == "voltar") {
+			} else if(options[currentOption] == "menu") {
 				Game.gameState = "MENU_PRINCIPAL";
 			}
 		}
 	}
-	
+
+	@Override
 	public void render(Graphics g) {
 		
 		int valorwidth = 3;
@@ -45,26 +45,27 @@ public class MenuPersonagem extends Menu {
 		int width = Game.WIDTH * Game.SCALE / valorwidth;
 		int height = Game.HEIGHT * Game.SCALE / valorheigth;
 		int multi = Game.HEIGHT*Game.SCALE/10;
-
+		
 		g.setFont(new Font("Arial", Font.BOLD, 48));
 		g.fillRect(0, 0,Game.WIDTH*Game.SCALE, Game.HEIGHT*Game.SCALE);
 		g.setColor(Color.WHITE);
-		g.drawString("Personagem", (width-multi), (height-multi));
+		g.drawString("Pause", (width), (height-multi));
 
 		g.setFont(new Font("Arial", Font.BOLD, 32));
-		
-		g.drawString("Carregar", width, (height+multi));
-		
-		g.drawString("Criar",  width, (height+multi*2));
-		
-		g.drawString("Voltar",  width, (height+multi*3));
 
-		if(options[currentOption] == "usar") {
+		g.drawString("Continuar",  width, (height+multi));
+
+		g.drawString("Trocar Personagem",  width, (height+multi*2));
+
+		g.drawString("Menu Principal",  width, (height+multi*3));
+
+		
+		if(options[currentOption] == "continuar") {
 			g.drawString(" > ",  (width-50), (height+multi));
-		} else if(options[currentOption] == "criar") {
+		} else if(options[currentOption] == "trocar") {
 			g.drawString(" > ",  (width-50), (height+multi*2));
-		} else if(options[currentOption] == "voltar") {
+		} else if(options[currentOption] == "menu") {
 			g.drawString(" > ",  (width-50), (height+multi*3));
-		}
+		} 
 	}
 }

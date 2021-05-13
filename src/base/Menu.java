@@ -19,8 +19,6 @@ public abstract class Menu {
 	public int maxOption = options.length - 1;
 	
 	public boolean up, down, enter;
-
-	public static boolean pause = false;
 	
 	public static boolean saveExists = false;
 	public static boolean saveGame = false;
@@ -35,7 +33,6 @@ public abstract class Menu {
 				case "fase": {
 					World.restartGame("fase"+spl2[1]+".png");
 					Game.gameState = "NORMAL";
-					pause = false;
 					break;
 				}
 				default:

@@ -3,7 +3,6 @@ package base;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
-import java.io.File;
 
 public class MenuCriacao extends Menu {
 	
@@ -23,23 +22,11 @@ public class MenuCriacao extends Menu {
 	public int currentAtributo = 0;
 	public int maxAtributos = tipoAtributos.length;
 	
-	public boolean up, down, enter;
 	private boolean showOptions = false;
 	private boolean showAlterOptions = false;
 	private int pontos = 25;
-
-	public static boolean pause = false;
-	
-	public static boolean saveExists = false;
-	public static boolean saveGame = false;
 	
 	public void tick() {
-		
-		File file = new File("save.txt");
-		if(file.exists())
-			saveExists = true;
-		else
-			saveExists = false; 
 		
 		if(showOptions) {
 			showAtributos(idades[currentIdade]);
@@ -110,23 +97,24 @@ public class MenuCriacao extends Menu {
 			if(enter) {
 				enter = false;
 				if(options[currentOption] == "idade") {
+					resetar();
 					showOptions = true;
 				} else if(options[currentOption] == "atributos") {
 					showAlterOptions = true;
 				} else if(options[currentOption] == "resetar") {
-					for (int i = 0; i < atributos.length; i++) {
-						pontos = 25;
-						atributos[i] = 5;
-						atributosExtras[i] = 0;
-					}
+					resetar();
 				} else if(options[currentOption] == "criar") {
-					if(pontos == 0) {
-						System.out.println("CRIOU PERSONAGEM");
-						Game.player.createPlayer(atributos, idades[currentIdade]);
-						Game.gameState = "NORMAL";
-						Game.cutsceneState = "jogando";
+					if(verificaPontos()) {
+						if(pontos == 0) {
+							System.out.println("CRIOU PERSONAGEM");
+							Game.player.createPlayer(atributos, idades[currentIdade]);
+							Game.gameState = "NORMAL";
+							Game.cutsceneState = "jogando";
+						} else {
+							System.out.println("UTILIZE SEUS PONTOS");
+						}
 					} else {
-						System.out.println("UTILIZE SEUS PONTOS");
+						System.out.println("ERRO, REUTILIZE SEUS PONTOS");
 					}
 				} else if(options[currentOption] == "voltar") {
 					Game.gameState = "MENU_PERSONAGEM";
@@ -134,7 +122,24 @@ public class MenuCriacao extends Menu {
 			}
 		}
 	}
+	private void resetar() {
+		for (int i = 0; i < atributos.length; i++) {
+			pontos = 25;
+			atributos[i] = 5;
+			atributosExtras[i] = 0;
+		}
+	}
 	
+	private boolean verificaPontos() {
+		for (int j = 0; j < atributos.length; j++) {
+			if(atributos[j] > 15) {
+				resetar();
+				return false;
+			}
+		}
+		return true;
+	}
+
 	private boolean adicionaAtributos() {
 //		System.out.println(atributosExtras[currentAtributo]);
 		if(atributos[currentAtributo] >= atributosExtrasMax[currentAtributo]) {

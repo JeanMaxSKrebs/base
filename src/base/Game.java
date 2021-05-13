@@ -10,7 +10,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
-
+import java.awt.image.DataBufferInt;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -87,6 +87,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		initFrame();
 		ui = new UI();
 		image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
+		pixels = ((DataBufferInt)image.getRaster().getDataBuffer()).getData();
 		entities = new ArrayList<Entity>();
 
 		spritesheet = new Spritesheet("/spritesheet.png");
@@ -96,8 +97,12 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		entities.add(player);
 		
 		menu_principal = new MenuPrincipal();
-		menu_personagem = new MenuPersonagem();
+		menu_personagem = new MenuPersonagem();		
 		menu_criacao = new MenuCriacao();
+		menu_pause = new MenuPause();
+		
+		minimapa = new BufferedImage(World.WIDTH, World.HEIGHT, BufferedImage.TYPE_INT_RGB);
+		minimapaPixels = ((DataBufferInt)minimapa.getRaster().getDataBuffer()).getData();
 		
 	}
 
@@ -181,6 +186,8 @@ public class Game extends Canvas implements Runnable, KeyListener {
 			menu_personagem.tick();
 		} else if(gameState  == "MENU_CRIACAO") {
 			menu_criacao.tick();
+		} else if(gameState  == "MENU_PAUSE") {
+			menu_pause.tick();
 		} else if(gameState == "NEXT") {
 			CUR_LEVEL = CUR_LEVEL + 1;
 			if(CUR_LEVEL > MAX_LEVEL) {
@@ -240,7 +247,8 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		g.setColor(new Color(51, 51, 51));
 		g.drawImage(image, 0, 0, WIDTH*SCALE, HEIGHT*SCALE, null);
 		
-		if(Game.saveGame == true) {
+		if(saveGamecont < saveGamemax) {
+			saveGamecont++;
 			g.setColor(Color.black);
 			g.setFont(new Font("calibri", Font.BOLD, 48));
 			g.drawString("Jogo Salvo",  ((Game.WIDTH*Game.SCALE/3)), ((Game.HEIGHT*Game.SCALE/3)+50));
@@ -272,6 +280,11 @@ public class Game extends Canvas implements Runnable, KeyListener {
 			menu_personagem.render(g);
 		} else if(gameState  == "MENU_CRIACAO") {
 			menu_criacao.render(g);
+		} else if(gameState  == "MENU_PAUSE") {
+			menu_pause.render(g);
+		} else {
+			World.renderMinimapa();
+			g.drawImage(minimapa, WIDTH/10 * SCALE * 3, HEIGHT * SCALE - (World.HEIGHT*3) ,WIDTH/10  * SCALE * 4, World.HEIGHT*2, null);
 		}
 		
 		bs.show();
@@ -316,23 +329,27 @@ public class Game extends Canvas implements Runnable, KeyListener {
 			ui.atributosBox();
 		}
 		if(e.getKeyCode() == KeyEvent.VK_UP||e.getKeyCode() == KeyEvent.VK_W) {
-			player.up = true;
 			if(gameState == "MENU_PRINCIPAL") {
 				menu_principal.up = true;
 			} else if(gameState == "MENU_PERSONAGEM") {
 				menu_personagem.up = true;
 			} else if(gameState == "MENU_CRIACAO") {
 				menu_criacao.up = true;
+			} else if(gameState == "MENU_PAUSE") {
+				menu_pause.up = true;
 			}
 		} else if(e.getKeyCode() == KeyEvent.VK_DOWN||e.getKeyCode() == KeyEvent.VK_S){
-			player.down = true;
 			if(gameState == "MENU_PRINCIPAL") {
 				menu_principal.down = true;
 			} else if(gameState == "MENU_PERSONAGEM") {
 				menu_personagem.down = true;
 			} else if(gameState == "MENU_CRIACAO") {
 				menu_criacao.down = true;
+			} else if(gameState == "MENU_PAUSE") {
+				menu_pause.down = true;
 			}
+		}
+		
 		if(e.getKeyCode() == KeyEvent.VK_SPACE) {
 			player.jump = true;
 		}
@@ -351,15 +368,21 @@ public class Game extends Canvas implements Runnable, KeyListener {
 				menu_personagem.enter = true;
 			}  else if(gameState == "MENU_CRIACAO") {
 				menu_criacao.enter = true;
+			} else if(gameState == "MENU_PAUSE") {
+				menu_pause.enter = true;
 			}
 		}
 		if(e.getKeyCode() == KeyEvent.VK_ESCAPE || e.getKeyCode() == KeyEvent.VK_P) {
-			gameState = "MENU_PRINCIPAL";
-			Menu.pause = true;
+			if(gameState == "NORMAL") {
+				System.out.println("teste");
+				gameState = "MENU_PAUSE";
+			}
 		}
 		if(e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
-			if(gameState == "NORMAL")
+			if(gameState == "NORMAL") {
+				saveGamecont = 0;
 				saveGame = true;
+			}
 		}
 	}
 

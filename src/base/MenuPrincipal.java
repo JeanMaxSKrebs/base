@@ -11,13 +11,6 @@ public class MenuPrincipal extends Menu {
 	
 	public int currentOption = 0;
 	public int maxOption = options.length - 1;
-	
-	public boolean up, down, enter;
-
-	public static boolean pause = false;
-	
-	public static boolean saveExists = false;
-	public static boolean saveGame = false;
 
 	public void tick() {
 		File file = new File("save.txt");
@@ -74,10 +67,7 @@ public class MenuPrincipal extends Menu {
 
 		g.setFont(new Font("Arial", Font.BOLD, 36));
 		
-		if(pause == false)
-			g.drawString("Novo Jogo",  width, (height+multi));
-		else 
-			g.drawString("Continuar",  width, (height+multi));
+		g.drawString("Novo Jogo",  width, (height+multi));
 
 		g.drawString("Carregar Jogo",  width, (height+multi*2));
 		
