@@ -33,6 +33,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	public static final int WIDTH = 320;
 	public static final int HEIGHT = 320;
 	public static final int SCALE = 2;
+	public static final int TILE = 32;
 	
 	private BufferedImage image;
 	
@@ -57,9 +58,6 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	
 //	public Cutscene cutscene;
 	public static String cutsceneState = "jogando";
-	public static String entrada = "entrada";
-	public static String comecar = "comecar";
-	public static String jogando = "jogando";
 
 	
 	public static String gameState = "MENU_PRINCIPAL";
@@ -70,8 +68,11 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	private static boolean saveGame;
 	private int framesGameOver;
 	private boolean showMessageGameOver = false;
-	private int saveGamecont = 60;
-	private int saveGamemax = 60;
+	private int cont = 60;
+	private int contMax = 60;
+
+	private int cutsceneCont = 0;
+	private int cutsceneContMax = 180;
 	
 	public static double LIFE = 100;
 	public static double STAMINE = 0;
@@ -150,7 +151,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 
 			}
 			restartGame = false;
-			if(cutsceneState == entrada) {
+			if(cutsceneState == "entrada") {
 				Player p = Game.player;
 				p.speed = 1;
 				p.tick();
@@ -171,9 +172,11 @@ public class Game extends Canvas implements Runnable, KeyListener {
 					cutsceneState = "jogando";
 				}
 
-			} else if(cutsceneState == comecar) {
+			} else if(cutsceneState == "comecar") {
 				
-			} else if(cutsceneState == jogando) {
+			} else if(cutsceneState == "nascimento") {
+
+			} else if(cutsceneState == "jogando") {
 				
 				for(int i=0; i<entities.size(); i++) {
 					Entity e = entities.get(i);
@@ -247,8 +250,8 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		g.setColor(new Color(51, 51, 51));
 		g.drawImage(image, 0, 0, WIDTH*SCALE, HEIGHT*SCALE, null);
 		
-		if(saveGamecont < saveGamemax) {
-			saveGamecont++;
+		if(cont < contMax) {
+			cont++;
 			g.setColor(Color.black);
 			g.setFont(new Font("calibri", Font.BOLD, 48));
 			g.drawString("Jogo Salvo",  ((Game.WIDTH*Game.SCALE/3)), ((Game.HEIGHT*Game.SCALE/3)+50));
@@ -271,7 +274,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 			g.setFont(new Font("Arial", Font.BOLD, 32));
 			g.fillRect(0, 0, WIDTH*SCALE, HEIGHT*SCALE);
 			g.setColor(Color.white);
-			g.drawString("Parabï¿½ns vocï¿½ Finalizou o Jogo",  WIDTH*SCALE/8, HEIGHT*SCALE/2);
+			g.drawString("Parabéns você Finalizou o Jogo",  WIDTH*SCALE/8, HEIGHT*SCALE/2);
 			if(showMessageGameOver)
 				g.drawString(">> PRESSIONE ENTER <<",  WIDTH*SCALE/5, (HEIGHT*SCALE/2)+96);
 		} else if(gameState == "MENU_PRINCIPAL") {
@@ -279,7 +282,26 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		} else if(gameState == "MENU_PERSONAGEM") {
 			menu_personagem.render(g);
 		} else if(gameState  == "MENU_CRIACAO") {
-			menu_criacao.render(g);
+			if(cutsceneState == "nascimento") {
+				g.setColor(Color.black);
+				g.fillRect(0, 0, WIDTH*SCALE, HEIGHT*SCALE);
+
+				g.setColor(Color.white);
+				g.setFont(new Font("Arial", Font.BOLD, 32));
+				int camera = 2;
+
+				if(cutsceneCont < cutsceneContMax) {
+					cutsceneCont++;
+					g.setColor(Color.white);
+					g.fillOval(cutsceneCont * camera, cutsceneCont * camera, (int)(WIDTH*SCALE - camera * 2 * cutsceneCont), (int)(HEIGHT*SCALE - camera * 2 * cutsceneCont));
+					g.setColor(Color.black);
+					g.drawString("Você nasceu no planeta terra",  WIDTH*SCALE/6, HEIGHT*SCALE/2);
+
+				}
+
+			} else {
+				menu_criacao.render(g);				
+			}
 		} else if(gameState  == "MENU_PAUSE") {
 			menu_pause.render(g);
 		} else {
@@ -380,7 +402,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		}
 		if(e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
 			if(gameState == "NORMAL") {
-				saveGamecont = 0;
+				cont = 0;
 				saveGame = true;
 			}
 		}

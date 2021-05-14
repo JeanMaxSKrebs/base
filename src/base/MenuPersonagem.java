@@ -31,6 +31,7 @@ public class MenuPersonagem extends Menu {
 			if(options[currentOption] == "usar") {
 //				Game.gameState = "MENU_ESCOLHA";
 			} else if(options[currentOption] == "criar") {
+				Game.cutsceneState = "nascimento";
 				Game.gameState = "MENU_CRIACAO";
 			} else if(options[currentOption] == "voltar") {
 				Game.gameState = "MENU_PRINCIPAL";
