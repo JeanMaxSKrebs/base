@@ -21,6 +21,7 @@ import entities.Entity;
 import entities.Player;
 import graficos.Spritesheet;
 import graficos.UI;
+import world.Camera;
 import world.World;
 
 public class Game extends Canvas implements Runnable, KeyListener {
@@ -56,7 +57,6 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	public static int[] minimapaPixels;
 	public static BufferedImage minimapa;
 	
-//	public Cutscene cutscene;
 	public static String cutsceneState = "jogando";
 
 	
@@ -73,6 +73,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 
 	private int cutsceneCont = 0;
 	private int cutsceneContMax = 180;
+	private int signalState = 0;
 	
 	public static double LIFE = 100;
 	public static double STAMINE = 0;
@@ -174,8 +175,6 @@ public class Game extends Canvas implements Runnable, KeyListener {
 
 			} else if(cutsceneState == "comecar") {
 				
-			} else if(cutsceneState == "nascimento") {
-
 			} else if(cutsceneState == "jogando") {
 				
 				for(int i=0; i<entities.size(); i++) {
@@ -188,7 +187,21 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		} else if(gameState  == "MENU_PERSONAGEM") {
 			menu_personagem.tick();
 		} else if(gameState  == "MENU_CRIACAO") {
-			menu_criacao.tick();
+			 if(cutsceneState == "nascimento") {
+				if(signalState == 0) {
+					cutsceneCont++;
+				} else if(signalState == 1) {
+					cutsceneCont--;
+				}
+				
+				if(cutsceneCont == cutsceneContMax) {
+					signalState++;
+				} else if(cutsceneCont == 0) {
+					cutsceneState = "";
+				}
+			} else {
+				menu_criacao.tick();
+			}
 		} else if(gameState  == "MENU_PAUSE") {
 			menu_pause.tick();
 		} else if(gameState == "NEXT") {
@@ -289,16 +302,19 @@ public class Game extends Canvas implements Runnable, KeyListener {
 				g.setColor(Color.white);
 				g.setFont(new Font("Arial", Font.BOLD, 32));
 				int camera = 2;
-
-				if(cutsceneCont < cutsceneContMax) {
-					cutsceneCont++;
+				
+				if(signalState == 0) {
 					g.setColor(Color.white);
 					g.fillOval(cutsceneCont * camera, cutsceneCont * camera, (int)(WIDTH*SCALE - camera * 2 * cutsceneCont), (int)(HEIGHT*SCALE - camera * 2 * cutsceneCont));
 					g.setColor(Color.black);
-					g.drawString("Você nasceu no planeta terra",  WIDTH*SCALE/6, HEIGHT*SCALE/2);
-
+					g.drawString("Você nasceu no planeta TERRA",  WIDTH*SCALE/6, HEIGHT*SCALE/2);
+				} else if(signalState == 1) {
+					g.setColor(Color.white);
+					g.fillOval(cutsceneCont * camera, cutsceneCont * camera, (int)(WIDTH*SCALE - camera * 2 * cutsceneCont), (int)(HEIGHT*SCALE - camera * 2 * cutsceneCont));
+					if(cutsceneCont < cutsceneContMax-15)
+					g.drawImage(Game.spritesheet.getSprite(64, 256, 32, 32), 288, 288, 64, 64, null);
+//					g.drawImage(Game.spritesheet.getSprite(64, 256, 32, 32), cutsceneCont * camera, cutsceneCont * camera, (int)(WIDTH*SCALE - camera * 2 * cutsceneCont), (int)(HEIGHT*SCALE - camera * 2 * cutsceneCont), null);
 				}
-
 			} else {
 				menu_criacao.render(g);				
 			}
