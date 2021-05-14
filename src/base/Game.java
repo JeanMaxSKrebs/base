@@ -60,7 +60,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	public static String cutsceneState = "jogando";
 
 	
-	public static String gameState = "MENU_PRINCIPAL";
+	public static String gameState = "MENU_CRIACAO";
 	public static double gravidade = 5;
 	public static int maximumDodge = 100;
 	public static int maximumCritic = 100;
@@ -173,6 +173,10 @@ public class Game extends Canvas implements Runnable, KeyListener {
 					cutsceneState = "jogando";
 				}
 
+			} else if(cutsceneState == "npc") { 
+				String newWorld = "npc.png";
+				World.restartGame(newWorld);
+				cutsceneState = "";
 			} else if(cutsceneState == "comecar") {
 				
 			} else if(cutsceneState == "jogando") {
@@ -199,6 +203,18 @@ public class Game extends Canvas implements Runnable, KeyListener {
 				} else if(cutsceneCont == 0) {
 					cutsceneState = "";
 				}
+			} else if(cutsceneState == "morte") { 
+				if(player.getIdade() == "5") {
+					System.out.println("Você morreu atropelado, enquanto aprendia a andar de bicicleta");
+				} else if(player.getIdade() == "25") {
+					System.out.println("Você morreu drogado em um beco escuro, quando descobriu que foi corno");
+				} else if(player.getIdade() == "45") {
+					System.out.println("Você morreu por stress acumulado, quando descobriu que foi demitido");
+				} else if(player.getIdade() == "65") {
+					System.out.println("Você morreu de problemas cardiovasculares, logo que se aposentou");
+				}
+				cutsceneState = "npc";
+				gameState = "NORMAL";
 			} else {
 				menu_criacao.tick();
 			}

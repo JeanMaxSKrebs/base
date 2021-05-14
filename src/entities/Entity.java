@@ -4,6 +4,7 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
+import base.Game;
 import world.Camera;
 
 public abstract class Entity {
@@ -12,6 +13,8 @@ public abstract class Entity {
 	protected int width;
 	protected int height;
 	
+	public static BufferedImage ENTITY_NPC  = Game.spritesheet.getSprite(0, 288, 32, 32);
+
 	protected BufferedImage sprite;
 	protected int maskx, masky, mwidth, mheight;
 	

@@ -108,8 +108,7 @@ public class MenuCriacao extends Menu {
 						if(pontos == 0) {
 							System.out.println("CRIOU PERSONAGEM");
 							Game.player.createPlayer(atributos, idades[currentIdade]);
-							Game.gameState = "NORMAL";
-							Game.cutsceneState = "jogando";
+							Game.cutsceneState = "morte";
 						} else {
 							System.out.println("UTILIZE SEUS PONTOS");
 						}

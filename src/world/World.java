@@ -8,6 +8,7 @@ import javax.imageio.ImageIO;
 
 import base.Game;
 import entities.Entity;
+import entities.Npc;
 import entities.Player;
 import graficos.Spritesheet;
 
@@ -54,6 +55,10 @@ public class World {
 						Game.player.setWidth(24);
 						Game.player.setHeight(24);
 						Game.player.setMask(0, 4, 32, 24);						
+					} else if(pixelAtual == 0xFFFFF38E) {
+						//npc
+						Npc npc = new Npc(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Entity.ENTITY_NPC);
+						Game.entities.add(npc);
 					}
 
 				}
