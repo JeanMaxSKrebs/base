@@ -109,12 +109,16 @@ public class World {
 	}
 	
 	public static void restartGame(String fase) {
-		Game.entities = new ArrayList<Entity>();
-		Game.spritesheet = new Spritesheet("/spritesheet.png");
-		Game.player = new Player(0, 0, 32, 32, Game.spritesheet.getSprite(0, 32, 32, 32));
-		System.out.println(fase);
-		Game.world = new World("/"+fase);
-		Game.entities.add(Game.player);
+		if(fase == "npc.png") {
+			Game.world = new World("/"+fase);
+		} else {
+			Game.entities = new ArrayList<Entity>();
+			Game.spritesheet = new Spritesheet("/spritesheet.png");
+			Game.player = new Player(0, 0, 32, 32, Game.spritesheet.getSprite(0, 32, 32, 32));
+			System.out.println(fase);
+			Game.world = new World("/"+fase);
+			Game.entities.add(Game.player);
+		}
 		return;
 	}
 	

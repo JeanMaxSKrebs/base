@@ -26,6 +26,7 @@ public class Player extends Entity{
 	private int criatividade = 10, inteligencia = 10, forca = 10, agilidade = 10, armadura = 10;
 	private int nivel = 1;
 	private int atributos = 50;
+	private String regiao = "";
 //	private int atributosMax = 500;
 			
 	private int qtdSprites = 4;
@@ -234,8 +235,40 @@ public class Player extends Entity{
 		setForca(atributo[2]);
 		setAgilidade(atributo[3]);
 		setArmadura(atributo[4]);
+		
+		setRegiao(calculaRegiao());
+		System.out.println(regiao);
 	}
 	
+	private String calculaRegiao() {
+
+		double calculo = ((getCriatividade() * 1) 
+					+ (getAgilidade() * 2)
+					+ (getForca() * 3)
+					+ (getArmadura() * 4)
+					+ (getInteligencia() * 5));
+		System.out.println(calculo);
+		if(getIdade() == "5") {
+			calculo -= 11;
+		} else if(getIdade() == "25") {
+			if(calculo > 150) {				
+				calculo -= 5;
+			}
+			else {
+				calculo += 5;
+			}
+		} else if(getIdade() == "45") {
+			calculo += 11;
+		}
+		System.out.println(calculo);
+		if(calculo < 140) {
+			return "P";
+		} else if(calculo > 160) {
+			return "T";
+		} else {
+			return "M";
+		}
+	}
 	public String getIdade() {
 		return idade;
 	}
@@ -283,5 +316,11 @@ public class Player extends Entity{
 	}
 	public void setAtributos(int atributos) {
 		this.atributos = atributos;
+	}
+	public String getRegiao() {
+		return regiao;
+	}
+	public void setRegiao(String regiao) {
+		this.regiao = regiao;
 	}
 }
