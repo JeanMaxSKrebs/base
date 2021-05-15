@@ -112,7 +112,7 @@ public class Player extends Entity{
 	}
 	
 	public void tick() {
-		
+//		System.out.println("teste");
 		setMoved(false);
 
 		int midy = (int)(y + masky + mheight/2);
@@ -125,14 +125,15 @@ public class Player extends Entity{
 		
 		if(World.isFree(midx, (int)(plusy + Game.gravidade), "down") && isJumping == false) {
 			y+=Game.gravidade;
+			System.out.println("teste");
 		}
 		
 		if(right) {
 			setMoved(true);
 			dir = right_dir;
-			if(World.isFree(plusx, midy, "right"))				
+			x++;
+			if(World.isFree(plusx, midy, "right"))			
 				x += speed;
-			
 		} else if(left) {
 			setMoved(true);
 			dir = left_dir;
@@ -142,7 +143,6 @@ public class Player extends Entity{
 
 
 		if(jump) {
-
 			if(!World.isFree(midx, (int)(plusy + Game.gravidade), "down")) {
 				setMoved(true);
 				dir = up_dir;

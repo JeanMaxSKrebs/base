@@ -21,7 +21,6 @@ import entities.Entity;
 import entities.Player;
 import graficos.Spritesheet;
 import graficos.UI;
-import world.Camera;
 import world.World;
 
 public class Game extends Canvas implements Runnable, KeyListener {
@@ -57,10 +56,10 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	public static int[] minimapaPixels;
 	public static BufferedImage minimapa;
 	
-	public static String cutsceneState = "jogando";
+	public static String cutsceneState = "npc";
 
 	
-	public static String gameState = "MENU_CRIACAO";
+	public static String gameState = "NORMAL";
 	public static double gravidade = 5;
 	public static int maximumDodge = 100;
 	public static int maximumCritic = 100;
@@ -95,7 +94,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		spritesheet = new Spritesheet("/spritesheet.png");
 		player = new Player(0, 0, 32, 32, spritesheet.getSprite(0, 32, 32, 32));
 		//		world = new World("/teste.png");
-		world = new World("/fase"+CUR_LEVEL+".png");
+		world = new World("/npc.png");
 		entities.add(player);
 		
 		menu_principal = new MenuPrincipal();
@@ -174,13 +173,26 @@ public class Game extends Canvas implements Runnable, KeyListener {
 				}
 
 			} else if(cutsceneState == "npc") { 
-				String newWorld = "npc.png";
-				World.restartGame(newWorld);
-				cutsceneState = "";
+				Player p = Game.player;
+//				p.speed = 1;
+				p.tick();
+//				int xPlayer = p.getX();
+				System.out.println(p.getX());
+				System.out.println(p.getY());
+				if(p.getX() < 200) {
+					p.right = true;
+				} else {
+					p.right = false;
+				}
+				
+				if(p.right == false) {
+					cutsceneState = "jogando";
+				}
+//				cutsceneState = "";
+
 			} else if(cutsceneState == "comecar") {
 				
 			} else if(cutsceneState == "jogando") {
-				
 				for(int i=0; i<entities.size(); i++) {
 					Entity e = entities.get(i);
 					e.tick();
@@ -338,7 +350,11 @@ public class Game extends Canvas implements Runnable, KeyListener {
 			menu_pause.render(g);
 		} else {
 			World.renderMinimapa();
-			g.drawImage(minimapa, WIDTH/10 * SCALE * 3, HEIGHT * SCALE - (World.HEIGHT*3) ,WIDTH/10  * SCALE * 4, World.HEIGHT*2, null);
+			if(cutsceneState == "npc") {
+				g.drawImage(minimapa, WIDTH/10 * SCALE * 4, HEIGHT * SCALE - (World.HEIGHT *5), WIDTH/10  * SCALE * 2, World.HEIGHT*5, null);
+			} else {
+				g.drawImage(minimapa, WIDTH/10 * SCALE * 3, HEIGHT * SCALE - (World.HEIGHT*3), WIDTH/10  * SCALE * 4, World.HEIGHT*2, null);
+			}
 		}
 		
 		bs.show();

@@ -111,6 +111,7 @@ public class World {
 	public static void restartGame(String fase) {
 		if(fase == "npc.png") {
 			Game.world = new World("/"+fase);
+
 		} else {
 			Game.entities = new ArrayList<Entity>();
 			Game.spritesheet = new Spritesheet("/spritesheet.png");
