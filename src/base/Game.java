@@ -57,6 +57,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	public static BufferedImage minimapa;
 	
 	public static String cutsceneState = "npc";
+	private int state = 0;
 
 	
 	public static String gameState = "NORMAL";
@@ -155,7 +156,6 @@ public class Game extends Canvas implements Runnable, KeyListener {
 				Player p = Game.player;
 				p.speed = 1;
 				p.tick();
-//				int xPlayer = p.getX();
 
 				if(p.getX() < 500) {
 					p.right = true;
@@ -172,24 +172,29 @@ public class Game extends Canvas implements Runnable, KeyListener {
 					cutsceneState = "jogando";
 				}
 
-			} else if(cutsceneState == "npc") { 
+			} else if(cutsceneState == "npc") {
 				Player p = Game.player;
-//				p.speed = 1;
+				double xPlayer = p.getX() + 1;
+				double yPlayer = p.getY() - 2;
+
 				p.tick();
-//				int xPlayer = p.getX();
-				System.out.println(p.getX());
-				System.out.println(p.getY());
-				if(p.getX() < 200) {
-					p.right = true;
-				} else {
-					p.right = false;
-				}
-				
-				if(p.right == false) {
+				System.out.println(yPlayer);
+				if(state == 0) {
+					if(yPlayer > 32) {
+						p.setY((int)yPlayer);
+					} else {
+						state++;
+					}
+				} else if(state == 1) {
+					if(xPlayer < 250) {
+						p.setX((int)xPlayer);
+					} else {
+						state++;
+					}
+				} else if(state == 2) {
 					cutsceneState = "jogando";
 				}
-//				cutsceneState = "";
-
+				
 			} else if(cutsceneState == "comecar") {
 				
 			} else if(cutsceneState == "jogando") {
@@ -350,11 +355,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 			menu_pause.render(g);
 		} else {
 			World.renderMinimapa();
-			if(cutsceneState == "npc") {
-				g.drawImage(minimapa, WIDTH/10 * SCALE * 4, HEIGHT * SCALE - (World.HEIGHT *5), WIDTH/10  * SCALE * 2, World.HEIGHT*5, null);
-			} else {
-				g.drawImage(minimapa, WIDTH/10 * SCALE * 3, HEIGHT * SCALE - (World.HEIGHT*3), WIDTH/10  * SCALE * 4, World.HEIGHT*2, null);
-			}
+			g.drawImage(minimapa, WIDTH/10 * SCALE * 4, HEIGHT * SCALE - (World.HEIGHT *5), WIDTH/10  * SCALE * 2, World.HEIGHT*5, null);
 		}
 		
 		bs.show();
@@ -444,7 +445,6 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		}
 		if(e.getKeyCode() == KeyEvent.VK_ESCAPE || e.getKeyCode() == KeyEvent.VK_P) {
 			if(gameState == "NORMAL") {
-				System.out.println("teste");
 				gameState = "MENU_PAUSE";
 			}
 		}

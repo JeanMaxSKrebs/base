@@ -29,10 +29,14 @@ public class Player extends Entity{
 	private String regiao = "";
 //	private int atributosMax = 500;
 			
-	private int qtdSprites = 4;
+	private int qtdSprites = 2;
 	private int frames = 0, maxFrames = 20, index = 0, maxIndex = (qtdSprites-1);
 	private boolean moved;
 	
+	
+	private BufferedImage[] rightGhost;
+	private BufferedImage[] leftGhost;
+	private BufferedImage[] stopGhost;
 	private BufferedImage[] rightPlayer;
 	private BufferedImage[] leftPlayer;
 	private BufferedImage[] downPlayer;
@@ -48,10 +52,25 @@ public class Player extends Entity{
 		super(x, y, width, height, sprite);
 		
 	
+		rightGhost = new BufferedImage[qtdSprites];
+		leftGhost = new BufferedImage[qtdSprites];
+		stopGhost = new BufferedImage[qtdSprites];
 		rightPlayer = new BufferedImage[qtdSprites];
 		leftPlayer = new BufferedImage[qtdSprites];
 		upPlayer = new BufferedImage[qtdSprites];
 		downPlayer = new BufferedImage[qtdSprites];
+		
+		for(int i=0; i<qtdSprites; i++) {
+			rightGhost[i] = Game.spritesheet.getSprite((i*32), 32, 32, 32);
+		}
+		
+		for(int i=0; i<qtdSprites; i++) {
+			leftGhost[i] = Game.spritesheet.getSprite((i*32), 0, 32, 32);
+		}
+		
+		for(int i=0; i<qtdSprites; i++) {
+			stopGhost[i] = Game.spritesheet.getSprite(32, (i*32), 32, 32);
+		}
 		
 		for(int i=0; i<qtdSprites; i++) {
 			leftPlayer[i] = Game.spritesheet.getSprite((i*32), 0, 32, 32);
@@ -125,13 +144,11 @@ public class Player extends Entity{
 		
 		if(World.isFree(midx, (int)(plusy + Game.gravidade), "down") && isJumping == false) {
 			y+=Game.gravidade;
-			System.out.println("teste");
 		}
 		
 		if(right) {
 			setMoved(true);
 			dir = right_dir;
-			x++;
 			if(World.isFree(plusx, midy, "right"))			
 				x += speed;
 		} else if(left) {
@@ -184,19 +201,31 @@ public class Player extends Entity{
 	}
 
 	public void render(Graphics g) {
-		if(dir == right_dir) {
-			g.drawImage(rightPlayer[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
+		if(Game.cutsceneState == "npc") {
+			if(dir == right_dir) {
+				g.drawImage(rightGhost[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
+			}
+			else if(dir == left_dir) {
+				g.drawImage(leftGhost[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
+			}
+			else if(dir == up_dir) {
+				g.drawImage(stopGhost[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
+			}
+
+		} else if(Game.cutsceneState == "jogando") {
+			if(dir == right_dir) {
+				g.drawImage(rightGhost[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
+			}
+			else if(dir == left_dir) {
+				g.drawImage(leftGhost[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
+			}
+			else if(dir == up_dir) {
+				g.drawImage(stopGhost[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
+			}
+			else if(dir == down_dir) {			
+				g.drawImage(downPlayer[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
+			}
 		}
-		else if(dir == left_dir) {
-			g.drawImage(leftPlayer[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
-		}
-		else if(dir == up_dir) {
-			g.drawImage(upPlayer[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
-		}
-		else if(dir == down_dir) {			
-			g.drawImage(downPlayer[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
-		}
-		
 //		g.setColor(Color.red);
 //		g.fillRect(this.getX() + maskx - Camera.x, this.getY() + masky - Camera.y, mwidth, mheight);
 	}
