@@ -102,8 +102,8 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		//		world = new World("/teste.png");
 		world = new World("/npc.png");
 
-		entities.add(player);
 		entities.add(npc);
+		entities.add(player);
 		
 		menu_principal = new MenuPrincipal();
 		menu_personagem = new MenuPersonagem();		

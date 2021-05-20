@@ -13,14 +13,17 @@ public class Npc extends Entity {
 	public String[] frases = new String[5];
 	
 	public boolean showMessage = false;
+	public boolean show = false;
 
+	public int curIndex = 0;
+	
 	public int frase = 0;
 	public int fraseMax = frases.length - 1;
 	
 	public Npc(int x, int y, int width, int height, BufferedImage sprite) {
 		super(x, y, width, height, sprite);
 		frases[0] = "Olá <<nome do Player>>";
-		frases[1] = "Olá <<nome do Player>>";
+		frases[1] = "<<nome do Player>>, irá conseguir";
 		frases[2] = "Olá <<nome do Player>>";
 		frases[3] = "Olá <<nome do Player>>";
 		frases[4] = "Olá <<nome do Player>>";
@@ -34,7 +37,15 @@ public class Npc extends Entity {
 		int yNpc = (int)y;
 		
 		if(Math.abs(xPlayer - xNpc) < 32 && Math.abs(yPlayer - yNpc) < 32) {
-			showMessage = true;
+			if(show == false) {
+				showMessage = true;
+				show = true;
+			}
+		}
+		
+		if(showMessage) {
+			if(curIndex < frases[frase].length())
+				curIndex++;
 		}
 	}
 	
@@ -42,9 +53,10 @@ public class Npc extends Entity {
 		if(frase == fraseMax) {
 			frase = 0;
 			showMessage = false;
-			Game.gameState = "MENU_CLASSE";
+//			Game.gameState = "MENU_CLASSE";
 		} else {
 			frase++;
+			curIndex = 0;
 		}
 	}
 	
@@ -60,8 +72,8 @@ public class Npc extends Entity {
 			g.setFont(new Font("arial", Font.BOLD, 9));
 			g.drawString((frase+1)+"/"+frases.length, 38, 225);
 			g.setFont(new Font("arial", Font.BOLD, 10));
-			g.drawString(frases[frase], 64, 240);
-			g.drawString("Pressione SPACE", 64, 250);
+			g.drawString(frases[frase].substring(0, curIndex), 64, 240);
+			g.drawString("Pressione SPACE", 64, 300);
 
 			
 
