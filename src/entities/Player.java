@@ -1,5 +1,6 @@
 package entities;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
@@ -37,6 +38,7 @@ public class Player extends Entity{
 	private BufferedImage[] rightGhost;
 	private BufferedImage[] leftGhost;
 	private BufferedImage[] stopGhost;
+	private BufferedImage[] stopPlayer;
 	private BufferedImage[] rightPlayer;
 	private BufferedImage[] leftPlayer;
 	private BufferedImage[] downPlayer;
@@ -55,6 +57,7 @@ public class Player extends Entity{
 		rightGhost = new BufferedImage[qtdSprites];
 		leftGhost = new BufferedImage[qtdSprites];
 		stopGhost = new BufferedImage[qtdSprites];
+		stopPlayer = new BufferedImage[qtdSprites];
 		rightPlayer = new BufferedImage[qtdSprites];
 		leftPlayer = new BufferedImage[qtdSprites];
 		upPlayer = new BufferedImage[qtdSprites];
@@ -70,6 +73,10 @@ public class Player extends Entity{
 		
 		for(int i=0; i<qtdSprites; i++) {
 			stopGhost[i] = Game.spritesheet.getSprite(32, (i*32), 32, 32);
+		}
+		
+		for(int i=0; i<qtdSprites; i++) {
+			stopPlayer[i] = Game.spritesheet.getSprite((i*25), 65, 25, 24);
 		}
 		
 		for(int i=0; i<qtdSprites; i++) {
@@ -214,20 +221,20 @@ public class Player extends Entity{
 
 		} else if(Game.cutsceneState == "jogando") {
 			if(dir == right_dir) {
-				g.drawImage(rightGhost[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
+				g.drawImage(stopPlayer[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
 			}
 			else if(dir == left_dir) {
-				g.drawImage(leftGhost[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
+				g.drawImage(stopPlayer[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
 			}
 			else if(dir == up_dir) {
-				g.drawImage(stopGhost[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
+				g.drawImage(stopPlayer[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
 			}
 			else if(dir == down_dir) {			
-				g.drawImage(downPlayer[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
+				g.drawImage(stopPlayer[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
 			}
 		}
-//		g.setColor(Color.red);
-//		g.fillRect(this.getX() + maskx - Camera.x, this.getY() + masky - Camera.y, mwidth, mheight);
+		g.setColor(Color.red);
+		g.fillRect(this.getX() + maskx - Camera.x, this.getY() + masky - Camera.y, mwidth, mheight);
 	}
 	public double getLife() {
 		return life;
