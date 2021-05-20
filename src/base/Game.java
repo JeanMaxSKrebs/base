@@ -18,6 +18,7 @@ import java.util.Random;
 import javax.swing.JFrame;
 
 import entities.Entity;
+import entities.Npc;
 import entities.Player;
 import graficos.Spritesheet;
 import graficos.UI;
@@ -46,6 +47,8 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	
 	public static Player player;
 	
+	public static Npc npc;
+	
 	public UI ui;
 	public MenuPrincipal menu_principal;
 	public MenuPersonagem menu_personagem;
@@ -57,7 +60,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	public static BufferedImage minimapa;
 	
 	public static String cutsceneState = "npc";
-	private int state = 0;
+	public static int state = 0;
 
 	
 	public static String gameState = "NORMAL";
@@ -94,9 +97,13 @@ public class Game extends Canvas implements Runnable, KeyListener {
 
 		spritesheet = new Spritesheet("/spritesheet.png");
 		player = new Player(0, 0, 32, 32, spritesheet.getSprite(0, 32, 32, 32));
+		npc = new Npc(0, 0, 32, 32, spritesheet.getSprite(0, 288, 32, 32));
+		
 		//		world = new World("/teste.png");
 		world = new World("/npc.png");
+
 		entities.add(player);
+		entities.add(npc);
 		
 		menu_principal = new MenuPrincipal();
 		menu_personagem = new MenuPersonagem();		
@@ -177,11 +184,17 @@ public class Game extends Canvas implements Runnable, KeyListener {
 				double xPlayer = p.getX() + 1;
 				double yPlayer = p.getY() - 2;
 
-				p.tick();
-				System.out.println(yPlayer);
+				for(int i=0; i<entities.size(); i++) {
+					Entity e = entities.get(i);
+					e.tick();
+				}
+
 				if(state == 0) {
+					System.out.println(yPlayer);
 					if(yPlayer > 32) {
-						p.setY((int)yPlayer);
+						p.setY(32);
+						p.setX(250);
+//						p.setY((int)yPlayer);
 					} else {
 						state++;
 					}
@@ -194,6 +207,8 @@ public class Game extends Canvas implements Runnable, KeyListener {
 				} else if(state == 2) {
 					cutsceneState = "jogando";
 				}
+//				System.out.println(state);
+
 				
 			} else if(cutsceneState == "comecar") {
 				
@@ -235,6 +250,8 @@ public class Game extends Canvas implements Runnable, KeyListener {
 			} else {
 				menu_criacao.tick();
 			}
+		} else if(gameState  == "MENU_CLASSE") {
+			menu_criacao.tick();
 		} else if(gameState  == "MENU_PAUSE") {
 			menu_pause.tick();
 		} else if(gameState == "NEXT") {
@@ -351,11 +368,14 @@ public class Game extends Canvas implements Runnable, KeyListener {
 			} else {
 				menu_criacao.render(g);				
 			}
+		} else if(gameState  == "MENU_CLASSE") {
+			menu_criacao.render(g);				
 		} else if(gameState  == "MENU_PAUSE") {
 			menu_pause.render(g);
-		} else {
+		} else {	
 			World.renderMinimapa();
-			g.drawImage(minimapa, WIDTH/10 * SCALE * 4, HEIGHT * SCALE - (World.HEIGHT *5), WIDTH/10  * SCALE * 2, World.HEIGHT*5, null);
+			if(!npc.showMessage)
+				g.drawImage(minimapa, WIDTH/10 * SCALE * 4, HEIGHT * SCALE - (World.HEIGHT *5), WIDTH/10  * SCALE * 2, World.HEIGHT*5, null);
 		}
 		
 		bs.show();
@@ -422,7 +442,12 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		}
 		
 		if(e.getKeyCode() == KeyEvent.VK_SPACE) {
-			player.jump = true;
+			
+			if(npc.showMessage) {
+				npc.proximaFrase();
+			} else {
+				player.jump = true;				
+			}
 		}
 		
 		if(e.getKeyCode() == KeyEvent.VK_RIGHT||e.getKeyCode() == KeyEvent.VK_D) {
