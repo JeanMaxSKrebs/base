@@ -8,7 +8,6 @@ public class MenuClasse extends Menu {
 
 	public String[] options = {"mae", "pai", "aleatorio", "criar", "sair"};
 	public String[] tipoClasse = Game.player.getClasse();
-
 	
 	private String pai = "Humano";
 	private String mae = "Humano";
@@ -110,6 +109,7 @@ public class MenuClasse extends Menu {
 							Game.player.setClasseMae(mae);;
 							Game.player.setClassePai(pai);;
 							Game.cutsceneState = "nascimento";
+//							Game.gameState = "MENU_ILHAS";
 				
 				} else if(options[currentOption] == "sair") {
 					Game.gameState = "MENU_PRINCIPAL";

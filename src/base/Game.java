@@ -53,7 +53,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	public MenuPrincipal menu_principal;
 	public MenuPersonagem menu_personagem;
 	public MenuCriacao menu_criacao;
-	public MenuClasse menu_classe;
+	public static MenuClasse menu_classe;
 	public MenuPause menu_pause;
 	
 	public int[] pixels;
@@ -261,10 +261,10 @@ public class Game extends Canvas implements Runnable, KeyListener {
 				if(cutsceneCont == cutsceneContMax) {
 					signalState++;
 				} else if(cutsceneCont < -100) {
-//					signalState--;
+					signalState--;
 					
-//					cutsceneState = "npc";
-//					gameState = "NORMAL";
+					cutsceneState = "npc";
+					gameState = "NORMAL";
 				}
 			} else {
 				menu_criacao.tick();
@@ -547,14 +547,20 @@ public class Game extends Canvas implements Runnable, KeyListener {
 			if(npc.showMessage) {
 				npc.proximaFrase();
 			} else {
-				player.jump = true;				
+				if(gameState == "NORMAL" && cutsceneState != "npc") {
+					player.jump = true;				
+				}
 			}
 		}
 		
 		if(e.getKeyCode() == KeyEvent.VK_RIGHT||e.getKeyCode() == KeyEvent.VK_D) {
-			player.right = true;
+			if(gameState == "NORMAL" && cutsceneState != "npc") {
+				player.right = true;
+			}
 		} else if(e.getKeyCode() == KeyEvent.VK_LEFT||e.getKeyCode() == KeyEvent.VK_A) {
-			player.left = true;
+			if(gameState == "NORMAL" && cutsceneState != "npc") {
+				player.left = true;
+			}
 		}
 		
 		if(e.getKeyCode() == KeyEvent.VK_ENTER) {
