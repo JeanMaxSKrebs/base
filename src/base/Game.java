@@ -52,7 +52,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	public UI ui;
 	public MenuPrincipal menu_principal;
 	public MenuPersonagem menu_personagem;
-	public MenuCriacao menu_criacao;
+	public static MenuCriacao menu_criacao;
 	public static MenuClasse menu_classe;
 	public MenuPause menu_pause;
 	
@@ -409,7 +409,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 					g.setColor(Color.white);
 					g.fillOval(cutsceneCont * camera, cutsceneCont * camera, (int)(WIDTH*SCALE - camera * 2 * cutsceneCont), (int)(HEIGHT*SCALE - camera * 2 * cutsceneCont));
 					if(cutsceneCont < cutsceneContMax-15)
-						g.drawImage(MenuCriacao.spriteBase, 288, 288, 64, 64, null);
+						g.drawImage(Game.menu_criacao.spriteBase, 288, 288, 64, 64, null);
 //					g.drawImage(Game.spritesheet.getSprite(64, 256, 32, 32), cutsceneCont * camera, cutsceneCont * camera, (int)(WIDTH*SCALE - camera * 2 * cutsceneCont), (int)(HEIGHT*SCALE - camera * 2 * cutsceneCont), null);
 				}
 			} else if(cutsceneState == "morte") {
@@ -423,9 +423,17 @@ public class Game extends Canvas implements Runnable, KeyListener {
 				if(signalState == 0) {
 					g.setColor(Color.white);
 					g.fillOval(cutsceneCont * camera, cutsceneCont * camera, (int)(WIDTH*SCALE - camera * 2 * cutsceneCont), (int)(HEIGHT*SCALE - camera * 2 * cutsceneCont));
-					if(cutsceneCont < cutsceneContMax-30)
-					g.drawImage(MenuCriacao.spriteBase, 288, 288, 64, 64, null);
-//					g.drawImage(Game.spritesheet.getSprite(64, 256, 32, 32), cutsceneCont * camera, cutsceneCont * camera, (int)(WIDTH*SCALE - camera * 2 * cutsceneCont), (int)(HEIGHT*SCALE - camera * 2 * cutsceneCont), null);
+					if(cutsceneCont < cutsceneContMax-30) {
+						g.drawImage(Game.menu_criacao.spriteBase, 288, 288, 64, 64, null);
+						if(Game.menu_criacao.currentIdade > 0) {
+							g.drawImage(Game.menu_criacao.spriteBarba[Game.menu_criacao.currentIdade-1], 295, 323, 50, 30, null);
+						}
+						if(Game.menu_criacao.currentIdade == Game.menu_criacao.maxIdade) {
+							g.drawImage(Game.menu_criacao.spriteCabelo[1], 295, 288, 50, 44, null);				
+						} else {
+							g.drawImage(Game.menu_criacao.spriteCabelo[0], 295, 288, 50, 44, null);				
+						}				
+					}
 				} else if(signalState == 1) {
 					g.setColor(Color.white);
 					g.fillOval(cutsceneCont * camera, cutsceneCont * camera, (int)(WIDTH*SCALE - camera * 2 * cutsceneCont), (int)(HEIGHT*SCALE - camera * 2 * cutsceneCont));

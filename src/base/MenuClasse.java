@@ -17,7 +17,7 @@ public class MenuClasse extends Menu {
 	public int currentClasse = 0;
 	public int maxClasse = tipoClasse.length;
 	
-	private boolean showOptions = false;
+//	private boolean showOptions = false;
 	private boolean maeShowOptions = false;
 	private boolean paiShowOptions = false;
 
@@ -94,7 +94,7 @@ public class MenuClasse extends Menu {
 			}
 			if(enter) {
 				enter = false;
-				showOptions = false;
+//				showOptions = false;
 				
 				enter = false;
 				if(options[currentOption] == "mae") {

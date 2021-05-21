@@ -7,15 +7,15 @@ import java.awt.image.BufferedImage;
 
 public class MenuCriacao extends Menu {
 	
-	public static BufferedImage spriteBase = Game.spritesheet.getSprite(131, 285, 18, 12);
+	public BufferedImage spriteBase = Game.spritesheet.getSprite(131, 285, 18, 12);
 
-	public static BufferedImage[] spriteBarba  = 
+	public BufferedImage[] spriteBarba  = 
 		{
 			Game.spritesheet.getSprite(153, 285, 14, 5),
 			Game.spritesheet.getSprite(153, 291, 14, 5),
 			Game.spritesheet.getSprite(153, 297, 14, 5)
 		};
-	public static BufferedImage[] spriteCabelo  = 
+	public BufferedImage[] spriteCabelo  = 
 		{
 			Game.spritesheet.getSprite(229, 285, 14, 8),
 			Game.spritesheet.getSprite(229, 294, 14, 8),
