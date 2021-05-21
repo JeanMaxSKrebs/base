@@ -53,17 +53,18 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	public MenuPrincipal menu_principal;
 	public MenuPersonagem menu_personagem;
 	public MenuCriacao menu_criacao;
+	public MenuClasse menu_classe;
 	public MenuPause menu_pause;
 	
 	public int[] pixels;
 	public static int[] minimapaPixels;
 	public static BufferedImage minimapa;
 	
-	public static String cutsceneState = "npc";
+	public static String cutsceneState = "";
 	public static int state = 0;
 
 	
-	public static String gameState = "NORMAL";
+	public static String gameState = "MENU_CLASSE";
 	public static double gravidade = 5;
 	public static int maximumDodge = 100;
 	public static int maximumCritic = 100;
@@ -108,6 +109,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		menu_principal = new MenuPrincipal();
 		menu_personagem = new MenuPersonagem();		
 		menu_criacao = new MenuCriacao();
+		menu_classe = new MenuClasse();
 		menu_pause = new MenuPause();
 		
 		minimapa = new BufferedImage(World.WIDTH, World.HEIGHT, BufferedImage.TYPE_INT_RGB);
@@ -234,6 +236,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 					signalState++;
 				} else if(cutsceneCont == 0) {
 					cutsceneState = "";
+					signalState--;
 				}
 			} else if(cutsceneState == "morte") { 
 				if(player.getIdade() == "5") {
@@ -251,7 +254,22 @@ public class Game extends Canvas implements Runnable, KeyListener {
 				menu_criacao.tick();
 			}
 		} else if(gameState  == "MENU_CLASSE") {
-			menu_criacao.tick();
+			 if(cutsceneState == "nascimento") {
+					if(signalState == 0) {
+						cutsceneCont++;
+					} else if(signalState == 1) {
+						cutsceneCont--;
+					}
+					
+					if(cutsceneCont == cutsceneContMax) {
+						signalState++;
+					} else if(cutsceneCont == 0) {
+						cutsceneState = "";
+						signalState--;
+					}
+			 } else {
+				 menu_classe.tick();
+			 }
 		} else if(gameState  == "MENU_PAUSE") {
 			menu_pause.tick();
 		} else if(gameState == "NEXT") {
@@ -369,7 +387,31 @@ public class Game extends Canvas implements Runnable, KeyListener {
 				menu_criacao.render(g);				
 			}
 		} else if(gameState  == "MENU_CLASSE") {
-			menu_criacao.render(g);				
+			if(cutsceneState == "nascimento") {
+				g.setColor(Color.black);
+				g.fillRect(0, 0, WIDTH*SCALE, HEIGHT*SCALE);
+
+				g.setColor(Color.white);
+				g.setFont(new Font("Arial", Font.BOLD, 32));
+				int camera = 2;
+				
+				if(signalState == 0) {
+					g.setColor(Color.white);
+					g.fillOval(cutsceneCont * camera, cutsceneCont * camera, (int)(WIDTH*SCALE - camera * 2 * cutsceneCont), (int)(HEIGHT*SCALE - camera * 2 * cutsceneCont));
+					g.setColor(Color.black);
+					g.drawString("Você nasceu no <<insira nome do planeta>>", 50, HEIGHT*SCALE/2 - 50);
+					g.drawString("Descendência paterna: "+Game.player.getClassePai(),  100, HEIGHT*SCALE/2);
+					g.drawString("Descendência materna: "+Game.player.getClasseMae(),  100, HEIGHT*SCALE/2 + 50);
+				} else if(signalState == 1) {
+					g.setColor(Color.white);
+					g.fillOval(cutsceneCont * camera, cutsceneCont * camera, (int)(WIDTH*SCALE - camera * 2 * cutsceneCont), (int)(HEIGHT*SCALE - camera * 2 * cutsceneCont));
+					if(cutsceneCont < cutsceneContMax-15)
+					g.drawImage(Game.spritesheet.getSprite(64, 256, 32, 32), 288, 288, 64, 64, null);
+//					g.drawImage(Game.spritesheet.getSprite(64, 256, 32, 32), cutsceneCont * camera, cutsceneCont * camera, (int)(WIDTH*SCALE - camera * 2 * cutsceneCont), (int)(HEIGHT*SCALE - camera * 2 * cutsceneCont), null);
+				}
+			} else {
+				menu_classe.render(g);				
+			}
 		} else if(gameState  == "MENU_PAUSE") {
 			menu_pause.render(g);
 		} else {	
@@ -428,6 +470,8 @@ public class Game extends Canvas implements Runnable, KeyListener {
 				menu_criacao.up = true;
 			} else if(gameState == "MENU_PAUSE") {
 				menu_pause.up = true;
+			} else if(gameState == "MENU_CLASSE") {
+				menu_classe.up = true;
 			}
 		} else if(e.getKeyCode() == KeyEvent.VK_DOWN||e.getKeyCode() == KeyEvent.VK_S){
 			if(gameState == "MENU_PRINCIPAL") {
@@ -438,6 +482,8 @@ public class Game extends Canvas implements Runnable, KeyListener {
 				menu_criacao.down = true;
 			} else if(gameState == "MENU_PAUSE") {
 				menu_pause.down = true;
+			} else if(gameState == "MENU_CLASSE") {
+				menu_classe.down = true;
 			}
 		}
 		
@@ -466,6 +512,8 @@ public class Game extends Canvas implements Runnable, KeyListener {
 				menu_criacao.enter = true;
 			} else if(gameState == "MENU_PAUSE") {
 				menu_pause.enter = true;
+			} else if(gameState == "MENU_CLASSE") {
+				menu_classe.enter = true;
 			}
 		}
 		if(e.getKeyCode() == KeyEvent.VK_ESCAPE || e.getKeyCode() == KeyEvent.VK_P) {

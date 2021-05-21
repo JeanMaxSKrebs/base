@@ -27,13 +27,19 @@ public class Player extends Entity{
 	private int criatividade = 10, inteligencia = 10, forca = 10, agilidade = 10, armadura = 10;
 	private int nivel = 1;
 	private int atributos = 50;
-	private String regiao = "";
 //	private int atributosMax = 500;
+	private String regiao = "P";
+	
+	private String classeMae = "Humano";
+	private String classePai = "Humano";
 			
 	private int qtdSprites = 2;
 	private int frames = 0, maxFrames = 20, index = 0, maxIndex = (qtdSprites-1);
 	private boolean moved;
 	
+	public String[] regiaoP = {"Humano", "Goblin", "Elfo", "Anão", "Metamorfo"};
+	public String[] regiaoM = {"Humano", "Lobisomen", "Vampiro", "Demônio", "Anjo"};
+	public String[] regiaoT = {"Humano", "Robô", "Ciborgue", "Androíde", "Alienígena"};
 	
 	private BufferedImage[] rightGhost;
 	private BufferedImage[] leftGhost;
@@ -208,7 +214,7 @@ public class Player extends Entity{
 	}
 
 	public void render(Graphics g) {
-		if(Game.cutsceneState == "npc") {
+		if(Game.state != 4) {
 			if(dir == right_dir) {
 				g.drawImage(rightGhost[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
 			}
@@ -219,7 +225,7 @@ public class Player extends Entity{
 				g.drawImage(stopGhost[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
 			}
 
-		} else if(Game.cutsceneState == "jogando") {
+		} else {
 			if(dir == right_dir) {
 				g.drawImage(stopPlayer[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
 			}
@@ -233,8 +239,8 @@ public class Player extends Entity{
 				g.drawImage(stopPlayer[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
 			}
 		}
-		g.setColor(Color.red);
-		g.fillRect(this.getX() + maskx - Camera.x, this.getY() + masky - Camera.y, mwidth, mheight);
+//		g.setColor(Color.red);
+//		g.fillRect(this.getX() + maskx - Camera.x, this.getY() + masky - Camera.y, mwidth, mheight);
 	}
 	public double getLife() {
 		return life;
@@ -358,5 +364,27 @@ public class Player extends Entity{
 	}
 	public void setRegiao(String regiao) {
 		this.regiao = regiao;
+	}
+	public String[] getClasse() {
+		if(regiao == "P")
+			return regiaoP;
+		else if(regiao == "M")
+			return regiaoM;
+		else if(regiao == "T")
+			return regiaoT;
+		
+		return null;
+	}
+	public String getClasseMae() {
+		return classeMae;
+	}
+	public void setClasseMae(String classeMae) {
+		this.classeMae = classeMae;
+	}
+	public String getClassePai() {
+		return classePai;
+	}
+	public void setClassePai(String classePai) {
+		this.classePai = classePai;
 	}
 }

@@ -53,7 +53,8 @@ public class Npc extends Entity {
 		if(frase == fraseMax) {
 			frase = 0;
 			showMessage = false;
-//			Game.gameState = "MENU_CLASSE";
+			Game.gameState = "MENU_CLASSE";
+			Game.cutsceneState = "";
 		} else {
 			frase++;
 			curIndex = 0;
@@ -61,7 +62,7 @@ public class Npc extends Entity {
 	}
 	
 	public void render(Graphics g) {
-		System.out.println(Game.cutsceneState);
+//		System.out.println(Game.cutsceneState);
 		g.drawImage(sprite, getX() - Camera.x, getY() - Camera.y, null);
 		if(showMessage) {
 			g.setColor(Color.white);
