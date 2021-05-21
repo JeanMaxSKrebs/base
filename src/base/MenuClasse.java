@@ -112,7 +112,7 @@ public class MenuClasse extends Menu {
 //							Game.gameState = "MENU_ILHAS";
 				
 				} else if(options[currentOption] == "sair") {
-					Game.gameState = "MENU_PRINCIPAL";
+					System.exit(1);
 				}
 			}	
 		}

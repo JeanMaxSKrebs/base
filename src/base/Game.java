@@ -60,11 +60,11 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	public static int[] minimapaPixels;
 	public static BufferedImage minimapa;
 	
-	public static String cutsceneState = "";
+	public static String cutsceneState = "npc";
 	public static int state = 0;
 
 	
-	public static String gameState = "MENU_CRIACAO";
+	public static String gameState = "MENU_PRINCIPAL";
 	public static double gravidade = 5;
 	public static int maximumDodge = 100;
 	public static int maximumCritic = 100;
@@ -551,13 +551,16 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		}
 		
 		if(e.getKeyCode() == KeyEvent.VK_SPACE) {
-			
 			if(npc.showMessage) {
 				npc.proximaFrase();
 			} else {
 				if(gameState == "NORMAL" && cutsceneState != "npc") {
 					player.jump = true;				
 				}
+			}
+			
+			 if(gameState == "MENU_CLASSE") {
+				menu_classe.enter = true;
 			}
 		}
 		

@@ -22,11 +22,11 @@ public class Npc extends Entity {
 	
 	public Npc(int x, int y, int width, int height, BufferedImage sprite) {
 		super(x, y, width, height, sprite);
-		frases[0] = "Olá <<nome do Player>>";
-		frases[1] = "<<nome do Player>>, irá conseguir";
-		frases[2] = "Olá <<nome do Player>>";
-		frases[3] = "Olá <<nome do Player>>";
-		frases[4] = "Olá <<nome do Player>>";
+		frases[0] = "Caro <<nome do Player>>,   por causa de suas escolhas durante sua vida na Terra,você chegou nesse momento, porém vejo   algo em você.....";
+		frases[1] = "Além disso acabei de perder meu preciosoGuardião.......";
+		frases[2] = "Então lhe darei uma segunda chance numa outra dimensão no planeta <<nome do planeta>>";
+		frases[3] = "Porém suas escolhas durante a vida pa -  ssada ainda o influenciam";
+		frases[4] = "Portanto, você ................ será um habitante da Região:  "+Game.player.getRegiao();
 	}
 	
 	public void tick() {
@@ -73,7 +73,23 @@ public class Npc extends Entity {
 			g.setFont(new Font("arial", Font.BOLD, 9));
 			g.drawString((frase+1)+"/"+frases.length, 38, 225);
 			g.setFont(new Font("arial", Font.BOLD, 10));
-			g.drawString(frases[frase].substring(0, curIndex), 64, 240);
+			
+			if(curIndex < 40) {				
+				g.drawString(frases[frase].substring(0, curIndex), 64, 240);
+			} else if(curIndex > 40 && curIndex < 80) {
+				g.drawString(frases[frase].substring(0, 40), 64, 240);
+				g.drawString(frases[frase].substring(40, curIndex), 64, 240 + 15);
+			} else if(curIndex > 80 && curIndex < 100) {
+				g.drawString(frases[frase].substring(0, 40), 64, 240);
+				g.drawString(frases[frase].substring(40, 80), 64, 240 + 15);
+				g.drawString(frases[frase].substring(80, curIndex), 64, 240 + 30);
+			} else if(curIndex > 120) {
+				g.drawString(frases[frase].substring(0, 40), 64, 240);
+				g.drawString(frases[frase].substring(40, 80), 64, 240 + 15);
+				g.drawString(frases[frase].substring(80, 120), 64, 240 + 30);
+				g.drawString(frases[frase].substring(120, curIndex), 64, 240 + 45);
+			}
+			
 			g.drawString("Pressione SPACE", 64, 300);
 
 			
