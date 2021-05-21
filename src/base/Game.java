@@ -78,6 +78,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	private int cutsceneCont = 0;
 	private int cutsceneContMax = 180;
 	private int signalState = 0;
+	private String cutsceneMsg;
 	
 	public static double LIFE = 100;
 	public static double STAMINE = 0;
@@ -192,11 +193,11 @@ public class Game extends Canvas implements Runnable, KeyListener {
 				}
 
 				if(state == 0) {
-					System.out.println(yPlayer);
+//					System.out.println(yPlayer);
 					if(yPlayer > 32) {
-						p.setY(32);
-						p.setX(250);
-//						p.setY((int)yPlayer);
+//						p.setY(32);
+//						p.setX(250);
+						p.setY((int)yPlayer);
 					} else {
 						state++;
 					}
@@ -240,21 +241,49 @@ public class Game extends Canvas implements Runnable, KeyListener {
 				}
 			} else if(cutsceneState == "morte") { 
 				if(player.getIdade() == "5") {
-					System.out.println("Você morreu atropelado, enquanto aprendia a andar de bicicleta");
+					cutsceneMsg = "Você morreu atropelado, enquanto aprendia a andar de bicicleta";
 				} else if(player.getIdade() == "25") {
-					System.out.println("Você morreu drogado em um beco escuro, quando descobriu que foi corno");
+					cutsceneMsg = "Você morreu drogado em um beco escuro, quando descobriu que foi corno";
 				} else if(player.getIdade() == "45") {
-					System.out.println("Você morreu por stress acumulado, quando descobriu que foi demitido");
+					cutsceneMsg = "Você morreu por estresse acumulado, quando descobriu que foi demitido";
 				} else if(player.getIdade() == "65") {
-					System.out.println("Você morreu de problemas cardiovasculares, logo que se aposentou");
+					cutsceneMsg = "Você morreu de problemas cardiovasculares, logo que se aposentou";
 				}
-				cutsceneState = "npc";
-				gameState = "NORMAL";
+				
+//				System.out.println(cutsceneMsg);
+//				System.out.println(signalState);
+				if(signalState == 0) {
+					cutsceneCont++;
+				} else if(signalState == 1) {
+					cutsceneCont--;
+				}
+				
+				if(cutsceneCont == cutsceneContMax) {
+					signalState++;
+				} else if(cutsceneCont < -100) {
+//					signalState--;
+					
+//					cutsceneState = "npc";
+//					gameState = "NORMAL";
+				}
 			} else {
 				menu_criacao.tick();
 			}
 		} else if(gameState  == "MENU_CLASSE") {
 			 if(cutsceneState == "nascimento") {
+					if(signalState == 0) {
+						cutsceneCont++;
+					} else if(signalState == 1) {
+						cutsceneCont--;
+					}
+					
+					if(cutsceneCont == cutsceneContMax) {
+						signalState++;
+					} else if(cutsceneCont == 0) {
+						cutsceneState = "";
+						signalState--;
+					}
+			 } else if(cutsceneState == "morte") { 
 					if(signalState == 0) {
 						cutsceneCont++;
 					} else if(signalState == 1) {
@@ -380,8 +409,34 @@ public class Game extends Canvas implements Runnable, KeyListener {
 					g.setColor(Color.white);
 					g.fillOval(cutsceneCont * camera, cutsceneCont * camera, (int)(WIDTH*SCALE - camera * 2 * cutsceneCont), (int)(HEIGHT*SCALE - camera * 2 * cutsceneCont));
 					if(cutsceneCont < cutsceneContMax-15)
-					g.drawImage(Game.spritesheet.getSprite(64, 256, 32, 32), 288, 288, 64, 64, null);
+						g.drawImage(MenuCriacao.spriteBase, 288, 288, 64, 64, null);
 //					g.drawImage(Game.spritesheet.getSprite(64, 256, 32, 32), cutsceneCont * camera, cutsceneCont * camera, (int)(WIDTH*SCALE - camera * 2 * cutsceneCont), (int)(HEIGHT*SCALE - camera * 2 * cutsceneCont), null);
+				}
+			} else if(cutsceneState == "morte") {
+				g.setColor(Color.black);
+				g.fillRect(0, 0, WIDTH*SCALE, HEIGHT*SCALE);
+
+				g.setColor(Color.white);
+				g.setFont(new Font("Arial", Font.BOLD, 32));
+				int camera = 2;
+				
+				if(signalState == 0) {
+					g.setColor(Color.white);
+					g.fillOval(cutsceneCont * camera, cutsceneCont * camera, (int)(WIDTH*SCALE - camera * 2 * cutsceneCont), (int)(HEIGHT*SCALE - camera * 2 * cutsceneCont));
+					if(cutsceneCont < cutsceneContMax-30)
+					g.drawImage(MenuCriacao.spriteBase, 288, 288, 64, 64, null);
+//					g.drawImage(Game.spritesheet.getSprite(64, 256, 32, 32), cutsceneCont * camera, cutsceneCont * camera, (int)(WIDTH*SCALE - camera * 2 * cutsceneCont), (int)(HEIGHT*SCALE - camera * 2 * cutsceneCont), null);
+				} else if(signalState == 1) {
+					g.setColor(Color.white);
+					g.fillOval(cutsceneCont * camera, cutsceneCont * camera, (int)(WIDTH*SCALE - camera * 2 * cutsceneCont), (int)(HEIGHT*SCALE - camera * 2 * cutsceneCont));
+					g.setColor(Color.black);
+				
+					int tam = cutsceneMsg.length();
+					g.drawString(cutsceneMsg.substring(0, tam/2 + 1), tam/2, HEIGHT*SCALE/2 -32);
+					g.drawString(cutsceneMsg.substring(tam/2 + 1), tam, HEIGHT*SCALE/2);
+					
+					
+//					g.drawString(cutsceneMsg, 0, HEIGHT*SCALE/2);
 				}
 			} else {
 				menu_criacao.render(g);				
@@ -405,8 +460,8 @@ public class Game extends Canvas implements Runnable, KeyListener {
 				} else if(signalState == 1) {
 					g.setColor(Color.white);
 					g.fillOval(cutsceneCont * camera, cutsceneCont * camera, (int)(WIDTH*SCALE - camera * 2 * cutsceneCont), (int)(HEIGHT*SCALE - camera * 2 * cutsceneCont));
-					if(cutsceneCont < cutsceneContMax-15)
-					g.drawImage(Game.spritesheet.getSprite(64, 256, 32, 32), 288, 288, 64, 64, null);
+					if(cutsceneCont < cutsceneContMax - 15)
+						g.drawImage(Game.spritesheet.getSprite(64, 256, 32, 32), 288, 288, 64, 64, null);
 //					g.drawImage(Game.spritesheet.getSprite(64, 256, 32, 32), cutsceneCont * camera, cutsceneCont * camera, (int)(WIDTH*SCALE - camera * 2 * cutsceneCont), (int)(HEIGHT*SCALE - camera * 2 * cutsceneCont), null);
 				}
 			} else {

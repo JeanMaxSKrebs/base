@@ -279,7 +279,7 @@ public class Player extends Entity{
 		setArmadura(atributo[4]);
 		
 		setRegiao(calculaRegiao());
-		System.out.println(regiao);
+//		System.out.println(regiao);
 	}
 	
 	private String calculaRegiao() {
@@ -289,7 +289,7 @@ public class Player extends Entity{
 					+ (getForca() * 3)
 					+ (getArmadura() * 4)
 					+ (getInteligencia() * 5));
-		System.out.println(calculo);
+//		System.out.println(calculo);
 		if(getIdade() == "5") {
 			calculo -= 11;
 		} else if(getIdade() == "25") {
@@ -302,7 +302,7 @@ public class Player extends Entity{
 		} else if(getIdade() == "45") {
 			calculo += 11;
 		}
-		System.out.println(calculo);
+//		System.out.println(calculo);
 		if(calculo < 140) {
 			return "P";
 		} else if(calculo > 160) {
