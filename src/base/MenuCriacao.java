@@ -3,8 +3,23 @@ package base;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.image.BufferedImage;
 
 public class MenuCriacao extends Menu {
+	
+	public static BufferedImage spriteBase = Game.spritesheet.getSprite(131, 285, 18, 12);
+
+	public static BufferedImage[] spriteBarba  = 
+		{
+			Game.spritesheet.getSprite(153, 285, 14, 5),
+			Game.spritesheet.getSprite(153, 291, 14, 5),
+			Game.spritesheet.getSprite(153, 297, 14, 5)
+		};
+	public static BufferedImage[] spriteCabelo  = 
+		{
+			Game.spritesheet.getSprite(229, 285, 14, 8),
+			Game.spritesheet.getSprite(229, 294, 14, 8),
+		};
 	
 	public String[] options = {"idade", "atributos", "resetar", "criar", "voltar"};
 	public String[] idades = {"5", "25", "45", "65"};
@@ -181,7 +196,6 @@ public class MenuCriacao extends Menu {
 	}
 
 	public void render(Graphics g) {
-		
 		int valorwidth = 8;
 		int valorheigth = 4;
 		int width = Game.WIDTH * Game.SCALE / valorwidth;
@@ -194,6 +208,23 @@ public class MenuCriacao extends Menu {
 		g.setColor(Color.WHITE);
 		g.drawString("Criação", (width - multi), (height - soma));
 
+		//imagem idade selecionada
+		g.setFont(new Font("Arial", Font.BOLD, 24));
+		g.setColor(Color.black);
+		g.drawString("Idade: "+idades[currentIdade],  width + soma * 2, height / 2);
+		
+		g.drawImage(spriteBase, (450), (height - 140), 96, 96, null);
+		if(currentIdade > 0) {
+			g.drawImage(spriteBarba[currentIdade-1], (460), (height - 84), 76, 40, null);
+		}
+		if(currentIdade == maxIdade) {
+			g.drawImage(spriteCabelo[1], (460), (height - 140), 76, 64, null);				
+		} else {
+			g.drawImage(spriteCabelo[0], (460), (height - 140), 76, 64, null);				
+		}
+		g.setColor(Color.WHITE);
+		
+		
 		g.setFont(new Font("Arial", Font.BOLD, 32));
 		
 		if(!showAlterOptions && !showOptions) {
@@ -201,7 +232,7 @@ public class MenuCriacao extends Menu {
 			g.drawString("Atributos", width, (height + multi));
 			g.drawString("Resetar", width, (height + multi * 2));
 		} else if(!showAlterOptions) {
-			g.drawString("Idade", width, height);			
+			g.drawString("Idade", width, height);
 		} else if(!showOptions) {
 			g.drawString("Atributos", width, height);
 			g.drawString("Pontos :"+pontos+"/25", (width + soma * 2), height);

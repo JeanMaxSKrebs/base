@@ -64,7 +64,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	public static int state = 0;
 
 	
-	public static String gameState = "MENU_CLASSE";
+	public static String gameState = "MENU_CRIACAO";
 	public static double gravidade = 5;
 	public static int maximumDodge = 100;
 	public static int maximumCritic = 100;
