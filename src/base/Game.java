@@ -54,6 +54,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	public MenuPersonagem menu_personagem;
 	public static MenuCriacao menu_criacao;
 	public static MenuClasse menu_classe;
+	public static MenuMapa menu_mapa;
 	public MenuPause menu_pause;
 	
 	public int[] pixels;
@@ -64,7 +65,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	public static int state = 0;
 
 	
-	public static String gameState = "MENU_PRINCIPAL";
+	public static String gameState = "MENU_MAPA";
 	public static double gravidade = 5;
 	public static int maximumDodge = 100;
 	public static int maximumCritic = 100;
@@ -111,6 +112,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		menu_personagem = new MenuPersonagem();		
 		menu_criacao = new MenuCriacao();
 		menu_classe = new MenuClasse();
+		menu_mapa = new MenuMapa();
 		menu_pause = new MenuPause();
 		
 		minimapa = new BufferedImage(World.WIDTH, World.HEIGHT, BufferedImage.TYPE_INT_RGB);
@@ -299,6 +301,9 @@ public class Game extends Canvas implements Runnable, KeyListener {
 			 } else {
 				 menu_classe.tick();
 			 }
+			 
+		} else if(gameState  == "MENU_MAPA") {
+			menu_mapa.tick();
 		} else if(gameState  == "MENU_PAUSE") {
 			menu_pause.tick();
 		} else if(gameState == "NEXT") {
@@ -475,6 +480,8 @@ public class Game extends Canvas implements Runnable, KeyListener {
 			} else {
 				menu_classe.render(g);				
 			}
+		} else if(gameState  == "MENU_MAPA") {
+			menu_mapa.render(g);
 		} else if(gameState  == "MENU_PAUSE") {
 			menu_pause.render(g);
 		} else {	

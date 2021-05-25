@@ -109,7 +109,7 @@ public class MenuClasse extends Menu {
 							Game.player.setClasseMae(mae);;
 							Game.player.setClassePai(pai);;
 							Game.cutsceneState = "nascimento";
-//							Game.gameState = "MENU_ILHAS";
+							Game.gameState = "MENU_MAPA";
 				
 				} else if(options[currentOption] == "sair") {
 					System.exit(1);
