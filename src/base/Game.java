@@ -61,11 +61,11 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	public static int[] minimapaPixels;
 	public static BufferedImage minimapa;
 	
-	public static String cutsceneState = "npc";
+	public static String cutsceneState = "jogando";
 	public static int state = 0;
 
 	
-	public static String gameState = "MENU_MAPA";
+	public static String gameState = "NORMAL";
 	public static double gravidade = 5;
 	public static int maximumDodge = 100;
 	public static int maximumCritic = 100;
@@ -103,7 +103,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		npc = new Npc(0, 0, 32, 32, spritesheet.getSprite(0, 288, 32, 32));
 		
 		//		world = new World("/teste.png");
-		world = new World("/npc.png");
+		world = new World("/fase2.png");
 
 		entities.add(npc);
 		entities.add(player);
@@ -485,9 +485,9 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		} else if(gameState  == "MENU_PAUSE") {
 			menu_pause.render(g);
 		} else {	
-			World.renderMinimapa();
-			if(!npc.showMessage)
-				g.drawImage(minimapa, WIDTH/10 * SCALE * 4, HEIGHT * SCALE - (World.HEIGHT *5), WIDTH/10  * SCALE * 2, World.HEIGHT*5, null);
+//			World.renderMinimapa();
+//			if(!npc.showMessage)
+//				g.drawImage(minimapa, WIDTH/10 * SCALE * 4, HEIGHT * SCALE - (World.HEIGHT *5), WIDTH/10  * SCALE * 2, World.HEIGHT*5, null);
 		}
 		
 		bs.show();
