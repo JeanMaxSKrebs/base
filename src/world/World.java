@@ -49,17 +49,17 @@ public class World {
 						}
 					} else if(pixelAtual == 0xFF000CFF) {
 						//player
-						Game.player.setX(xx*32);
-						Game.player.setY(yy*32);
-						Game.player.setWidth(24);
-						Game.player.setHeight(24);
-						Game.player.setMask(0, 4, 32, 24);						
+						Game.player.setX(xx*Game.TILE);
+						Game.player.setY(yy*Game.TILE);
+						Game.player.setWidth(Game.TILE-(Game.TILE*25/100));
+						Game.player.setHeight(Game.TILE-(Game.TILE*25/100));
+						Game.player.setMask(0, 4, Game.TILE, Game.TILE-(Game.TILE*25/100));						
 					} else if(pixelAtual == 0xFFFFF38E) {
 						//npc
-						Game.npc.setX(xx*32);
-						Game.npc.setY(yy*32);
-						Game.npc.setWidth(24);
-						Game.npc.setHeight(24);
+						Game.npc.setX(xx*Game.TILE);
+						Game.npc.setY(yy*Game.TILE);
+						Game.npc.setWidth(Game.TILE-(Game.TILE*25/100));
+						Game.npc.setHeight(Game.TILE-(Game.TILE*25/100));
 					}
 
 				}
@@ -116,7 +116,7 @@ public class World {
 		} else {
 			Game.entities = new ArrayList<Entity>();
 			Game.spritesheet = new Spritesheet("/spritesheet.png");
-			Game.player = new Player(0, 0, 32, 32, Game.spritesheet.getSprite(0, 32, 32, 32));
+			Game.player = new Player(0, 0, 16, 16, Game.spritesheet.getSprite(0, 16, 16, 16));
 			System.out.println(fase);
 			Game.world = new World("/"+fase);
 			Game.entities.add(Game.player);
@@ -125,11 +125,11 @@ public class World {
 	}
 	
 	public void render(Graphics g){
-		int xStart = Camera.x / 32;
-		int yStart = Camera.y / 32;
+		int xStart = Camera.x / Game.TILE;
+		int yStart = Camera.y / Game.TILE;
 		
-		int xFinal =  xStart + (Game.WIDTH / 32);
-		int yFinal =  yStart + (Game.HEIGHT / 32);
+		int xFinal =  xStart + (Game.WIDTH / Game.TILE);
+		int yFinal =  yStart + (Game.HEIGHT / Game.TILE);
 		
 		for (int xx = xStart; xx <= xFinal; xx++) {
 			for (int yy = yStart; yy <= yFinal; yy++) {
@@ -152,8 +152,8 @@ public class World {
 				}
 			}
 		}
-		int xPlayer = Game.player.getX()/32;
-		int yPlayer = Game.player.getY()/32;
+		int xPlayer = Game.player.getX()/Game.TILE;
+		int yPlayer = Game.player.getY()/Game.TILE;
 
 		Game.minimapaPixels[xPlayer + (yPlayer * WIDTH)] = 0xffffff;
 	}
