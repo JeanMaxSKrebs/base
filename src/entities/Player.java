@@ -41,6 +41,36 @@ public class Player extends Entity{
 	public String[] regiaoM = {"Humano", "Lobisomen", "Vampiro", "Demônio", "Anjo"};
 	public String[] regiaoT = {"Humano", "Robô", "Ciborgue", "Androíde", "Alienígena"};
 	
+	public String[] listSprites = {"Humano", "", "aleatorio", "criar", "sair"};
+
+	private static BufferedImage Humano = Game.spritesheet.getSprite(130, 285, 20, 11);
+	
+	private static BufferedImage Goblin = Game.spritesheet.getSprite(151, 250, 20, 11);
+	private static BufferedImage Elfo = Humano;
+	private static BufferedImage Anao = Humano;
+	private static BufferedImage Metamorfo = Game.spritesheet.getSprite(171, 250, 20, 11);
+
+	private static BufferedImage Lobisomen = Game.spritesheet.getSprite(131, 250, 20, 11);
+	private static BufferedImage Vampiro = Humano;
+	private static BufferedImage Demonio = Game.spritesheet.getSprite(171, 250, 20, 11);
+	private static BufferedImage Anjo = Game.spritesheet.getSprite(191, 250, 20, 11);
+	
+	private static BufferedImage Robo = Game.spritesheet.getSprite(271, 250, 20, 11);
+	private static BufferedImage Ciborgue = Game.spritesheet.getSprite(231, 250, 20, 11);
+	private static BufferedImage Androide = Game.spritesheet.getSprite(211, 250, 20, 11);
+	private static BufferedImage Alienigena = Game.spritesheet.getSprite(251, 250, 20, 11);
+
+	
+	public static BufferedImage[] regiaoPsprites= {
+			Humano, Goblin, Elfo, Anao, Metamorfo
+	};
+	public static BufferedImage[] regiaoMsprites= {
+			Humano, Lobisomen, Vampiro, Demonio, Anjo
+	};
+	public static BufferedImage[] regiaoTsprites= {
+			Humano, Robo, Ciborgue, Androide, Alienigena
+	};
+	
 	private BufferedImage[] rightGhost;
 	private BufferedImage[] leftGhost;
 	private BufferedImage[] stopGhost;
@@ -386,5 +416,15 @@ public class Player extends Entity{
 	}
 	public void setClassePai(String classePai) {
 		this.classePai = classePai;
+	}
+	public BufferedImage[] getSpritesPersonagens() {
+		if(regiao == "P")
+			return regiaoPsprites;
+		else if(regiao == "M")
+			return regiaoMsprites;
+		else if(regiao == "T")
+			return regiaoTsprites;
+		
+		return null;
 	}
 }

@@ -63,9 +63,15 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	
 	public static String cutsceneState = "jogando";
 	public static int state = 0;
-
 	
-	public static String gameState = "NORMAL";
+//	public static String gameState = "MENU_PRINCIPAL";
+//	public static String gameState = "MENU_PERSONAGEM";
+	public static String gameState = "MENU_CRIACAO";
+//	public static String gameState = "MENU_CLASSE";
+//	public static String gameState = "MENU_MAPA";
+//	public static String gameState = "MENU_PAUSE";
+//	public static String gameState = "NORMAL";
+
 	public static double gravidade = 5;
 	public static int maximumDodge = 100;
 	public static int maximumCritic = 100;
@@ -102,8 +108,9 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		player = new Player(0, 0, 32, 32, spritesheet.getSprite(0, 32, 32, 32));
 		npc = new Npc(0, 0, 32, 32, spritesheet.getSprite(0, 288, 32, 32));
 		
-		//		world = new World("/teste.png");
-		world = new World("/fase2.png");
+//		world = new World("/teste.png");
+		world = new World("/npc.png");
+//		world = new World("/fase2.png");
 
 		entities.add(npc);
 		entities.add(player);

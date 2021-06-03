@@ -5,6 +5,8 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
+import world.World;
+
 public class MenuCriacao extends Menu {
 	
 	public BufferedImage spriteBase = Game.spritesheet.getSprite(131, 285, 18, 12);
@@ -125,6 +127,7 @@ public class MenuCriacao extends Menu {
 							Game.player.createPlayer(atributos, idades[currentIdade]);
 							Game.menu_classe.tipoClasse = Game.player.getClasse();
 							Game.cutsceneState = "morte";
+							World.restartGame("npc.png");
 						} else {
 							System.out.println("UTILIZE SEUS PONTOS");
 						}

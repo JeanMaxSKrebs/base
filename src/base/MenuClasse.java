@@ -3,11 +3,13 @@ package base;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.image.BufferedImage;
 
 public class MenuClasse extends Menu {
 
 	public String[] options = {"mae", "pai", "aleatorio", "criar", "sair"};
 	public String[] tipoClasse = Game.player.getClasse();
+	public BufferedImage[] arraySprites = Game.player.getSpritesPersonagens();
 	
 	private String pai = "Humano";
 	private String mae = "Humano";
@@ -105,12 +107,11 @@ public class MenuClasse extends Menu {
 					pai = this.tipoClasse[Game.random(maxClasse)];
 					mae = this.tipoClasse[Game.random(maxClasse)];
 				} else if(options[currentOption] == "criar") {
-							System.out.println("CRIOU PERSONAGEM");
-							Game.player.setClasseMae(mae);;
-							Game.player.setClassePai(pai);;
-							Game.cutsceneState = "nascimento";
-							Game.gameState = "MENU_MAPA";
-				
+					System.out.println("CRIOU PERSONAGEM");
+					Game.player.setClasseMae(mae);
+					Game.player.setClassePai(pai);
+					Game.cutsceneState = "nascimento";
+					Game.gameState = "MENU_MAPA";
 				} else if(options[currentOption] == "sair") {
 					System.exit(1);
 				}
@@ -139,6 +140,8 @@ public class MenuClasse extends Menu {
 		g.drawString("Pai: "+pai,  width + soma * 2 + 32, height + 32);
 		g.fillRect(width + soma * 2 + 32, height + multi, width + soma * 2, height + multi);
 		//desenhar imagem personagem
+		if(currentClasse < maxClasse)
+			g.drawImage(arraySprites[currentClasse], width + 32 * 9, height + multi + 16, width + soma, height, null);
 		g.setColor(Color.WHITE);
 		
 
