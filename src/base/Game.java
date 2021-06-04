@@ -66,8 +66,8 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	
 //	public static String gameState = "MENU_PRINCIPAL";
 //	public static String gameState = "MENU_PERSONAGEM";
-	public static String gameState = "MENU_CRIACAO";
-//	public static String gameState = "MENU_CLASSE";
+//	public static String gameState = "MENU_CRIACAO";
+	public static String gameState = "MENU_CLASSE";
 //	public static String gameState = "MENU_MAPA";
 //	public static String gameState = "MENU_PAUSE";
 //	public static String gameState = "NORMAL";
@@ -160,6 +160,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	
 	
 	public void tick() {
+		System.out.println(player.getRegiao());
 //		System.out.println(Game.player);
 //		System.out.println("Tick");
 		if(gameState  == "NORMAL") {

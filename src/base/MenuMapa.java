@@ -20,6 +20,9 @@ public class MenuMapa extends Menu {
 
 	@Override
 	public void tick() {
+		System.out.println(Game.player.getClasseMae());
+		System.out.println(Game.player.getClassePai());
+
 		// TODO Auto-generated method stub
 		if(cont < 0) {
 			cont++;

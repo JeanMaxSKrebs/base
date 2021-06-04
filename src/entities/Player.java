@@ -28,7 +28,7 @@ public class Player extends Entity{
 	private int nivel = 1;
 	private int atributos = 50;
 //	private int atributosMax = 500;
-	private String regiao = "P";
+	private String regiao = "M";
 	
 	private String classeMae = "Humano";
 	private String classePai = "Humano";
@@ -69,6 +69,26 @@ public class Player extends Entity{
 	};
 	public static BufferedImage[] regiaoTsprites= {
 			Humano, Robo, Ciborgue, Androide, Alienigena
+	};
+	
+	private static BufferedImage HumanoOrelha = Game.spritesheet.getSprite(211, 239, 20, 11);
+	private static BufferedImage GoblinOrelha = Game.spritesheet.getSprite(151, 239, 20, 11);
+	private static BufferedImage MetamorfoOrelha = Game.spritesheet.getSprite(171, 239, 20, 11);
+	
+	private static BufferedImage LobisomenOrelha = Game.spritesheet.getSprite(131, 239, 20, 11);
+	private static BufferedImage DemonioOrelha = MetamorfoOrelha;
+	private static BufferedImage AnjoOrelha = Game.spritesheet.getSprite(191, 239, 20, 11);
+	
+	public static BufferedImage[] regiaoPspritesOrelha= {
+			HumanoOrelha, GoblinOrelha, HumanoOrelha, HumanoOrelha, MetamorfoOrelha
+	};
+	
+	public static BufferedImage[] regiaoMspritesOrelha= {
+			HumanoOrelha, LobisomenOrelha, HumanoOrelha, DemonioOrelha, AnjoOrelha
+	};
+	
+	public static BufferedImage[] regiaoTspritesOrelha= {
+			HumanoOrelha, null, null, null, null
 	};
 	
 	private BufferedImage[] rightGhost;
@@ -424,6 +444,16 @@ public class Player extends Entity{
 			return regiaoMsprites;
 		else if(regiao == "T")
 			return regiaoTsprites;
+		
+		return null;
+	}
+	public BufferedImage[] getSpritesPersonagensOrelha() {
+		if(regiao == "P")
+			return regiaoPspritesOrelha;
+		else if(regiao == "M")
+			return regiaoMspritesOrelha;
+		else if(regiao == "T")
+			return regiaoTspritesOrelha;
 		
 		return null;
 	}

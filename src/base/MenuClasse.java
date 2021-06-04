@@ -9,14 +9,16 @@ public class MenuClasse extends Menu {
 
 	public String[] options = {"mae", "pai", "aleatorio", "criar", "sair"};
 	public String[] tipoClasse = Game.player.getClasse();
-	public BufferedImage[] arraySprites = Game.player.getSpritesPersonagens();
-	
+	public BufferedImage[] arrayPaiSprites = Game.player.getSpritesPersonagens();
+	public BufferedImage[] arrayMaeSprites = Game.player.getSpritesPersonagensOrelha();
+
 	private String pai = "Humano";
 	private String mae = "Humano";
 	
 	public int currentOption = 0;
 	public int maxOption = options.length - 1;
-	public int currentClasse = 0;
+	public int currentClasseMae = 0;
+	public int currentClassePai = 0;
 	public int maxClasse = tipoClasse.length;
 	
 //	private boolean showOptions = false;
@@ -25,27 +27,33 @@ public class MenuClasse extends Menu {
 
 	public void tick() {
 		if(maeShowOptions) {
-			System.out.println(currentClasse);
+			if(currentClasseMae < maxClasse) {				
+				mae = this.tipoClasse[currentClasseMae];
+			}
+			if(currentClasseMae == maxClasse) {
+				mae = this.tipoClasse[0];
+			}
+
 			if(up) {
 				up = false;
-				currentClasse--;
-				if(currentClasse < 0) {
-					currentClasse = maxClasse;
+				currentClasseMae--;
+				if(currentClasseMae < 0) {
+					currentClasseMae = maxClasse;
 				}
 			}
 			if(down) {
 				down = false;
-				currentClasse++;
-				if(currentClasse > maxClasse) {
-					currentClasse = 0;
+				currentClasseMae++;
+				if(currentClasseMae > maxClasse) {
+					currentClasseMae = 0;
 				}
 			}
 			if(enter) {
 				enter = false;
 				maeShowOptions = false;
-				
+
 				for (int i = 0; i < tipoClasse.length; i++) {
-					if(currentClasse == i) {
+					if(currentClasseMae == i) {
 						mae = tipoClasse[i];
 						System.out.println(tipoClasse[i]);
 					}
@@ -53,18 +61,25 @@ public class MenuClasse extends Menu {
 				
 			}
 		} else if(paiShowOptions) {
+			if(currentClassePai < maxClasse) {				
+				pai = this.tipoClasse[currentClassePai];
+			}
+			if(currentClassePai == maxClasse) {
+				pai = this.tipoClasse[0];
+			}
+			
 			if(up) {
 				up = false;
-				currentClasse--;
-				if(currentClasse < 0) {
-					currentClasse = maxClasse;
+				currentClassePai--;
+				if(currentClassePai < 0) {
+					currentClassePai = maxClasse;
 				}
 			}
 			if(down) {
 				down = false;
-				currentClasse++;
-				if(currentClasse > maxClasse) {
-					currentClasse = 0;
+				currentClassePai++;
+				if(currentClassePai > maxClasse) {
+					currentClassePai = 0;
 				}
 			}
 			if(enter) {
@@ -72,7 +87,7 @@ public class MenuClasse extends Menu {
 				paiShowOptions = false;
 				
 				for (int i = 0; i < tipoClasse.length; i++) {
-					if(currentClasse == i) {
+					if(currentClassePai == i) {
 						pai = tipoClasse[i];
 						System.out.println(tipoClasse[i]);
 					}
@@ -104,8 +119,12 @@ public class MenuClasse extends Menu {
 				} else if(options[currentOption] == "pai") {
 					paiShowOptions = true;
 				} else if(options[currentOption] == "aleatorio") {
-					pai = this.tipoClasse[Game.random(maxClasse)];
-					mae = this.tipoClasse[Game.random(maxClasse)];
+					int p = Game.random(maxClasse);
+					int m = Game.random(maxClasse);
+					pai = this.tipoClasse[p];
+					mae = this.tipoClasse[m];
+					currentClassePai = p;
+					currentClasseMae = m;
 				} else if(options[currentOption] == "criar") {
 					System.out.println("CRIOU PERSONAGEM");
 					Game.player.setClasseMae(mae);
@@ -140,11 +159,23 @@ public class MenuClasse extends Menu {
 		g.drawString("Pai: "+pai,  width + soma * 2 + 32, height + 32);
 		g.fillRect(width + soma * 2 + 32, height + multi, width + soma * 2, height + multi);
 		//desenhar imagem personagem
-		if(currentClasse < maxClasse)
-			g.drawImage(arraySprites[currentClasse], width + 32 * 9, height + multi + 16, width + soma, height, null);
+		System.out.println(currentClasseMae);
+		System.out.println(currentClassePai);
+
+		if(currentClassePai < maxClasse) {
+			g.drawImage(arrayPaiSprites[currentClassePai], width + 32 * 9, height + multi + 16, width + soma, height, null);
+		}
+		if(currentClasseMae < maxClasse) {
+			g.drawImage(arrayMaeSprites[currentClasseMae], width + 32 * 9, height + multi + 16, width + soma, height, null);
+		}
+		if(currentClassePai == maxClasse) {
+			g.drawImage(arrayPaiSprites[0], width + 32 * 9, height + multi + 16, width + soma, height, null);
+		}
+		if(currentClasseMae == maxClasse) {
+			g.drawImage(arrayMaeSprites[0], width + 32 * 9, height + multi + 16, width + soma, height, null);
+		}
 		g.setColor(Color.WHITE);
 		
-
 		
 		
 		g.setFont(new Font("Arial", Font.BOLD, 32));
@@ -174,10 +205,11 @@ public class MenuClasse extends Menu {
 				}
 
 				g.drawString("Voltar",  width, (height + soma/2 + multi * 5));
-				if(currentClasse == 5) {
+
+				if(currentClasseMae == 5) {
 					g.drawString(" > ", width - 50, (height + soma/2 + multi * 5));
-				} else if(tipoClasse[currentClasse] == tipoClasse[currentClasse]) {
-					g.drawString(" > ",  (width + multi - 50), (height + 35 + multi * currentClasse));
+				} else if(tipoClasse[currentClasseMae] == tipoClasse[currentClasseMae]) {
+					g.drawString(" > ",  (width + multi - 50), (height + 35 + multi * currentClasseMae));
 				}
 			} else {
 				g.drawString(" > ",  (width-50), height);
@@ -192,10 +224,11 @@ public class MenuClasse extends Menu {
 				}
 				
 				g.drawString("Voltar",  width, (height + soma/2 + multi * 5));
-				if(currentClasse == 5) {
+
+				if(currentClassePai == 5) {
 					g.drawString(" > ", width - 50, (height + soma/2 + multi * 5));
-				} else if(tipoClasse[currentClasse] == tipoClasse[currentClasse]) {
-					g.drawString(" > ",  (width + multi - 50), (height + 35 + multi * currentClasse));
+				} else if(tipoClasse[currentClassePai] == tipoClasse[currentClassePai]) {
+					g.drawString(" > ",  (width + multi - 50), (height + 35 + multi * currentClassePai));
 				}
 			} else {
 				g.drawString(" > ",  (width - 50), (height + multi));

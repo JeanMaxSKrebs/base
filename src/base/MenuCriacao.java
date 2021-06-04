@@ -126,7 +126,10 @@ public class MenuCriacao extends Menu {
 							System.out.println("CRIOU PERSONAGEM");
 							Game.player.createPlayer(atributos, idades[currentIdade]);
 							Game.menu_classe.tipoClasse = Game.player.getClasse();
+							Game.menu_classe.arrayPaiSprites = Game.player.getSpritesPersonagens();
+							Game.menu_classe.arrayMaeSprites = Game.player.getSpritesPersonagensOrelha();
 							Game.cutsceneState = "morte";
+
 							World.restartGame("npc.png");
 						} else {
 							System.out.println("UTILIZE SEUS PONTOS");

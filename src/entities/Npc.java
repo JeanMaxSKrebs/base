@@ -26,10 +26,12 @@ public class Npc extends Entity {
 		frases[1] = "Além disso acabei de perder meu preciosoGuardião.......";
 		frases[2] = "Então lhe darei uma segunda chance numa outra dimensão no planeta <<nome do planeta>>";
 		frases[3] = "Porém suas escolhas durante a vida pa -  ssada ainda o influenciam";
-		frases[4] = "Portanto, você ................ será um habitante da Região:  "+Game.player.getRegiao();
+		frases[4] = "Portanto, você ................ será um habitante da Região:  ";
 	}
 	
 	public void tick() {
+		frases[4] = "Portanto, você ................ será um habitante da Região:  "+Game.player.getRegiao();
+
 		int xPlayer = Game.player.getX();
 		int yPlayer = Game.player.getY();
 		
