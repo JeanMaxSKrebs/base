@@ -14,9 +14,9 @@ public class MenuMapa extends Menu {
 	public static Spritesheet mapM = new Spritesheet("/mapM.png");
 	public static Spritesheet mapT = new Spritesheet("/mapT.png");
 	private int cont = -300;
-	private int contMax = 1000;
+	private int contMax = 1500;
 	private boolean regiao = false;
-
+	private boolean aumentar = false;
 
 	@Override
 	public void tick() {
@@ -25,10 +25,16 @@ public class MenuMapa extends Menu {
 
 		// TODO Auto-generated method stub
 		if(cont < 0) {
-			cont++;
+//			cont++;
+			cont += 10;
 		} else if(cont < contMax) {
 			regiao = true;
-			cont++;			
+			cont++;		
+//			cont += 10;
+		} else if(cont == 1000) {
+			aumentar = true;
+		} else if(cont == contMax) {
+			Game.gameState = "TUTORIAL";
 		}
 	}
 
@@ -47,13 +53,28 @@ public class MenuMapa extends Menu {
 			}
 			if(Game.player.getRegiao() == "P") {
 				g.drawImage(mapP.getSprite(0, 0, 640, 640), 0, 0, 640, 640, null);
+
+				if(aumentar) {
+					g.fillRect(0, 0, 640, 640);
+					g.drawImage(mapP.getSprite(0, 0, 640, 640), 0, 0, 840, 640, null);
+				}
 			}
 			if(Game.player.getRegiao() == "M") {
 				g.drawImage(mapM.getSprite(0, 0, 640, 640), 0, 0, 640, 640, null);
+				if(aumentar) {
+					g.fillRect(0, 0, 640, 640);
+					g.drawImage(mapM.getSprite(0, 0, 640, 640), -250, 0, 890, 640, null);
+				}
 			}
 			if(Game.player.getRegiao() == "T") {
 				g.drawImage(mapT.getSprite(0, 0, 640, 640), 0, 0, 640, 640, null);
+				
+				if(aumentar) {
+					g.fillRect(0, 0, 640, 640);
+					g.drawImage(mapT.getSprite(0, 0, 640, 640), -280, -100, 920, 740, null);
+				}
 			}
+			
 		}
 		
 		g.setColor(Color.white);
