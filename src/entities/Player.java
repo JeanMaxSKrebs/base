@@ -5,6 +5,9 @@ import java.awt.image.BufferedImage;
 
 import base.Game;
 import world.Camera;
+import world.Normaldoor;
+import world.Specialdoor;
+import world.Tiledoor;
 import world.World;
 
 public class Player extends Entity{
@@ -13,10 +16,15 @@ public class Player extends Entity{
 	public int right_dir = 1, left_dir = 2, up_dir = 3, down_dir = 4;
 	public int dir = 1;
 	public double speed = 5;
+	private static int keys = 0;
+	private static int specialKeys = 0;
+	public int premium = 0;
 	
 	private static int dodgeChance = 20;
 	private static int armor = 0;
-		
+	
+	private boolean hasBagpack = false;
+	
 	private int qtdSprites = 4;
 	private int frames = 0, maxFrames = 20, index = 0, maxIndex = (qtdSprites-1);
 	private boolean moved;
@@ -28,9 +36,14 @@ public class Player extends Entity{
 	
 	public double life = 100;
 	public static double maxLife = 100;
-	public double stamine = 100;
-	public static double maxStamine = 100;
+	public double stamine = 0;
+	public static double maxStamine = 3;
+	
 
+	public boolean usingPower = false;
+	public boolean atirar = false;
+	public double balas = 0;
+	public double maxBalas = 600;
 
 	public Player(int x, int y, int width, int height, BufferedImage sprite) {
 		super(x, y, width, height, sprite);
@@ -91,7 +104,152 @@ public class Player extends Entity{
 		return false;
 	}
 	
+	public void checkItems() {
+		for (int i = 0; i < Game.entities.size(); i++) {
+			Entity e = Game.entities.get(i);
+			if(hasBagpack)
+				speed = 4;
+			
+			if(e instanceof BagPack) {
+				if(Entity.isCollidding(this, e)) {
+					hasBagpack = true;
+					armor = armor + 5;
+					
+					Game.entities.remove(i);
+
+					return;
+				}
+			}
+
+			if(e instanceof HpBag) {
+				if(Entity.isCollidding(this, e)) {
+					if(life < maxLife) {
+						life += HpBag.life;
+						if(life > maxLife)
+							life = maxLife;
+						Game.entities.remove(i);
+					}
+					return;
+				}
+			}
+			if(e instanceof StamineBag) {
+				if(Entity.isCollidding(this, e)) {
+					if(stamine < maxStamine) {
+						stamine++;
+						Game.entities.remove(i);					
+					}
+					
+					return;
+				}
+			}
+
+			// itens q s�o guardados
+			if(hasBagpack) {					
+				if(e instanceof Key) {
+					if(Entity.isCollidding(this, e)) {
+						keys++;
+						Game.entities.remove(i);
+						return;
+					}
+				}
+				if(e instanceof SpecialKey) {
+					if(Entity.isCollidding(this, e)) {
+						setSpecialKeys(getSpecialKeys() + 1);
+						Game.entities.remove(i);
+						return;
+					}
+				}
+				if(e instanceof Premium) {
+					if(Entity.isCollidding(this, e)) {
+						setPremium(getPremium() + 1);
+						Game.entities.remove(i);
+						return;
+					}
+				}
+			}
+		}
+	}
+	
+	public void checkDoor(){
+		for (int i = 0; i < Game.tiledoors.size(); i++) {
+			Tiledoor t = Game.tiledoors.get(i);
+			
+//			System.out.println(Game.tiledoors.size());
+			if(Tiledoor.willCollide(this, t, (int)speed)) {
+//				System.out.println("teste");
+				if(t instanceof Normaldoor) {
+					if(keys > 0) {
+						keys--;
+						Game.tiledoors.remove(i);
+						World.troca();
+						
+					}
+				} else if(t instanceof Specialdoor) {
+					if(getSpecialKeys() > 0) {
+						setSpecialKeys(getSpecialKeys() - 1);
+						Game.tiledoors.remove(i);
+						World.troca();
+					}
+				} 
+				return;
+
+			}
+
+		}
+	}
+	
 	public void tick() {
+		if(Game.iamMAX_LEVEL())
+//			System.out.println(balas);
+			if(atirar) {
+				atirar = false;
+				if(balas > 0) {
+//					System.out.println("teste");
+					balas--;
+					atirar = false;
+					 int dx = 0;
+					 int dy = 0;
+					 if(dir == right_dir) {
+						 dx = 1;
+					 } else if(dir == left_dir){
+						 dx = -1;
+					 } else if(dir == down_dir) {
+						 dy = 1;
+					 } else if(dir == up_dir) {
+						 dy = -1;
+					 }
+					 
+					 Bala bala = new Bala(this.getX(), this.getY(), 6, 6, null, dx, dy);
+					 bala.setMask(13, 13, 6, 6);
+					 Game.balas.add(bala);
+				}	
+			}
+
+		
+		
+		if(usingPower) {
+			usingPower = false;
+			if(stamine > 0) {
+				stamine--;
+				 usingPower = false;
+				 int dx = 0;
+				 int dy = 0;
+				 if(dir == right_dir) {
+					 dx = 1;
+				 } else if(dir == left_dir){
+					 dx = -1;
+				 } else if(dir == down_dir) {
+					 dy = 1;
+				 } else if(dir == up_dir) {
+					 dy = -1;
+				 }
+				 
+				 Power power = new Power(this.getX(), this.getY(), 32, 32, null, dx, dy);
+				 power.setMask(6, 6, 20, 20);
+				 Game.powers.add(power);
+			}
+		}
+		
 		setMoved(false);
 
 		int midy = (int)(y + masky + mheight/2);
@@ -108,6 +266,8 @@ public class Player extends Entity{
 			dir = right_dir;
 			if(World.isFree(plusx, midy, "right"))				
 				x += speed;
+			else if(World.isDoor())
+					checkDoor();
 			
 		}
 		else if(left) {
@@ -115,6 +275,8 @@ public class Player extends Entity{
 			dir = left_dir;
 			if(World.isFree(minusx, midy, "left"))
 				x -= speed;
+			else if(World.isDoor())
+				checkDoor();
 		}
 
 		if(down) {
@@ -122,12 +284,16 @@ public class Player extends Entity{
 			dir = down_dir;
 			if(World.isFree(midx, plusy, "down"))
 				y += speed;
+			else if(World.isDoor())
+				checkDoor();
 		}
 		else if(up) {
 			setMoved(true);
 			dir = up_dir;
 			if(World.isFree(midx, minusy, "up"))
 				y -= speed;
+			else if(World.isDoor())
+				checkDoor();
 		}
 		
 		if(moved) {
@@ -138,7 +304,9 @@ public class Player extends Entity{
 				if(index > maxIndex)
 					index = 0;
 			}
-		}			
+		}
+		checkItems();
+			
 		
 		Camera.x = Camera.clamp(this.getX() - (Game.WIDTH/2), 0, World.WIDTH * 32 - Game.WIDTH);
 		Camera.y = Camera.clamp(this.getY() - (Game.HEIGHT/2), 0, World.HEIGHT * 32 - Game.HEIGHT);
@@ -148,16 +316,24 @@ public class Player extends Entity{
 	public void render(Graphics g) {
 		if(dir == right_dir) {
 			g.drawImage(rightPlayer[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
+			if(hasBagpack) {
+				g.drawImage(Entity.BAGPACK_RIGHT, this.getX() - Camera.x, this.getY() - Camera.y, null);
+			}
 		}
 		else if(dir == left_dir) {
 			g.drawImage(leftPlayer[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
+			if(hasBagpack) {
+				g.drawImage(Entity.BAGPACK_LEFT, this.getX() - Camera.x, this.getY() - Camera.y, null);
+			}			
 		}
 		else if(dir == up_dir) {
 			g.drawImage(upPlayer[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
+			if(hasBagpack) {
+				g.drawImage(Entity.BAGPACK_UP, this.getX() - Camera.x, this.getY() - Camera.y, null);
+			}			
 		}
-		else if(dir == down_dir) {			
+		else if(dir == down_dir)
 			g.drawImage(downPlayer[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
-		}
 		
 //		g.setColor(Color.red);
 //		g.fillRect(this.getX() + maskx - (int)speed - Camera.x, this.getY() + masky - (int)speed - Camera.y, mwidth, mheight);
@@ -180,15 +356,6 @@ public class Player extends Entity{
 	public void setMaxLife(int newMaxLife) {
 		Player.maxLife = newMaxLife;
 	}
-	public double getStamine() {
-		return stamine;
-	}
-	public void setStamine(double stamine) {
-		this.stamine = stamine;
-	}
-	public static double getMaxStamine() {
-		return maxStamine;
-	}
 	public static int getDodgeChance() {
 		return dodgeChance;
 	}
@@ -201,10 +368,58 @@ public class Player extends Entity{
 	public void setArmor(int newArmor) {
 		Player.armor = newArmor;
 	}
+	public static int getKeys() {
+		return keys;
+	}
+	public static void setKeys(int keys) {
+		Player.keys = keys;
+	}
+	public double getStamine() {
+		return stamine;
+	}
+	public void setStamine(double stamine) {
+		this.stamine = stamine;
+	}
+	public static double getMaxStamine() {
+		return maxStamine;
+	}
+	public static void setMaxStamine(double maxStamine) {
+		Player.maxStamine = maxStamine;
+	}
 	public boolean isMoved() {
 		return moved;
 	}
 	public void setMoved(boolean moved) {
 		this.moved = moved;
 	}
+	public static int getSpecialKeys() {
+		return specialKeys;
+	}
+	public static void setSpecialKeys(int specialKeys) {
+		Player.specialKeys = specialKeys;
+	}
+	public int getPremium() {
+		return premium;
+	}
+	public  void setPremium(int newPremium) {
+		this.premium = newPremium;
+	}
+
+
+	
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

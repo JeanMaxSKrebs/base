@@ -11,6 +11,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import entities.Player;
 import world.World;
 
 public class Menu {
@@ -25,7 +26,6 @@ public class Menu {
 	public static boolean pause = false;
 	
 	public static boolean saveExists = false;
-	public static boolean saveGame = false;
 
 	public void tick() {
 		File file = new File("save.txt");
@@ -58,7 +58,7 @@ public class Menu {
 			} else if(options[currentOption] == "carregar") {
 				file = new File("save.txt");
 				if(file.exists()) {
-					String saver = loadGame(10);
+					String saver = loadGame(0);
 					applySave(saver);
 				}
 			} else if(options[currentOption] == "sair") {
@@ -67,14 +67,50 @@ public class Menu {
 		}
 	}
 	public static void applySave(String str) {
+		System.out.println(str);
 		String[] spl = str.split("/");
 		for (int i = 0; i < spl.length; i++) {
 			String[] spl2 = spl[i].split(":");
+			System.out.println("spl2[0]");
+			System.out.println(spl2[0]);
+			System.out.println("spl2[1]");
+			System.out.println(spl2[1]);
 			switch (spl2[0]) {
+
+
 				case "fase": {
-					World.restartGame("fase"+spl2[1]+".png");
+					int spl2inteiro = (int) Double.parseDouble(spl2[1]);
+					System.out.println("spl2inteiro");
+					System.out.println(spl2inteiro);
+
+					World.restartGame("fase" + spl2inteiro + ".png");
+					Game.player.setArmor(0);
+					Game.player.setDodgeChance(20);
+					Player.setKeys(0);
+					Player.setSpecialKeys(0);
 					Game.gameState = "NORMAL";
 					pause = false;
+					break;
+				}
+				case "vida": {
+					Game.player.life = Integer.parseInt(spl2[1]);
+
+					break;
+				}
+				case "estamina": {
+					Game.player.stamine = Integer.parseInt(spl2[1]);
+
+					break;
+				}
+				case "premium": {
+					Game.player.premium = Integer.parseInt(spl2[1]);
+
+
+					break;
+				}
+				case "gameState": {
+
+
 					break;
 				}
 				default:
@@ -84,7 +120,7 @@ public class Menu {
 	
 	public static String loadGame(int encode) {
 		String line = "";
-		File file = new File("Save.txt");
+		File file = new File("save.txt");
 		if(file.exists()) {
 			try {
 				String singleLine = null;
@@ -102,10 +138,14 @@ public class Menu {
 						 line += ":";
 						 line += trans[1];
 						 line += "/";
+
 					}
 				} catch (IOException e) {}
 			} catch (FileNotFoundException e) {}
 		}
+		System.out.println("line");
+		System.out.println(line);
+
 		return line;
 	}
 	
@@ -122,6 +162,7 @@ public class Menu {
 			String current = val1[i];
 			current += ":";
 			char[] value = Integer.toString(val2[i]).toCharArray();
+
 			for (int j = 0; j < value.length; j++) {
 				value[j] += encode;
 				current += value[j];
@@ -143,8 +184,10 @@ public class Menu {
 		g.setFont(new Font("Arial", Font.BOLD, 48));
 		g.fillRect(0, 0,Game.WIDTH*Game.SCALE, Game.HEIGHT*Game.SCALE);
 		g.setColor(Color.WHITE);
-		g.drawString("Nome do Jogo",  ((Game.WIDTH*Game.SCALE/4)), (Game.HEIGHT*Game.SCALE/5));
+		g.drawString("O PATO",  ((Game.WIDTH*Game.SCALE/3)), (Game.HEIGHT*Game.SCALE/5));
 
+		
+		// menu 
 		g.setFont(new Font("Arial", Font.BOLD, 36));
 		
 		if(pause == false)

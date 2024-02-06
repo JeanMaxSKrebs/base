@@ -7,9 +7,23 @@ import java.util.ArrayList;
 import javax.imageio.ImageIO;
 
 import base.Game;
+import entities.BagPack;
+import entities.Bala;
+import entities.Boss;
+import entities.Enemy;
+import entities.EnemyNormal;
+import entities.EnemyStrong;
+import entities.EnemyX;
+import entities.EnemyY;
 import entities.Entity;
+import entities.HpBag;
+import entities.Key;
 import entities.Player;
-import graficos.Spritesheet;
+import entities.Power;
+import entities.Premium;
+import entities.SpecialKey;
+import entities.StamineBag;
+import base.Spritesheet;
 
 public class World {
 	
@@ -40,6 +54,16 @@ public class World {
 					if(pixelAtual == 0xFFFFFFFF) {
 						//wall
 						tiles[xx+(yy*WIDTH)] =  new Tilewall(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_WALL);
+					} else if(pixelAtual == 0xFF7F0037) {
+						//door
+						tiles[xx+(yy*WIDTH)] = new Normaldoor(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_FLOOR);
+						Tiledoor door = new Normaldoor(xx * TILE_SIZE, yy * TILE_SIZE, Tiledoor.TILE_NORMALDOOR);
+						Game.tiledoors.add(door);
+					} else if(pixelAtual == 0xFF7F006E) {
+						//special door
+						tiles[xx+(yy*WIDTH)] = new Specialdoor(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_FLOOR);
+						Tiledoor door = new Specialdoor(xx * TILE_SIZE, yy * TILE_SIZE, Tiledoor.TILE_SPECIALDOOR);		 
+						Game.tiledoors.add(door);
 					} else if(pixelAtual == 0xFF000CFF) {
 						//player
 						Game.player.setX(xx*32);
@@ -47,6 +71,63 @@ public class World {
 						Game.player.setWidth(24);
 						Game.player.setHeight(24);
 						Game.player.setMask(3, 3, 26, 26);
+						
+					} else if(pixelAtual == 0xFFFF1500) {
+						//normal enemy
+						Enemy en = new EnemyNormal(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Entity.ENEMY_EN);
+						en.setMask(7, 0, 18, 32);
+						Game.entities.add(en);
+						Game.enemies.add(en);
+					} else if(pixelAtual == 0xFFF75D16) {
+						//strong enemy
+						Enemy en = new EnemyStrong(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE*2, TILE_SIZE*2, Entity.ENEMY_EN);
+						en.setMask(4, 10, 24, 16);
+//						Game.entities.add(en);
+						Game.enemies.add(en);
+					} else if(pixelAtual == 0xFF8CC100) {
+						Enemy en = new EnemyY(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Entity.ENEMY_EN);
+						en.setMask(4, 10, 24, 16);
+//						Game.entities.add(en);
+						Game.enemies.add(en);
+					} else if(pixelAtual == 0xFF8C1500) {
+						Enemy en = new EnemyX(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Entity.ENEMY_EN);
+						en.setMask(4, 10, 24, 16);
+//						Game.entities.add(en);
+						Game.enemies.add(en);
+					} else if(pixelAtual == 0xFFBF0092) {
+						Enemy en = new Boss(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Entity.ENEMY_EN);
+						en.setMask(4, 10, 24, 16);
+//						Game.entities.add(en);
+						Game.enemies.add(en);
+					} else if(pixelAtual == 0xFFFF00A5) {
+						//key
+						Key key = new Key(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Entity.KEY_EN);
+						key.setMask(6, 10, 18, 10);
+						Game.entities.add(key);
+
+					} else if(pixelAtual == 0xFF4E3333) {
+						//bagpack
+						BagPack bagpack = new BagPack(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Entity.BAGPACK_EN);
+						bagpack.setMask(7, 7, 18, 18);
+						Game.entities.add(bagpack);
+					} else if(pixelAtual == 0xFF00FF15) {
+						//hpbag
+						HpBag hpbag = new HpBag(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Entity.HPBAG_EN);
+						hpbag.setMask(0, 10, 32, 16);
+						Game.entities.add(hpbag);
+					} else if(pixelAtual == 0xFFFFFF00) {
+						//staminebag
+						StamineBag staminebag = new  StamineBag(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Entity.STAMINEBAG_EN);
+						staminebag.setMask(0, 10, 32, 16);
+						Game.entities.add(staminebag);
+					} else if(pixelAtual == 0xFFF0BAFF) {
+						//specialkey
+						SpecialKey specialkey = new SpecialKey(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Entity.SPECIALKEY_EN);
+						specialkey.setMask(6, 10, 18, 10);
+						Game.entities.add(specialkey);
+					} else if(pixelAtual == 0xFF8300FF) {
+						//premium
+						Game.entities.add(new Premium(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Entity.PREMIUM_EN));
 					} else {						
 						//floor
 						tiles[xx+(yy*WIDTH)] =  new Tilefloor(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_FLOOR);
@@ -90,18 +171,33 @@ public class World {
 //		System.out.println(tiles[x1 + (y1*World.WIDTH)]);
 		if(tiles[x1 + (y1*World.WIDTH)] instanceof Tilewall) {
 			return false;
+		} else if(tiles[x1 + (y1*World.WIDTH)] instanceof Tiledoor) {
+			xDoor = x1;
+			yDoor = y1;
+			isDoor = true;
+			return false;
 		} else {
 			return true;
 		}
 	}
 	
 	public static void restartGame(String fase) {
+		Game.entities.clear();
+		Game.powers.clear();
+		Game.balas.clear();
+		Game.tiledoors.clear();
+		Game.enemies.clear();
+		Game.powers = new ArrayList<Power>();
+		Game.tiledoors = new ArrayList<Tiledoor>();
 		Game.entities = new ArrayList<Entity>();
+		Game.balas = new ArrayList<Bala>();
+		Game.enemies = new ArrayList<Enemy>();
 		Game.spritesheet = new Spritesheet("/spritesheet.png");
 		Game.player = new Player(0, 0, 32, 32, Game.spritesheet.getSprite(0, 32, 32, 32));
+		System.out.println("fasen");
 		System.out.println(fase);
 		Game.world = new World("/"+fase);
-//		Game.entities.add(Game.player);
+		Game.entities.add(Game.player);
 		return;
 	}
 	

@@ -4,9 +4,28 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
+import base.Game;
 import world.Camera;
 
 public abstract class Entity {
+
+	public static BufferedImage KEY_EN = Game.spritesheet.getSprite(64, 224, 32, 32);
+	public static BufferedImage SPECIALKEY_EN = Game.spritesheet.getSprite(128, 224, 32, 32);
+	public static BufferedImage PREMIUM_EN = Game.spritesheet.getSprite(224, 32, 32, 32);
+	
+	public static BufferedImage FRUTA_EN = Game.spritesheet.getSprite(128, 96, 32, 32);
+
+	
+	public static BufferedImage ENEMY_EN = Game.spritesheet.getSprite(0, 224, 32, 32);
+	
+	public static BufferedImage HPBAG_EN = Game.spritesheet.getSprite(128, 32, 32, 32);
+	public static BufferedImage STAMINEBAG_EN = Game.spritesheet.getSprite(160, 32, 32, 32);
+	public static BufferedImage BAGPACK_EN = Game.spritesheet.getSprite(192, 32, 32, 32);
+	
+	public static BufferedImage BAGPACK_RIGHT = Game.spritesheet.getSprite(160, 64, 32, 32);
+	public static BufferedImage BAGPACK_LEFT = Game.spritesheet.getSprite(192, 64, 32, 32);
+	public static BufferedImage BAGPACK_UP = Game.spritesheet.getSprite(128, 64, 32, 32);
+		
 	protected double x;
 	protected double y;
 	protected int width;
@@ -83,4 +102,8 @@ public abstract class Entity {
 	public void tick() {
 		
 	}
+
+	
+	
+	
 }

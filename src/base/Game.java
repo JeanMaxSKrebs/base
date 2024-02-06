@@ -17,27 +17,40 @@ import java.util.Random;
 
 import javax.swing.JFrame;
 
+import entities.Bala;
+import entities.Enemy;
 import entities.Entity;
+import entities.Gosma;
 import entities.Player;
-import graficos.Spritesheet;
+import entities.Power;
+import base.Spritesheet;
 import graficos.UI;
+import world.Tiledoor;
 import world.World;
 
-public class Game extends Canvas implements Runnable, KeyListener {
+public class Game extends Canvas implements Runnable, KeyListener{
 	
 	private static final long serialVersionUID = 1L;
 	private static JFrame frame;
 	private Thread thread;
 	private boolean isRunning;
-
+	
+	public static int maximumCritic = 100;
+	public static int maximumDodge = 50;
+	
 	public static final int WIDTH = 320;
 	public static final int HEIGHT = 320;
 	public static final int SCALE = 2;
-	
+
+
 	private BufferedImage image;
 	
 	public static List<Entity> entities;
-
+	public static List<Enemy> enemies;
+	public static List<Tiledoor> tiledoors;
+	public static List<Power> powers;	
+	public static List<Bala> balas;	
+	public static List<Gosma> gosmas;	
 	
 	public static Spritesheet spritesheet;
 	
@@ -45,25 +58,23 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	
 	public static Player player;
 	
+	private boolean boss = false;
+	
 	public UI ui;
+	
 	public Menu menu;
-
+	public static boolean saveGame = false;
 	
-	public static String gameState = "MENU_PRINCIPAL";
-	public static int maximumDodge = 100;
-	public static int maximumCritic = 100;
-	private boolean restartGame;
-	private static boolean saveGame;
-	private int framesGameOver;
-	private boolean showMessageGameOver = false;
+	private boolean restartGame = false;
+	public static String gameState = "MENU"; 
+	private boolean showMessageGameOver = true;
+	private int framesGameOver = 0;
+	private double LIFE = 100;
+	private double STAMINE = 0;
 	
-	public static double LIFE = 100;
-	public static double STAMINE = 0;
+	private static int CUR_LEVEL = 1;
+	private static int MAX_LEVEL = 5;
 	
-	public static int CUR_LEVEL = 1;
-	public static int MAX_LEVEL = 5;
-	
-	 
 	public Game() {
 		addKeyListener(this);
 		this.setPreferredSize(new Dimension(WIDTH*SCALE, HEIGHT*SCALE));
@@ -71,8 +82,13 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		initFrame();
 		ui = new UI();
 		image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
+		
+		gosmas = new ArrayList<Gosma>();
+		balas = new ArrayList<Bala>();
+		powers = new ArrayList<Power>();
+		tiledoors = new ArrayList<Tiledoor>();
 		entities = new ArrayList<Entity>();
-
+		enemies = new ArrayList<Enemy>();
 		spritesheet = new Spritesheet("/spritesheet.png");
 		player = new Player(0, 0, 32, 32, spritesheet.getSprite(0, 32, 32, 32));
 //		world = new World("/teste.png");
@@ -80,11 +96,10 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		entities.add(player);
 		
 		menu = new Menu();		
-
 	}
 
 	public void initFrame() {
-		frame = new JFrame("Teste");
+		frame = new JFrame("Pato");
 		frame.add(this);
 		frame.setResizable(false);
 		frame.pack();
@@ -108,44 +123,57 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		}
 	}
 	
-	public static void main(String[] args) {
-		System.out.println("teste");
+	public static void main(String[] args){
 		Game game = new Game();
 		game.start();
 	}
 	
-	
 	public void tick() {
-		System.out.println("Tick");
-		if(gameState  == "NORMAL") {
+//		System.out.println(gameState);
+		if(gameState == "NORMAL") {
+			System.out.println("saveGame");
+			System.out.println(saveGame);
 			if(saveGame) {
 				saveGame = false;
-				String[] opt1 = {"fase"};
-				int[] opt2 = {CUR_LEVEL};
-				Menu.saveGame(opt1, opt2, 10);
+				int loadGame = 0;
+				String[] opt1 = {"fase", "vida", "estamina", "premium", "gameState"};
+				int[] opt2 = {CUR_LEVEL,  (int)Game.player.life, (int)Game.player.stamine, (int)Game.player.premium};
+				System.out.println("NÃ­vel: " + CUR_LEVEL + ", Vida: " +(int) Game.player.life + ", Estamina: " + Game.player.stamine+
+						", Premium: " +  (int)Game.player.premium+", GameState: " +  Game.gameState);
+				Menu.saveGame(opt1, opt2, loadGame);
 
 			}
 			restartGame = false;
-//			for(int i=0; i<entities.size(); i++) {
-//				Entity e = entities.get(i);
-//				e.tick();
-//			}
-		} else if(gameState  == "MENU_PRINCIPAL") {
-			menu.tick();
-		} else if(gameState == "NEXT") {
-			CUR_LEVEL = CUR_LEVEL + 1;
-			if(CUR_LEVEL > MAX_LEVEL) {
-				CUR_LEVEL = 1;
+			if(tiledoors.size() == 0) {
+				if(CUR_LEVEL != MAX_LEVEL) {
+					saveGame = true;
+					gameState = "NEXT";									
+				} else if(!boss){
+					gameState = "BOSS";									
+				}
 			}
-			LIFE = Game.player.getLife();
-			STAMINE = Game.player.getStamine();
-			String newWorld = "fase"+CUR_LEVEL+".png";
-			World.restartGame(newWorld);
-			Game.player.setLife((int) LIFE);
-			Game.player.setStamine(STAMINE);
-			Game.player.setArmor(0);
-
-			gameState = "NORMAL";
+			if(enemies.size() == 0) {
+				gameState = "WIN";									
+			}
+			//colocar entidades na tella
+			for(int i=0; i<entities.size(); i++) {
+				Entity e = entities.get(i);
+				e.tick();
+			}
+			//movimentar entidades
+			for(int i=0; i<enemies.size(); i++) {
+				Enemy e = enemies.get(i);
+				e.tick();
+			}
+			for (int i = 0; i < gosmas.size(); i++) {
+				gosmas.get(i).tick();
+			}
+			for (int i = 0; i < balas.size(); i++) {
+				balas.get(i).tick();
+			}
+			for (int i = 0; i < powers.size(); i++) {
+				powers.get(i).tick();
+			}
 		} else if(gameState == "GAME_OVER") {
 			framesGameOver++;
 			
@@ -164,8 +192,54 @@ public class Game extends Canvas implements Runnable, KeyListener {
 				World.restartGame(newWorld);
 
 			}
+		} else if(gameState == "WIN") {
+			framesGameOver++;
+			
+			if(framesGameOver == 30) {
+				framesGameOver = 0;
+				if(showMessageGameOver)
+					showMessageGameOver = false;
+				else
+					showMessageGameOver = true;
+			}
+			if(restartGame) {
+				restartGame = false;
+				gameState = "MENU";
+				CUR_LEVEL = 1;
+				String newWorld = "fase"+CUR_LEVEL+".png";
+				World.restartGame(newWorld);
+
+			}
+			
+		} else if(gameState == "NEXT") {
+			CUR_LEVEL = CUR_LEVEL + 1;
+			if(CUR_LEVEL > MAX_LEVEL) {
+				CUR_LEVEL = 1;
+			}
+			LIFE = Game.player.getLife();
+			STAMINE = Game.player.getStamine();
+			String newWorld = "fase"+CUR_LEVEL+".png";
+			World.restartGame(newWorld);
+			Game.player.setLife((int) LIFE);
+			Game.player.setStamine(STAMINE);
+			Game.player.setArmor(0);
+
+			gameState = "NORMAL";
+		} else if(gameState == "MENU") {
+			menu.tick();
+		} else if(gameState == "BOSS") {
+			if(boss == false) {
+				boss = true;
+				Game.player.balas = Game.player.premium * 100;
+				Game.player.setPremium(0);
+				gameState = "NORMAL";
+			}
 		}
+			
+
 	}
+	
+	
 	
 	public void render() {
 		BufferStrategy bs = this.getBufferStrategy();
@@ -176,15 +250,42 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		Graphics g = image.getGraphics();
 		g.setColor(new Color(0, 0, 0));
 		g.fillRect(0, 0, WIDTH, HEIGHT);
+		
+		
+//		Graphics2D g2 = (Graphics2D) g;
 		//render mundo
 		world.render(g);
+		
 		//render entidades
 		for(int i=0; i<entities.size(); i++) {
 			Entity e = entities.get(i);
 			e.render(g);
 		}
-		//render UI
+//		//render enemies
+		for(int i=0; i<enemies.size(); i++) {
+			Enemy e = enemies.get(i);
+			e.render(g);
+		}
+		//render tiledoors
+		for(int i=0; i<tiledoors.size(); i++) {
+			Tiledoor t = tiledoors.get(i);
+			t.render(g);
+		}
+		//render power
+		for (int i = 0; i < powers.size(); i++) {
+			powers.get(i).render(g);
+		}
+		//render balas
+		for (int i = 0; i < balas.size(); i++) {
+			balas.get(i).render(g);
+		}
+		//render gosmas
+		for (int i = 0; i < gosmas.size(); i++) {
+			gosmas.get(i).render(g);
+		}
+		
 		ui.render(g);
+		
 		
 		g.dispose();
 		g = bs.getDrawGraphics();
@@ -213,10 +314,10 @@ public class Game extends Canvas implements Runnable, KeyListener {
 			g.setFont(new Font("Arial", Font.BOLD, 32));
 			g.fillRect(0, 0, WIDTH*SCALE, HEIGHT*SCALE);
 			g.setColor(Color.white);
-			g.drawString("Parabéns você Finalizou o Jogo",  WIDTH*SCALE/8, HEIGHT*SCALE/2);
+			g.drawString("Parabï¿½ns vocï¿½ Finalizou o Jogo",  WIDTH*SCALE/8, HEIGHT*SCALE/2);
 			if(showMessageGameOver)
 				g.drawString(">> PRESSIONE ENTER <<",  WIDTH*SCALE/5, (HEIGHT*SCALE/2)+96);
-		} else if(gameState == "MENU_PRINCIPAL") {
+		} else if(gameState == "MENU") {
 			menu.render(g);
 		}
 		
@@ -230,7 +331,6 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		double delta = 0;
 		int frames = 0;
 		double timer = System.currentTimeMillis();
-		//click na tela do inicio
 		requestFocus();
 		System.out.println("Jogo Rodando...");
 		while(isRunning) {
@@ -245,13 +345,14 @@ public class Game extends Canvas implements Runnable, KeyListener {
 			}
 			
 			if(System.currentTimeMillis() - timer >= 1000) {
-				System.out.println("FPS: " + frames);
+				//System.out.println("FPS: " + frames);
 				frames = 0;
 				timer+=1000;
 			}
 		}
 		stop();
 	}
+
 	@Override
 	public void keyTyped(KeyEvent e) {
 		
@@ -261,12 +362,12 @@ public class Game extends Canvas implements Runnable, KeyListener {
 
 		if(e.getKeyCode() == KeyEvent.VK_UP||e.getKeyCode() == KeyEvent.VK_W) {
 			player.up = true;
-			if(gameState == "MENU_PRINCIPAL") {
+			if(gameState == "MENU") {
 				menu.up = true;
 			}
 		} else if(e.getKeyCode() == KeyEvent.VK_DOWN||e.getKeyCode() == KeyEvent.VK_S){
 			player.down = true;
-			if(gameState == "MENU_PRINCIPAL") {
+			if(gameState == "MENU") {
 				menu.down = true;
 			}
 		}
@@ -277,19 +378,23 @@ public class Game extends Canvas implements Runnable, KeyListener {
 			player.left = true;
 		}
 		
+		if(e.getKeyCode() == KeyEvent.VK_SPACE) {
+			if(iamMAX_LEVEL()) {
+				player.atirar = true;
+			} else {				
+				player.usingPower = true;
+			}
+			
+		}
 		if(e.getKeyCode() == KeyEvent.VK_ENTER) {
 			restartGame = true;
-			if(gameState == "MENU_PRINCIPAL") {
+			if(gameState == "MENU") {
 				menu.enter = true;
 			}
 		}
 		if(e.getKeyCode() == KeyEvent.VK_ESCAPE || e.getKeyCode() == KeyEvent.VK_P) {
-			gameState = "MENU_PRINCIPAL";
+			gameState = "MENU";
 			Menu.pause = true;
-		}
-		if(e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
-			if(gameState == "NORMAL")
-				saveGame = true;
 		}
 	}
 
@@ -311,5 +416,14 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		Random random = new Random();
 		int r = random.nextInt(value);
 		return r;
+	}
+
+
+	public static boolean iamMAX_LEVEL() {
+		if(CUR_LEVEL == MAX_LEVEL) {			
+			return true;
+		} else {
+			return false;
+		}
 	}
 }
