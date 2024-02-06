@@ -87,7 +87,6 @@ public class Menu {
 					Game.player.setArmor(0);
 					Game.player.setDodgeChance(20);
 					Player.setKeys(0);
-					Player.setSpecialKeys(0);
 					Game.gameState = "NORMAL";
 					pause = false;
 					break;
@@ -181,29 +180,29 @@ public class Menu {
 	}
 	
 	public void render(Graphics g) {
-		g.setFont(new Font("Arial", Font.BOLD, 48));
-		g.fillRect(0, 0,Game.WIDTH*Game.SCALE, Game.HEIGHT*Game.SCALE);
+		g.setFont(new Font("Arial", Font.BOLD, 64));
+		g.fillRect(0, 0,Game.getWIDTH()*Game.getSCALE(), Game.getHEIGHT()*Game.getSCALE());
 		g.setColor(Color.WHITE);
-		g.drawString("O PATO",  ((Game.WIDTH*Game.SCALE/3)), (Game.HEIGHT*Game.SCALE/5));
+		g.drawString("Sobrevivência Jogo",  ((Game.getWIDTH()*Game.getSCALE()/3)), (Game.getHEIGHT()*Game.getSCALE()/5));
 
 		
 		// menu 
-		g.setFont(new Font("Arial", Font.BOLD, 36));
+		g.setFont(new Font("Arial", Font.BOLD, 48));
 		
 		if(pause == false)
-			g.drawString("Novo Jogo",  ((Game.WIDTH*Game.SCALE/3)), ((Game.HEIGHT*Game.SCALE/3)+50));
+			g.drawString("Novo Jogo",  ((Game.getWIDTH()*Game.getSCALE()/3)), ((Game.getHEIGHT()*Game.getSCALE()/3)+100));
 		else 
-			g.drawString("Continuar",  ((Game.WIDTH*Game.SCALE/3)), ((Game.HEIGHT*Game.SCALE/3)+50));
+			g.drawString("Continuar",  ((Game.getWIDTH()*Game.getSCALE()/3)), ((Game.getHEIGHT()*Game.getSCALE()/3)+100));
 
-		g.drawString("Carregar Jogo",  ((Game.WIDTH*Game.SCALE/3)), ((Game.HEIGHT*Game.SCALE/3)+100));
-		g.drawString("Sair",  ((Game.WIDTH*Game.SCALE/3)), ((Game.HEIGHT*Game.SCALE/3)+150));
+		g.drawString("Carregar Jogo",  ((Game.getWIDTH()*Game.getSCALE()/3)), ((Game.getHEIGHT()*Game.getSCALE()/3)+200));
+		g.drawString("Sair",  ((Game.getWIDTH()*Game.getSCALE()-250)), ((Game.getHEIGHT()*Game.getSCALE())-50));
 		
 		if(options[currentOption] == "novo jogo") {
-			g.drawString(" > ",  (((Game.WIDTH*Game.SCALE/3)-50)), ((Game.HEIGHT*Game.SCALE/3)+50));
+			g.drawString(" > ",  (((Game.getWIDTH()*Game.getSCALE()/3)-100)), ((Game.getHEIGHT()*Game.getSCALE()/3)+100));
 		} else if(options[currentOption] == "carregar") {
-			g.drawString(" > ",  (((Game.WIDTH*Game.SCALE/3)-50)), ((Game.HEIGHT*Game.SCALE/3)+100));
+			g.drawString(" > ",  (((Game.getWIDTH()*Game.getSCALE()/3)-100)), ((Game.getHEIGHT()*Game.getSCALE()/3)+200));
 		} else if(options[currentOption] == "sair") {
-			g.drawString(" > ",  (((Game.WIDTH*Game.SCALE/3)-50)), ((Game.HEIGHT*Game.SCALE/3)+150));
+			g.drawString(" > ",  (((Game.getWIDTH()*Game.getSCALE()-350))), ((Game.getHEIGHT()*Game.getSCALE())-50));
 		}
 
 	}

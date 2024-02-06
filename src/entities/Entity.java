@@ -1,23 +1,23 @@
 package entities;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.util.List;
 
 import base.Game;
+import entities.frutas.Fruta;
 import world.Camera;
 
 public abstract class Entity {
 
-	public static BufferedImage KEY_EN = Game.spritesheet.getSprite(64, 224, 32, 32);
-	public static BufferedImage SPECIALKEY_EN = Game.spritesheet.getSprite(128, 224, 32, 32);
-	public static BufferedImage PREMIUM_EN = Game.spritesheet.getSprite(224, 32, 32, 32);
-	
-	public static BufferedImage FRUTA_EN = Game.spritesheet.getSprite(128, 96, 32, 32);
 
-	
 	public static BufferedImage ENEMY_EN = Game.spritesheet.getSprite(0, 224, 32, 32);
 	
+	public static BufferedImage FRUTA_EN = Game.spritesheet.getSprite(0, 256, 32, 32);
+
+
 	public static BufferedImage HPBAG_EN = Game.spritesheet.getSprite(128, 32, 32, 32);
 	public static BufferedImage STAMINEBAG_EN = Game.spritesheet.getSprite(160, 32, 32, 32);
 	public static BufferedImage BAGPACK_EN = Game.spritesheet.getSprite(192, 32, 32, 32);
@@ -33,6 +33,10 @@ public abstract class Entity {
 	
 	protected BufferedImage sprite;
 	protected int maskx, masky, mwidth, mheight;
+	
+	public Entity() {
+		// Lógica de inicialização, se necessário //fruta
+	}
 	
 	public Entity(int x, int y, int width, int height, BufferedImage sprite) {
 		this.x = x;
@@ -54,7 +58,7 @@ public abstract class Entity {
 		this.mheight = mheight;
 	}
 
-	public static boolean isCollidding(Entity e1, Entity e2) {
+	public static boolean isColliding(Entity e1, Entity e2) {
 		Rectangle e1Mask = new Rectangle(e1.getX() + e1.maskx, e1.getY()+e1.masky, e1.mwidth, e1.mheight);
 		Rectangle e2Mask = new Rectangle(e2.getX() + e2.maskx, e2.getY()+e2.masky, e2.mwidth, e2.mheight);
 		
@@ -64,8 +68,8 @@ public abstract class Entity {
 	public void render(Graphics g) {
 		g.drawImage(sprite, this.getX() - Camera.x, this.getY() - Camera.y, null);
 		
-//		g.setColor(Color.black);
-//		g.fillRect(this.getX() + maskx - Camera.x, this.getY() + masky - Camera.y, mwidth, mheight);
+		g.setColor(Color.black);
+		g.fillRect(this.getX() + maskx - Camera.x, this.getY() + masky - Camera.y, mwidth, mheight);
 	}
 	
 	public int getX() {

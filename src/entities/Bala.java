@@ -38,7 +38,7 @@ public class Bala extends Entity {
 		for (int i = 0; i < Game.enemies.size(); i++) {
 			Enemy e = Game.enemies.get(i);
 			
-			if(isCollidding(this, e)) {
+			if(isColliding(this, e)) {
 				e.life -= this.dano;
 				return;
 			}
