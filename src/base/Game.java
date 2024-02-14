@@ -13,6 +13,8 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.swing.JFrame;
 
@@ -20,6 +22,7 @@ import entities.Bala;
 import entities.Enemy;
 import entities.Entity;
 import entities.Player;
+import entities.itens.frutas.Fruta;
 import graficos.UI;
 import world.Tiledoor;
 import world.World;
@@ -40,10 +43,11 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	public static Player player;
 	public static List<Entity> entities;
 	public static List<Enemy> enemies;
+	public static List<Fruta> frutas;
 	public static List<Tiledoor> tiledoors;
 	public static List<Bala> balas;
 
-	private final static int WIDTH = 512;
+	private final static int WIDTH = 448;
 	private final static int HEIGHT = 256;
 	private final static int SCALE = 3;
 
@@ -56,6 +60,12 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	public UI ui;
 
 	public Menu menu;
+	public Inventory inventory;
+	public static boolean openInventory = false;
+
+	private long messageDisplayStartTime = 0;
+	private final long MESSAGE_DISPLAY_DURATION = 3000; // 3 segundos em milissegundos
+
 	public static boolean saveGame = false;
 	private boolean restartGame = false;
 	private boolean showMessageGameOver = true;
@@ -73,6 +83,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		tiledoors = new ArrayList<Tiledoor>();
 		entities = new ArrayList<Entity>();
 		enemies = new ArrayList<Enemy>();
+		frutas = new ArrayList<Fruta>();
 
 		spritesheet = new Spritesheet("/spritesheet.png");
 		player = new Player(0, 0, 32, 32, spritesheet.getSprite(0, 32, 32, 32));
@@ -81,6 +92,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		entities.add(player);
 
 		menu = new Menu();
+		inventory = new Inventory();
 
 	}
 
@@ -133,6 +145,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 				Menu.saveGame(opt1, opt2, loadGame);
 
 			}
+
 			restartGame = false;
 //			if(tiledoors.size() == 0) {
 //					ILHA = "SEGUNDA";
@@ -147,6 +160,11 @@ public class Game extends Canvas implements Runnable, KeyListener {
 			// movimentar entidades
 			for (int i = 0; i < enemies.size(); i++) {
 				Enemy e = enemies.get(i);
+				e.tick();
+			}
+			// girar frutas
+			for (int i = 0; i < frutas.size(); i++) {
+				Fruta e = frutas.get(i);
 				e.tick();
 			}
 
@@ -182,8 +200,9 @@ public class Game extends Canvas implements Runnable, KeyListener {
 			gameState = "NORMAL";
 		} else if (gameState == "MENU") {
 			menu.tick();
+		} else if (gameState == "INVENTORY") {
+			inventory.tick();
 		}
-
 	}
 
 	public void render() {
@@ -210,6 +229,11 @@ public class Game extends Canvas implements Runnable, KeyListener {
 			Enemy e = enemies.get(i);
 			e.render(g);
 		}
+//		//render frutas
+		for (int i = 0; i < frutas.size(); i++) {
+			Fruta f = frutas.get(i);
+			f.render(g);
+		}
 		// render tiledoors
 		for (int i = 0; i < tiledoors.size(); i++) {
 			Tiledoor t = tiledoors.get(i);
@@ -232,6 +256,36 @@ public class Game extends Canvas implements Runnable, KeyListener {
 			g.drawString("Jogo Salvo", ((WIDTH * getSCALE() / 3)), ((HEIGHT * getSCALE() / 3) + 50));
 		}
 
+		if (Game.openInventory == true) {
+			if (!Game.player.hasBagpack) {
+				if (System.currentTimeMillis() - messageDisplayStartTime < MESSAGE_DISPLAY_DURATION) {
+					// Desenhar o quadro
+					g.setColor(new Color(139, 69, 19)); // Marrom
+					int rectWidth = (WIDTH * getSCALE()); // Largura do retângulo
+					int rectHeight = (HEIGHT * getSCALE()) / 4; // Altura do retângulo
+					int rectX = (WIDTH * getSCALE() - rectWidth) / 2; // Posição X centralizada
+					int rectY = (HEIGHT * getSCALE() - rectHeight) / 2; // Posição Y centralizada
+					g.fillRect(rectX, rectY, rectWidth, rectHeight); // Desenhar o retângulo
+
+					// Desenhar o texto
+					g.setColor(Color.black);
+					g.setFont(new Font("calibri", Font.BOLD, 48));
+					String message = "Você precisa de uma mochila primeiro!";
+					int textWidth = g.getFontMetrics().stringWidth(message); // Largura do texto
+					int textX = rectX + (rectWidth - textWidth) / 2; // Posição X centralizada
+					int textY = rectY + rectHeight / 2 + g.getFontMetrics().getHeight() / 4; // Posição Y centralizada
+					g.drawString(message, textX, textY); // Desenhar o texto
+//					g.setColor(Color.black);
+//					g.setFont(new Font("calibri", Font.BOLD, 48));
+//					g.drawString("Você precisa de uma mochila primeiro!", ((WIDTH * getSCALE() / 5)),
+//							((HEIGHT * getSCALE() / 2)));
+				} else {
+					Game.gameState = "NORMAL";
+					Game.openInventory = false; // Se passaram 3 segundos, a mensagem não é mais exibida
+				}
+			}
+		}
+
 		if (gameState == "GAME_OVER") {
 			Graphics2D g2 = (Graphics2D) g;
 			g2.setColor(new Color(0, 0, 0, 100));
@@ -249,11 +303,13 @@ public class Game extends Canvas implements Runnable, KeyListener {
 			g.setFont(new Font("Arial", Font.BOLD, 32));
 			g.fillRect(0, 0, WIDTH * getSCALE(), HEIGHT * getSCALE());
 			g.setColor(Color.white);
-			g.drawString("Parab�ns voc� Finalizou o Jogo", WIDTH * getSCALE() / 8, HEIGHT * getSCALE() / 2);
+			g.drawString("Parabéns você Finalizou o Jogo", WIDTH * getSCALE() / 8, HEIGHT * getSCALE() / 2);
 			if (showMessageGameOver)
 				g.drawString(">> PRESSIONE ENTER <<", WIDTH * getSCALE() / 5, (HEIGHT * getSCALE() / 2) + 96);
 		} else if (gameState == "MENU") {
 			menu.render(g);
+		} else if (gameState == "INVENTORY") {
+			inventory.render(g);
 		}
 
 		bs.show();
@@ -301,17 +357,29 @@ public class Game extends Canvas implements Runnable, KeyListener {
 			if (gameState == "MENU") {
 				menu.up = true;
 			}
+			if (gameState == "INVENTORY") {
+				inventory.up = true;
+			}
 		} else if (e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_S) {
 			player.down = true;
 			if (gameState == "MENU") {
 				menu.down = true;
 			}
+			if (gameState == "INVENTORY") {
+				inventory.down = true;
+			}
 		}
 
 		if (e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_D) {
 			player.right = true;
+			if (gameState == "INVENTORY") {
+				inventory.right = true;
+			}
 		} else if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_A) {
 			player.left = true;
+			if (gameState == "INVENTORY") {
+				inventory.left = true;
+			}
 		}
 
 		if (e.getKeyCode() == KeyEvent.VK_SPACE) {
@@ -323,11 +391,30 @@ public class Game extends Canvas implements Runnable, KeyListener {
 			if (gameState == "MENU") {
 				menu.enter = true;
 			}
+			if (gameState == "INVENTORY") {
+				inventory.enter = true;
+			}
 		}
-		if (e.getKeyCode() == KeyEvent.VK_ESCAPE || e.getKeyCode() == KeyEvent.VK_P) {
-			gameState = "MENU";
-			Menu.pause = true;
+
+		if (gameState.equals("NORMAL")) {
+
+			if (e.getKeyCode() == KeyEvent.VK_ESCAPE || e.getKeyCode() == KeyEvent.VK_P) {
+				gameState = "MENU";
+				Menu.pause = true;
+			}
+			if (e.getKeyCode() == KeyEvent.VK_I) {
+				if (!Game.player.hasBagpack) {
+					Game.openInventory = true;
+					messageDisplayStartTime = System.currentTimeMillis(); // Inicia a contagem do tempo de exibição da
+																			// mensagem
+				} else {
+					gameState = "INVENTORY";
+					Inventory.pause = true;
+				}
+
+			}
 		}
+
 	}
 
 	public void keyReleased(KeyEvent e) {

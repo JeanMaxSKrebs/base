@@ -7,16 +7,13 @@ import java.awt.image.BufferedImage;
 import java.util.List;
 
 import base.Game;
-import entities.frutas.Fruta;
+import entities.itens.frutas.Fruta;
 import world.Camera;
 
 public abstract class Entity {
 
 
 	public static BufferedImage ENEMY_EN = Game.spritesheet.getSprite(0, 224, 32, 32);
-	
-	public static BufferedImage FRUTA_EN = Game.spritesheet.getSprite(0, 256, 32, 32);
-
 
 	public static BufferedImage HPBAG_EN = Game.spritesheet.getSprite(128, 32, 32, 32);
 	public static BufferedImage STAMINEBAG_EN = Game.spritesheet.getSprite(160, 32, 32, 32);
@@ -25,13 +22,20 @@ public abstract class Entity {
 	public static BufferedImage BAGPACK_RIGHT = Game.spritesheet.getSprite(160, 64, 32, 32);
 	public static BufferedImage BAGPACK_LEFT = Game.spritesheet.getSprite(192, 64, 32, 32);
 	public static BufferedImage BAGPACK_UP = Game.spritesheet.getSprite(128, 64, 32, 32);
-		
+
+	public static BufferedImage ITEM_EN = Game.spritesheet.getSprite(192, 0, 32, 32);
+
+	
+	public static BufferedImage FRUTA_EN = Game.spritesheet.getSprite(224, 0, 32, 32);
+
+	
 	protected double x;
 	protected double y;
 	protected int width;
 	protected int height;
 	
 	protected BufferedImage sprite;
+
 	protected int maskx, masky, mwidth, mheight;
 	
 	public Entity() {
@@ -68,8 +72,8 @@ public abstract class Entity {
 	public void render(Graphics g) {
 		g.drawImage(sprite, this.getX() - Camera.x, this.getY() - Camera.y, null);
 		
-		g.setColor(Color.black);
-		g.fillRect(this.getX() + maskx - Camera.x, this.getY() + masky - Camera.y, mwidth, mheight);
+//		g.setColor(Color.black);
+//		g.fillRect(this.getX() + maskx - Camera.x, this.getY() + masky - Camera.y, mwidth, mheight);
 	}
 	
 	public int getX() {
@@ -103,6 +107,15 @@ public abstract class Entity {
 	public void setHeight(int height) {
 		this.height = height;
 	}
+	
+	public BufferedImage getSprite() {
+		return sprite;
+	}
+
+	public void setSprite(BufferedImage sprite) {
+		this.sprite = sprite;
+	}
+	
 	public void tick() {
 		
 	}

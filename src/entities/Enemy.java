@@ -10,6 +10,8 @@ import world.Camera;
 import world.World;
 
 public abstract class Enemy extends Entity{
+	// A IMAGEM PADRÃO FICA NO SUPERIOR // ENTITY
+
 	protected double speed = 1.7;
 	protected static int dano;
 	protected int criticalChance;
@@ -27,7 +29,7 @@ public abstract class Enemy extends Entity{
 	protected boolean moved;
 	
 	public Enemy(int x, int y, int width, int height, BufferedImage sprite) {
-		super(x, y, width, height, null);
+		super(x, y, width, height, Entity.ENEMY_EN);
 
 	}
 	

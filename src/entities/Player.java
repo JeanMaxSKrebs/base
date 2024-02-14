@@ -2,10 +2,12 @@ package entities;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.List;
 
 import base.Game;
-import entities.frutas.Fruta;
+import entities.itens.Item;
+import entities.itens.frutas.Fruta;
 import world.Camera;
 import world.Normaldoor;
 import world.Tiledoor;
@@ -16,16 +18,17 @@ public class Player extends Entity {
 	public boolean left, right, up, down;
 	public int right_dir = 1, left_dir = 2, up_dir = 3, down_dir = 4;
 	public int dir = 1;
-	public double speed = 5;
+	public static double speed = 5;
 	private static int keys = 0;
 	public int premium = 0;
 
 	private static int dodgeChance = 20;
 	private static int armor = 0;
 
-	private boolean hasBagpack = false;
+	public boolean hasBagpack = false;
 
-    private static List<Fruta> frutasColetadas;
+	private static List<Item> itens = new ArrayList<>();
+	private static List<Fruta> frutasColetadas = new ArrayList<>();
 
 	private int qtdSprites = 4;
 	private int frames = 0, maxFrames = 20, index = 0, maxIndex = (qtdSprites - 1);
@@ -45,13 +48,14 @@ public class Player extends Entity {
 	public boolean atirar = false;
 	public double balas = 0;
 	public double maxBalas = 600;
-	
+
 	public double nivel;
 	public double qtdNivel;
 
 	public Player(int x, int y, int width, int height, BufferedImage sprite) {
 		super(x, y, width, height, sprite);
-
+		itens = new ArrayList<>();
+		frutasColetadas = new ArrayList<>();
 		rightPlayer = new BufferedImage[qtdSprites];
 		leftPlayer = new BufferedImage[qtdSprites];
 		upPlayer = new BufferedImage[qtdSprites];
@@ -109,17 +113,29 @@ public class Player extends Entity {
 		return false;
 	}
 
+	public void obtainItem(Item newItem) {
+
+		for (Item item : itens) {
+		     if (item.getNome().equals(newItem.getNome())) { // Compare item names
+		    	 
+					newItem.setQuantidade(item.getQuantidade() + newItem.getQuantidade());
+
+		            return; // Exit the method after updating quantity
+		        }
+		}
+		// If the item does not exist in the inventory, add it
+		itens.add(newItem);
+
+	}
+
 	public void checkItems() {
 		for (int i = 0; i < Game.entities.size(); i++) {
 			Entity e = Game.entities.get(i);
-			
-			if (hasBagpack)
-				speed = 4;
 
 			if (e instanceof BagPack) {
 				if (Entity.isColliding(this, e)) {
 					hasBagpack = true;
-//					armor = armor + 5;
+					speed = 4;
 
 					Game.entities.remove(i);
 
@@ -127,15 +143,22 @@ public class Player extends Entity {
 				}
 			}
 
-	         // Itens que são guardados
-            if (hasBagpack && e instanceof Fruta) {
-                if (Entity.isColliding(this, e)) {
-                    Fruta frutaColetada = (Fruta) e;
-                    frutasColetadas.add(frutaColetada);
-                    Game.entities.remove(i);
-                    return;
-                }
-            }
+			// Itens que são guardados
+			if (hasBagpack && e instanceof Fruta) {
+				if (Entity.isColliding(this, e)) {
+					Fruta frutaColetada = (Fruta) e;
+
+					obtainItem(frutaColetada); // itens.add(frutaColetada);
+
+					frutasColetadas.add(frutaColetada);
+					Game.entities.remove(i);
+					Game.frutas.remove(e); // Remover da lista de frutas
+
+					return;
+				}
+			}
+//			System.out.println("frutasColetadas");
+//			System.out.println(frutasColetadas);
 		}
 	}
 
@@ -161,30 +184,42 @@ public class Player extends Entity {
 		}
 	}
 
-	public void tick() {
-			if (atirar) {
-				atirar = false;
-				if (balas > 0) {
-//					System.out.println("teste");
-					balas--;
-					atirar = false;
-					int dx = 0;
-					int dy = 0;
-					if (dir == right_dir) {
-						dx = 1;
-					} else if (dir == left_dir) {
-						dx = -1;
-					} else if (dir == down_dir) {
-						dy = 1;
-					} else if (dir == up_dir) {
-						dy = -1;
-					}
+	public int countFrutaEspecifica(String nome) {
+		int fruitCount = 0;
+		List<Fruta> frutasColetadas = Player.getFrutasColetadas();
+		for (Fruta fruta : frutasColetadas) {
+			if (nome.equals(fruta.getNome().toUpperCase())) {
+				fruitCount++;
 
-					Bala bala = new Bala(this.getX(), this.getY(), 6, 6, null, dx, dy);
-					bala.setMask(13, 13, 6, 6);
-					Game.balas.add(bala);
-				}
 			}
+		}
+		return fruitCount;
+	}
+
+	public void tick() {
+		if (atirar) {
+			atirar = false;
+			if (balas > 0) {
+//					System.out.println("teste");
+				balas--;
+				atirar = false;
+				int dx = 0;
+				int dy = 0;
+				if (dir == right_dir) {
+					dx = 1;
+				} else if (dir == left_dir) {
+					dx = -1;
+				} else if (dir == down_dir) {
+					dy = 1;
+				} else if (dir == up_dir) {
+					dy = -1;
+				}
+
+				Bala bala = new Bala(this.getX(), this.getY(), 6, 6, null, dx, dy);
+				bala.setMask(13, 13, 6, 6);
+				Game.balas.add(bala);
+			}
+		}
 
 		setMoved(false);
 
@@ -337,13 +372,29 @@ public class Player extends Entity {
 		this.moved = moved;
 	}
 
-
 	public static List<Fruta> getFrutasColetadas() {
 		return frutasColetadas;
 	}
 
 	public static void setFrutasColetadas(List<Fruta> frutasColetadas) {
 		Player.frutasColetadas = frutasColetadas;
+	}
+
+	public static double getSpeed() {
+		// TODO Auto-generated method stub
+		return speed;
+	}
+
+	public void setSpeed(double speed) {
+		Player.speed = speed;
+	}
+
+	public static List<Item> getItens() {
+		return itens;
+	}
+
+	public static void setItens(List<Item> itens) {
+		Player.itens = itens;
 	}
 
 }

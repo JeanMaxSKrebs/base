@@ -3,6 +3,7 @@ package graficos;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.util.List;
 
 import base.Game;
 import entities.Player;
@@ -10,6 +11,7 @@ import entities.Player;
 public class UI {
 	
 	int frame;
+
 	
 	public void render(Graphics g) {
 		g.setColor(Color.black);
@@ -34,23 +36,34 @@ public class UI {
 		}
 		
 		g.setColor(Color.gray);
-		g.fillRect(0, Game.getHEIGHT()-32, 64, 32);
+		g.fillRect(0, Game.getHEIGHT()-32, 96, 32);
 		g.setColor(Color.white);
-		g.setFont(new Font("roboto", Font.BOLD, 8));
+		g.setFont(new Font("roboto", Font.BOLD, 10));
 		
-		g.drawString("Frutas:  "+Player.getFrutasColetadas() , 0,  Game.getHEIGHT()-35);
-		g.drawString("Maçãs:  "+Player.getFrutasColetadas() , 0,  Game.getHEIGHT()-25);
-		g.drawString("Bananas: "+Player.getFrutasColetadas() , 0,  Game.getHEIGHT()-15);
-		g.drawString("PREMIUM: "+Game.player.premium , 0,  Game.getHEIGHT()-5);
 		
+//		quadroEsquerdo();
+//		quadroDireito();
+
+		//frutas da UI
+
+		g.drawString("Frutas:  "+Game.player.getFrutasColetadas().size() , 0,  Game.getHEIGHT()-25);
+		g.drawString("Inventário:  Press I", 0,  Game.getHEIGHT()-5);
+		g.drawString("Pause:  Press P", 0,  Game.getHEIGHT()-15);
+
 		
 		g.setColor(Color.gray);
-		g.fillRect(Game.getWIDTH()-64, Game.getHEIGHT()-32, 64, 32);
+		g.fillRect(Game.getWIDTH()-80, Game.getHEIGHT()-32, 80, 32);
 		g.setColor(Color.white);
-		g.setFont(new Font("roboto", Font.BOLD, 8));
-		g.drawString("ARMADURA: "+Player.getArmor(), Game.getWIDTH()-64,  Game.getHEIGHT()-25);
-		g.drawString("ESQUIVA: "+Player.getDodgeChance() , Game.getWIDTH()-64, Game.getHEIGHT()-15);
+		g.setFont(new Font("roboto", Font.BOLD, 9));
+		g.drawString("ARMADURA: "+Player.getArmor(), Game.getWIDTH()-72,  Game.getHEIGHT()-25);
+		g.drawString("ESQUIVA: "+Player.getDodgeChance() , Game.getWIDTH()-72, Game.getHEIGHT()-15);
+		g.drawString("VELOCIDADE: "+Player.getSpeed() , Game.getWIDTH()-72, Game.getHEIGHT()-5);
+
+		g.setColor(Color.black);
+		g.drawString("MAÇÃS:  "+Game.player.countFrutaEspecifica("MACA") , 0,  Game.getHEIGHT()-35);
+
 
 		
 	}
+	
 }
