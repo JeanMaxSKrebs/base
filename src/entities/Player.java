@@ -114,17 +114,24 @@ public class Player extends Entity {
 	}
 
 	public void obtainItem(Item newItem) {
-
+		boolean itemExists = false;
+		// Verifica se o item já existe na lista
 		for (Item item : itens) {
-		     if (item.getNome().equals(newItem.getNome())) { // Compare item names
-		    	 
-					newItem.setQuantidade(item.getQuantidade() + newItem.getQuantidade());
+			if (item.getNome().equals(newItem.getNome())) {
 
-		            return; // Exit the method after updating quantity
-		        }
+				int newItemTemp = item.quantidade + 1;
+				item.quantidade = newItemTemp;
+
+				itemExists = true;
+				break;
+			}
 		}
-		// If the item does not exist in the inventory, add it
-		itens.add(newItem);
+
+		// Se o item não foi encontrado na lista, adiciona-o
+		if (!itemExists) {
+
+			itens.add(newItem);
+		}
 
 	}
 

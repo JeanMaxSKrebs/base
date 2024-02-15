@@ -43,4 +43,6 @@ public class Maca extends Fruta {
 //		g.setColor(Color.red);
 //		g.fillRect(this.getX() + maskx - Camera.x, this.getY() + masky - Camera.y, mwidth, mheight);
 	}
+	
+	
 }

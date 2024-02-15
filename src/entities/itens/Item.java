@@ -6,7 +6,7 @@ import entities.Entity;
 
 public class Item extends Entity {
 	protected String nome = "Without";
-	protected int quantidade = 0;
+	public int quantidade = 1;
 
 	public Item(int x, int y, int width, int height, BufferedImage sprite, String nome) {
 		super(x, y, width, height, sprite);
