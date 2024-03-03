@@ -1,0 +1,13 @@
+			System.out.println("midy");
+			System.out.println(midy);
+			System.out.println("plusy");
+			System.out.println(plusy);
+			System.out.println("minusy");
+			System.out.println(minusy);
+			
+			System.out.println("midx");
+			System.out.println(midx);
+			System.out.println("plusx");
+			System.out.println(plusx);
+			System.out.println("minusx");
+			System.out.println(minusx);

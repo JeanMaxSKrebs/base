@@ -29,13 +29,17 @@ public class World {
 	public static int xDoor = 0;
 	public static int yDoor = 0;
 
-	public static final int TILE_SIZE = 32;
+	public static final int TILE_SIZE = 112;
 
 	public World(String path) {
 		try {
 			BufferedImage map = ImageIO.read(getClass().getResource(path));
 			WIDTH = map.getWidth();
 			HEIGHT = map.getHeight();
+			System.out.println("WIDTH");
+			System.out.println(WIDTH);
+			System.out.println("HEIGHT");
+			System.out.println(HEIGHT);
 			int[] pixels = new int[WIDTH * HEIGHT];
 			tiles = new Tile[WIDTH * HEIGHT];
 
@@ -43,28 +47,32 @@ public class World {
 			for (int xx = 0; xx < WIDTH; xx++) {
 				for (int yy = 0; yy < HEIGHT; yy++) {
 					int pixelAtual = pixels[xx + (yy * WIDTH)];
-					tiles[xx + (yy * WIDTH)] = new Tilefloor(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_FLOOR);
+					tiles[xx + (yy * WIDTH)] = new Tilefloor(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE,
+							Tile.TILE_FLOOR);
 
 					if (pixelAtual == 0xFFFFFFFF) {
 						// wall
-						tiles[xx + (yy * WIDTH)] = new Tilewall(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_WALL);
+						tiles[xx + (yy * WIDTH)] = new Tilewall(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE,
+								Tile.TILE_WALL);
 					} else if (pixelAtual == 0xFF7F0037) {
 						// door
-						tiles[xx + (yy * WIDTH)] = new Normaldoor(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_FLOOR);
+						tiles[xx + (yy * WIDTH)] = new Normaldoor(xx * TILE_SIZE, yy * TILE_SIZE,
+								Tiledoor.TILE_NORMALDOOR);
 						Tiledoor door = new Normaldoor(xx * TILE_SIZE, yy * TILE_SIZE, Tiledoor.TILE_NORMALDOOR);
 						Game.tiledoors.add(door);
 					} else if (pixelAtual == 0xFF7F006E) {
 						// special door
-						tiles[xx + (yy * WIDTH)] = new Specialdoor(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_FLOOR);
+						tiles[xx + (yy * WIDTH)] = new Specialdoor(xx * TILE_SIZE, yy * TILE_SIZE,
+								Tiledoor.TILE_SPECIALDOOR);
 						Tiledoor door = new Specialdoor(xx * TILE_SIZE, yy * TILE_SIZE, Tiledoor.TILE_SPECIALDOOR);
 						Game.tiledoors.add(door);
 					} else if (pixelAtual == 0xFF000CFF) {
 						// player
-						Game.player.setX(xx * 32);
-						Game.player.setY(yy * 32);
-						Game.player.setWidth(24);
-						Game.player.setHeight(24);
-						Game.player.setMask(3, 3, 26, 26);
+						Game.player.setX(xx * TILE_SIZE);
+						Game.player.setY(yy * TILE_SIZE);
+						Game.player.setWidth(64);
+						Game.player.setHeight(96);
+						Game.player.setMask(20, 10, 64, 96);
 
 					} else if (pixelAtual == 0xFFFF1500) {
 						// normal enemy
@@ -94,7 +102,7 @@ public class World {
 						Game.frutas.add(fruta);
 
 					} else if (pixelAtual == 0xFFD4195E) {
-						//Maca
+						// Maca
 						Maca maca = new Maca(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Fruta.MACA_FR);
 						maca.setMask(0, 10, 32, 16);
 						Game.entities.add(maca);
@@ -108,9 +116,9 @@ public class World {
 						Game.frutas.add(uva);
 
 					} else {
-
-						// floor
-						tiles[xx + (yy * WIDTH)] = new Tilefloor(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_FLOOR);
+						// Piso
+						tiles[xx + (yy * WIDTH)] = new Tilefloor(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE,
+								Tile.TILE_FLOOR);
 					}
 
 				}
@@ -129,7 +137,8 @@ public class World {
 	}
 
 	public static void troca() {
-		tiles[xDoor + (yDoor * WIDTH)] = new Tilefloor(xDoor * TILE_SIZE, yDoor * TILE_SIZE, Tile.TILE_FLOOR);
+		tiles[xDoor + (yDoor * WIDTH)] = new Tilefloor(xDoor * TILE_SIZE, yDoor * TILE_SIZE, TILE_SIZE, TILE_SIZE,
+				Tile.TILE_FLOOR);
 	}
 
 	public static boolean isFree(int xNext, int yNext, String dir) {
@@ -150,6 +159,7 @@ public class World {
 		}
 //		System.out.println(tiles[x1 + (y1*World.WIDTH)]);
 		if (tiles[x1 + (y1 * World.WIDTH)] instanceof Tilewall) {
+//			System.out.println("é parede");
 			return false;
 		} else if (tiles[x1 + (y1 * World.WIDTH)] instanceof Tiledoor) {
 			xDoor = x1;
@@ -173,7 +183,9 @@ public class World {
 		Game.enemies = new ArrayList<Enemy>();
 		Game.frutas = new ArrayList<Fruta>();
 		Game.spritesheet = new Spritesheet("/spritesheet.png");
-		Game.player = new Player(0, 0, 32, 32, Game.spritesheet.getSprite(0, 32, 32, 32));
+		Game.spritesheet_Walls = new Spritesheet("/spritesheet_Walls.png");
+		Game.spritesheet_Player = new Spritesheet("/spritesheet_Player.png");
+		Game.player = new Player(0, 0, 112, 112, Game.spritesheet_Player.getSprite(0, 112, 112, 112));
 		System.out.println("fasen");
 		System.out.println(fase);
 		Game.world = new World("/" + fase);
@@ -182,11 +194,11 @@ public class World {
 	}
 
 	public void render(Graphics g) {
-		int xStart = Camera.x / 32;
-		int yStart = Camera.y / 32;
+		int xStart = Camera.x / TILE_SIZE;
+		int yStart = Camera.y / TILE_SIZE;
 
-		int xFinal = xStart + (Game.getWIDTH() / 32);
-		int yFinal = yStart + (Game.getHEIGHT() / 32);
+		int xFinal = xStart + (Game.getWIDTH() / TILE_SIZE);
+		int yFinal = yStart + (Game.getHEIGHT() / TILE_SIZE);
 
 		for (int xx = xStart; xx <= xFinal; xx++) {
 			for (int yy = yStart; yy <= yFinal; yy++) {

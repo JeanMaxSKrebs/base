@@ -36,8 +36,7 @@ public class Fruta extends Item implements Comparable<Fruta> {
 	private double curaTotal;
 	private BufferedImage sprite;
 
-	protected int frames = 0, maxFrames = 40
-			;
+	protected int frames = 0, maxFrames = 60;
 	protected int index = 1;
 	protected int qtdDirecoes = 3;
 

@@ -1,5 +1,6 @@
 package entities.itens.frutas;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
@@ -27,7 +28,6 @@ public class Uva extends Fruta {
 		
 	}
 	public void tick() {
-
 		
 		girar();
 		verificaGiro();

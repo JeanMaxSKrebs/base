@@ -1,5 +1,6 @@
 package entities;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -16,9 +17,9 @@ import world.World;
 public class Player extends Entity {
 
 	public boolean left, right, up, down;
-	public int right_dir = 1, left_dir = 2, up_dir = 3, down_dir = 4;
+	public int down_dir = 1, left_dir = 2, right_dir = 3, up_dir = 4;
 	public int dir = 1;
-	public static double speed = 5;
+	public static double speed = 12;
 	private static int keys = 0;
 	public int premium = 0;
 
@@ -61,19 +62,21 @@ public class Player extends Entity {
 		upPlayer = new BufferedImage[qtdSprites];
 		downPlayer = new BufferedImage[qtdSprites];
 
+//		public int down_dir = 1, left_dir = 2, right_dir = 3, up_dir = 4;
+
 		for (int i = 0; i < qtdSprites; i++) {
-			leftPlayer[i] = Game.spritesheet.getSprite((i * 32), 0, 32, 32);
+			leftPlayer[i] = Game.spritesheet_Player.getSprite((i * 112), 112 * left_dir, 112, 112);
 		}
 
 		for (int i = 0; i < qtdSprites; i++) {
-			rightPlayer[i] = Game.spritesheet.getSprite((i * 32), 32, 32, 32);
+			rightPlayer[i] = Game.spritesheet_Player.getSprite((i * 112), 112 * right_dir, 112, 112);
 		}
 		for (int i = 0; i < qtdSprites; i++) {
-			upPlayer[i] = Game.spritesheet.getSprite((i * 32), 64, 32, 32);
+			upPlayer[i] = Game.spritesheet_Player.getSprite((i * 112), 112 * up_dir, 112, 112);
 		}
 
 		for (int i = 0; i < qtdSprites; i++) {
-			downPlayer[i] = Game.spritesheet.getSprite((i * 32), 96, 32, 32);
+			downPlayer[i] = Game.spritesheet_Player.getSprite((i * 112),  112 * down_dir, 112, 112);
 		}
 
 	}
@@ -142,7 +145,7 @@ public class Player extends Entity {
 			if (e instanceof BagPack) {
 				if (Entity.isColliding(this, e)) {
 					hasBagpack = true;
-					speed = 4;
+					speed = 10;
 
 					Game.entities.remove(i);
 
@@ -239,38 +242,48 @@ public class Player extends Entity {
 		int minusx = (int) (x + maskx);
 
 		if (right) {
-			setMoved(true);
 			dir = right_dir;
-			if (World.isFree(plusx, midy, "right"))
+			if (World.isFree(plusx + (int) speed, minusy, "right") && World.isFree(plusx + (int) speed, midy, "right")
+					&& World.isFree(plusx + (int) speed, plusy, "right")) {
 				x += speed;
-			else if (World.isDoor())
+				setMoved(true);
+			} else if (World.isDoor()) {
 				checkDoor();
+			}
+		}
 
-		} else if (left) {
-			setMoved(true);
+		if (left) {
 			dir = left_dir;
-			if (World.isFree(minusx, midy, "left"))
+			if (World.isFree(minusx - (int) speed, minusy, "left") && World.isFree(minusx - (int) speed, midy, "left")
+					&& World.isFree(minusx - (int) speed, plusy, "left")) {
 				x -= speed;
-			else if (World.isDoor())
+				setMoved(true);
+			} else if (World.isDoor()) {
 				checkDoor();
+			}
 		}
 
 		if (down) {
-			setMoved(true);
 			dir = down_dir;
-			if (World.isFree(midx, plusy, "down"))
+			if (World.isFree(midx, plusy + (int) speed, "down") && World.isFree(minusx, plusy + (int) speed, "down")
+					&& World.isFree(plusx, plusy + (int) speed, "down")) {
 				y += speed;
-			else if (World.isDoor())
+				setMoved(true);
+			} else if (World.isDoor()) {
 				checkDoor();
-		} else if (up) {
-			setMoved(true);
-			dir = up_dir;
-			if (World.isFree(midx, minusy, "up"))
-				y -= speed;
-			else if (World.isDoor())
-				checkDoor();
+			}
 		}
 
+		if (up) {
+			dir = up_dir;
+			if (World.isFree(midx, minusy, "up") && World.isFree(minusx, minusy - (int) speed, "up")
+					&& World.isFree(plusx, minusy - (int) speed, "up")) {
+				y -= speed;
+				setMoved(true);
+			} else if (World.isDoor()) {
+				checkDoor();
+			}
+		}
 		if (moved) {
 			frames++;
 			if (frames == maxFrames) {
@@ -280,11 +293,11 @@ public class Player extends Entity {
 					index = 0;
 			}
 		}
+
 		checkItems();
 
-		Camera.x = Camera.clamp(this.getX() - (Game.getWIDTH() / 2), 0, World.WIDTH * 32 - Game.getWIDTH());
-		Camera.y = Camera.clamp(this.getY() - (Game.getHEIGHT() / 2), 0, World.HEIGHT * 32 - Game.getHEIGHT());
-
+		Camera.x = Camera.clamp(this.getX() - (Game.getWIDTH() / 2), 0, World.WIDTH * 112 - Game.getWIDTH());
+		Camera.y = Camera.clamp(this.getY() - (Game.getHEIGHT() / 2), 0, World.HEIGHT * 112 - Game.getHEIGHT());
 	}
 
 	public void render(Graphics g) {
@@ -303,16 +316,17 @@ public class Player extends Entity {
 			if (hasBagpack) {
 				g.drawImage(Entity.BAGPACK_UP, this.getX() - Camera.x, this.getY() - Camera.y, null);
 			}
-		} else if (dir == down_dir)
+		} else if (dir == down_dir) {
 			g.drawImage(downPlayer[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
+		}
 
-//		g.setColor(Color.red);
-//		g.fillRect(this.getX() + maskx - (int)speed - Camera.x, this.getY() + masky - (int)speed - Camera.y, mwidth, mheight);
-//		g.fillRect(this.getX() + maskx - Camera.x, this.getY() + masky - Camera.y, mwidth + (int)speed, mheight + (int)speed);
-//
-//		g.setColor(Color.black);
+//		// Desenha a caixa delimitadora
+//		g.setColor(Color.pink);
 //		g.fillRect(this.getX() + maskx - Camera.x, this.getY() + masky - Camera.y, mwidth, mheight);
-
+//
+//		// Desenha a borda da caixa delimitadora
+//		g.setColor(Color.orange);
+//		g.drawRect(this.getX() + maskx - Camera.x, this.getY() + masky - Camera.y, mwidth, mheight);
 	}
 
 	public double getLife() {

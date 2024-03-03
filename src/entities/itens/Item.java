@@ -18,6 +18,10 @@ public class Item extends Entity {
 	}
 
 
+	public Item(int x, int y, BufferedImage sprite) {
+		// TODO Auto-generated constructor stub
+	}
+
 	public String getNome() {
 		return nome;
 	}

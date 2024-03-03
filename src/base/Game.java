@@ -24,6 +24,7 @@ import entities.Entity;
 import entities.Player;
 import entities.itens.frutas.Fruta;
 import graficos.UI;
+import world.Tile;
 import world.Tiledoor;
 import world.World;
 
@@ -39,19 +40,22 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	public static int maximumDodge = 50;
 
 	public static Spritesheet spritesheet;
+	public static Spritesheet spritesheet_Walls;
+	public static Spritesheet spritesheet_Player;
 
 	public static Player player;
 	public static List<Entity> entities;
 	public static List<Enemy> enemies;
 	public static List<Fruta> frutas;
+	public static List<Tile> tiles;
 	public static List<Tiledoor> tiledoors;
 	public static List<Bala> balas;
 
-	private final static int WIDTH = 448;
-	private final static int HEIGHT = 256;
-	private final static int SCALE = 3;
+	private final static int WIDTH = 1120;
+	private final static int HEIGHT = 560;
+	private final static int SCALE = 1;
 
-	private BufferedImage image;
+	public BufferedImage image;
 
 	public static World world;
 	public static String gameState = "MENU";
@@ -80,13 +84,17 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		image = new BufferedImage(getWIDTH(), getHEIGHT(), BufferedImage.TYPE_INT_RGB);
 
 		balas = new ArrayList<Bala>();
+		tiles = new ArrayList<Tile>();
 		tiledoors = new ArrayList<Tiledoor>();
 		entities = new ArrayList<Entity>();
 		enemies = new ArrayList<Enemy>();
 		frutas = new ArrayList<Fruta>();
 
 		spritesheet = new Spritesheet("/spritesheet.png");
-		player = new Player(0, 0, 32, 32, spritesheet.getSprite(0, 32, 32, 32));
+		spritesheet_Walls = new Spritesheet("/spritesheet_Walls.png");
+		spritesheet_Player = new Spritesheet("/spritesheet_Player.png");
+
+		player = new Player(0, 0, 112, 112, spritesheet_Player.getSprite(0, 112, 112, 112));
 //		world = new World("/teste.png");
 		world = new World("/" + ILHA + ".png");
 		entities.add(player);
@@ -167,6 +175,11 @@ public class Game extends Canvas implements Runnable, KeyListener {
 				Fruta e = frutas.get(i);
 				e.tick();
 			}
+			// mudar tiles
+			for (int i = 0; i < tiles.size(); i++) {
+				Tile e = tiles.get(i);
+				e.tick();
+			}
 
 			for (int i = 0; i < balas.size(); i++) {
 				balas.get(i).tick();
@@ -233,6 +246,11 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		for (int i = 0; i < frutas.size(); i++) {
 			Fruta f = frutas.get(i);
 			f.render(g);
+		}
+		// render tiles
+		for (int i = 0; i < tiles.size(); i++) {
+			Tile t = tiles.get(i);
+			t.render(g);
 		}
 		// render tiledoors
 		for (int i = 0; i < tiledoors.size(); i++) {
@@ -337,7 +355,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 			}
 
 			if (System.currentTimeMillis() - timer >= 1000) {
-				System.out.println("FPS: " + frames);
+//				System.out.println("FPS: " + frames);
 				frames = 0;
 				timer += 1000;
 			}

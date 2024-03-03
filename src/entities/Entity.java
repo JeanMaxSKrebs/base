@@ -2,6 +2,7 @@ package entities;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.util.List;
@@ -65,15 +66,22 @@ public abstract class Entity {
 	public static boolean isColliding(Entity e1, Entity e2) {
 		Rectangle e1Mask = new Rectangle(e1.getX() + e1.maskx, e1.getY()+e1.masky, e1.mwidth, e1.mheight);
 		Rectangle e2Mask = new Rectangle(e2.getX() + e2.maskx, e2.getY()+e2.masky, e2.mwidth, e2.mheight);
+//		System.out.println("e1Mask");
+//		System.out.println(e1Mask);
+//		System.out.println(e2Mask);
+//		System.out.println("e2Mask");
+
 		
 		return e1Mask.intersects(e2Mask);
 	}
-	
+
 	public void render(Graphics g) {
 		g.drawImage(sprite, this.getX() - Camera.x, this.getY() - Camera.y, null);
 		
-//		g.setColor(Color.black);
+//		g.setColor(Color.green);
 //		g.fillRect(this.getX() + maskx - Camera.x, this.getY() + masky - Camera.y, mwidth, mheight);
+		
+		
 	}
 	
 	public int getX() {
