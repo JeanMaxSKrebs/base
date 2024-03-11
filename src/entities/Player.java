@@ -8,7 +8,11 @@ import java.util.List;
 
 import base.Game;
 import entities.itens.Item;
-import entities.itens.frutas.Fruta;
+import entities.itens.Key;
+import entities.itens.SpecialKey;
+import entities.itens.comidas.Comida;
+import entities.itens.comidas.frutas.Fruta;
+import entities.itens.utensilios.BagPack;
 import world.Camera;
 import world.Normaldoor;
 import world.Tiledoor;
@@ -21,6 +25,8 @@ public class Player extends Entity {
 	public int dir = 1;
 	public static double speed = 12;
 	private static int keys = 0;
+	private static int specialKeys = 0;
+
 	public int premium = 0;
 
 	private static int dodgeChance = 20;
@@ -30,6 +36,7 @@ public class Player extends Entity {
 
 	private static List<Item> itens = new ArrayList<>();
 	private static List<Fruta> frutasColetadas = new ArrayList<>();
+	private static List<Comida> comidasColetadas = new ArrayList<>();
 
 	private int qtdSprites = 4;
 	private int frames = 0, maxFrames = 20, index = 0, maxIndex = (qtdSprites - 1);
@@ -57,6 +64,8 @@ public class Player extends Entity {
 		super(x, y, width, height, sprite);
 		itens = new ArrayList<>();
 		frutasColetadas = new ArrayList<>();
+		comidasColetadas = new ArrayList<>();
+
 		rightPlayer = new BufferedImage[qtdSprites];
 		leftPlayer = new BufferedImage[qtdSprites];
 		upPlayer = new BufferedImage[qtdSprites];
@@ -76,7 +85,7 @@ public class Player extends Entity {
 		}
 
 		for (int i = 0; i < qtdSprites; i++) {
-			downPlayer[i] = Game.spritesheet_Player.getSprite((i * 112),  112 * down_dir, 112, 112);
+			downPlayer[i] = Game.spritesheet_Player.getSprite((i * 112), 112 * down_dir, 112, 112);
 		}
 
 	}
@@ -140,7 +149,11 @@ public class Player extends Entity {
 
 	public void checkItems() {
 		for (int i = 0; i < Game.entities.size(); i++) {
+//			System.out.println("Game.entities.size()");
+//			System.out.println(Game.entities.size());
 			Entity e = Game.entities.get(i);
+//			System.out.println("e");
+//			System.out.println(e);
 
 			if (e instanceof BagPack) {
 				if (Entity.isColliding(this, e)) {
@@ -154,21 +167,58 @@ public class Player extends Entity {
 			}
 
 			// Itens que são guardados
-			if (hasBagpack && e instanceof Fruta) {
-				if (Entity.isColliding(this, e)) {
-					Fruta frutaColetada = (Fruta) e;
+			if (hasBagpack) {
+				if (e instanceof Fruta) {
+					if (Entity.isColliding(this, e)) {
+						Fruta frutaColetada = (Fruta) e;
 
-					obtainItem(frutaColetada); // itens.add(frutaColetada);
+						obtainItem(frutaColetada); // itens.add(frutaColetada);
 
-					frutasColetadas.add(frutaColetada);
-					Game.entities.remove(i);
-					Game.frutas.remove(e); // Remover da lista de frutas
+						frutasColetadas.add(frutaColetada);
+						Game.entities.remove(i);
+						Game.frutas.remove(e); // Remover da lista de frutas
 
-					return;
+						return;
+					}
 				}
-			}
+				if (e instanceof Comida) {
+					if (Entity.isColliding(this, e)) {
+						Comida comidaColetada = (Comida) e;
+
+						obtainItem(comidaColetada);
+
+						comidasColetadas.add(comidaColetada);
+						Game.entities.remove(i);
+						Game.comidas.remove(e); // Remover da lista de comidas
+
+						return;
+					}
+
+				}
+				if (e instanceof Key) {
+					if (Entity.isColliding(this, e)) {
+						Key keyColetada = (Key) e;
+
+						keys++;
+						obtainItem(keyColetada); // itens.add(frutaColetada);
+
+						Game.entities.remove(i);
+						return;
+					}
+				}
+				if (e instanceof SpecialKey) {
+					if (Entity.isColliding(this, e)) {
+						SpecialKey specialKeyColetada = (SpecialKey) e;
+						specialKeys++;
+						obtainItem(specialKeyColetada); 
+
+						Game.entities.remove(i);
+						return;
+					}
+				}
 //			System.out.println("frutasColetadas");
 //			System.out.println(frutasColetadas);
+			}
 		}
 	}
 
@@ -204,6 +254,30 @@ public class Player extends Entity {
 			}
 		}
 		return fruitCount;
+	}
+
+	public int countComidaEspecifica(String nome) {
+		int foodCount = 0;
+		List<Comida> comidasColetadas = Player.getComidasColetadas();
+		for (Comida comida : comidasColetadas) {
+			if (nome.equals(comida.getNome().toUpperCase())) {
+				foodCount++;
+
+			}
+		}
+		return foodCount;
+	}
+
+	public int countItemEspecifico(String nome) {
+		int itemCount = 0;
+		List<Item> itens = Player.getItens();
+		for (Item item : itens) {
+			if (nome.equals(item.getNome().toUpperCase())) {
+				itemCount++;
+
+			}
+		}
+		return itemCount;
 	}
 
 	public void tick() {
@@ -329,6 +403,15 @@ public class Player extends Entity {
 //		g.drawRect(this.getX() + maskx - Camera.x, this.getY() + masky - Camera.y, mwidth, mheight);
 	}
 
+	   public void heal(double amount) {
+	        this.life += amount;
+
+	        // Ensure health doesn't exceed maximum
+	        if (this.life > 100) {
+	            this.life = 100;
+	        }
+	    }
+	
 	public double getLife() {
 		return life;
 	}
@@ -369,6 +452,14 @@ public class Player extends Entity {
 		Player.keys = keys;
 	}
 
+	public static int getSpecialKeys() {
+		return specialKeys;
+	}
+
+	public static void setSpecialKeys(int specialKeys) {
+		Player.specialKeys = specialKeys;
+	}
+
 	public double getStamine() {
 		return stamine;
 	}
@@ -399,6 +490,14 @@ public class Player extends Entity {
 
 	public static void setFrutasColetadas(List<Fruta> frutasColetadas) {
 		Player.frutasColetadas = frutasColetadas;
+	}
+
+	public static List<Comida> getComidasColetadas() {
+		return comidasColetadas;
+	}
+
+	public static void setComidasColetadas(List<Comida> comidasColetadas) {
+		Player.comidasColetadas = comidasColetadas;
 	}
 
 	public static double getSpeed() {

@@ -1,4 +1,4 @@
-package entities.itens.frutas;
+package entities.itens.comidas.frutas;
 
 import java.awt.image.BufferedImage;
 

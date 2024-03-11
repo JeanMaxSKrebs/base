@@ -5,10 +5,10 @@ import java.awt.image.BufferedImage;
 
 public class Normaldoor extends Tiledoor {
 
-	public Normaldoor(int x, int y, BufferedImage sprite) {
-		super(x, y, sprite);
+	public Normaldoor(int x, int y, int width, int height, BufferedImage sprite) {
+		super(x, y, width, height, sprite);
 	}
-	
+
 	public void render(Graphics g) {
 		g.drawImage(sprite, x - Camera.x, y - Camera.y, null);
 //		g.setColor(Color.yellow);

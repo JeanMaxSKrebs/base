@@ -15,57 +15,61 @@ import entities.Player;
 import world.World;
 
 public class Menu {
-	
-	public String[] options = {"novo jogo", "carregar", "sair"};
-	
+
+	public String[] options = { "novo jogo", "carregar", "Status do Jogo", "sair" };
+
 	public int currentOption = 0;
 	public int maxOption = options.length - 1;
-	
+
 	public boolean up, down, enter;
 
 	public static boolean pause = false;
-	
+
 	public static boolean saveExists = false;
 
 	public void tick() {
 		File file = new File("save.txt");
-		if(file.exists())
+		if (file.exists())
 			saveExists = true;
 		else
-			saveExists = false; 
-		
-		if(up) {
+			saveExists = false;
+
+		if (up) {
 			up = false;
 			currentOption--;
-			if(currentOption < 0) {
+			if (currentOption < 0) {
 				currentOption = maxOption;
 			}
 		}
-		if(down) {
+		if (down) {
 			down = false;
 			currentOption++;
-			if(currentOption > maxOption) {
+			if (currentOption > maxOption) {
 				currentOption = 0;
 			}
 		}
-		if(enter) {
+		if (enter) {
 			enter = false;
-			if(options[currentOption] == "novo jogo" || options[currentOption] == "continuar" ) {
+			if (options[currentOption] == "novo jogo" || options[currentOption] == "continuar") {
 				Game.gameState = "NORMAL";
 				pause = false;
 				file = new File("save.txt");
 				file.delete();
-			} else if(options[currentOption] == "carregar") {
+			} else if (options[currentOption] == "carregar") {
 				file = new File("save.txt");
-				if(file.exists()) {
+				if (file.exists()) {
 					String saver = loadGame(0);
 					applySave(saver);
 				}
-			} else if(options[currentOption] == "sair") {
+			} else if (options[currentOption] == "Status do Jogo") {
+				Game.gameState = "STATUS";
+		
+			}else if (options[currentOption] == "sair") {
 				System.exit(1);
 			}
 		}
 	}
+
 	public static void applySave(String str) {
 		System.out.println(str);
 		String[] spl = str.split("/");
@@ -77,77 +81,76 @@ public class Menu {
 			System.out.println(spl2[1]);
 			switch (spl2[0]) {
 
+			case "fase": {
+				int spl2inteiro = (int) Double.parseDouble(spl2[1]);
+				System.out.println("spl2inteiro");
+				System.out.println(spl2inteiro);
 
-				case "fase": {
-					int spl2inteiro = (int) Double.parseDouble(spl2[1]);
-					System.out.println("spl2inteiro");
-					System.out.println(spl2inteiro);
+				World.restartGame("fase" + spl2inteiro + ".png");
+				Game.player.setArmor(0);
+				Game.player.setDodgeChance(20);
+				Player.setKeys(0);
+				Game.gameState = "NORMAL";
+				pause = false;
+				break;
+			}
+			case "vida": {
+				Game.player.life = Integer.parseInt(spl2[1]);
 
-					World.restartGame("fase" + spl2inteiro + ".png");
-					Game.player.setArmor(0);
-					Game.player.setDodgeChance(20);
-					Player.setKeys(0);
-					Game.gameState = "NORMAL";
-					pause = false;
-					break;
-				}
-				case "vida": {
-					Game.player.life = Integer.parseInt(spl2[1]);
+				break;
+			}
+			case "estamina": {
+				Game.player.stamine = Integer.parseInt(spl2[1]);
 
-					break;
-				}
-				case "estamina": {
-					Game.player.stamine = Integer.parseInt(spl2[1]);
+				break;
+			}
+			case "premium": {
+				Game.player.premium = Integer.parseInt(spl2[1]);
 
-					break;
-				}
-				case "premium": {
-					Game.player.premium = Integer.parseInt(spl2[1]);
+				break;
+			}
+			case "gameState": {
 
-
-					break;
-				}
-				case "gameState": {
-
-
-					break;
-				}
-				default:
+				break;
+			}
+			default:
 			}
 		}
 	}
-	
+
 	public static String loadGame(int encode) {
 		String line = "";
 		File file = new File("save.txt");
-		if(file.exists()) {
+		if (file.exists()) {
 			try {
 				String singleLine = null;
 				BufferedReader reader = new BufferedReader(new FileReader("save.txt"));
 				try {
-					while((singleLine = reader.readLine()) != null) {
-						 String[] trans = singleLine.split(":");
-						 char[] val = trans[1].toCharArray();
-						 trans[1] = "";
-						 for (int i = 0; i < val.length; i++) {
+					while ((singleLine = reader.readLine()) != null) {
+						String[] trans = singleLine.split(":");
+						char[] val = trans[1].toCharArray();
+						trans[1] = "";
+						for (int i = 0; i < val.length; i++) {
 							val[i] -= encode;
 							trans[1] += val[i];
 						}
-						 line += trans[0];
-						 line += ":";
-						 line += trans[1];
-						 line += "/";
+						line += trans[0];
+						line += ":";
+						line += trans[1];
+						line += "/";
 
 					}
-				} catch (IOException e) {}
-			} catch (FileNotFoundException e) {}
+				} catch (IOException e) {
+				}
+			} catch (FileNotFoundException e) {
+			}
 		}
 		System.out.println("line");
 		System.out.println(line);
 
 		return line;
 	}
-	
+
 	public static void saveGame(String[] val1, int[] val2, int encode) {
 		System.out.println("salvou");
 		BufferedWriter write = null;
@@ -156,7 +159,7 @@ public class Menu {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		for (int i = 0; i < val1.length; i++) {
 			String current = val1[i];
 			current += ":";
@@ -168,41 +171,54 @@ public class Menu {
 			}
 			try {
 				write.write(current);
-				if(i < val1.length - 1)
+				if (i < val1.length - 1)
 					write.newLine();
-				
-			} catch (IOException e) {}
+
+			} catch (IOException e) {
+			}
 		}
 		try {
 			write.flush();
 			write.close();
-		} catch (IOException e) {}
+		} catch (IOException e) {
+		}
 	}
-	
+
 	public void render(Graphics g) {
 		g.setFont(new Font("Arial", Font.BOLD, 64));
-		g.fillRect(0, 0,Game.getWIDTH()*Game.getSCALE(), Game.getHEIGHT()*Game.getSCALE());
+		g.fillRect(0, 0, Game.getWIDTH() * Game.getSCALE(), Game.getHEIGHT() * Game.getSCALE());
 		g.setColor(Color.WHITE);
-		g.drawString("Sobrevivência Jogo",  ((Game.getWIDTH()*Game.getSCALE()/3)), (Game.getHEIGHT()*Game.getSCALE()/5));
+		g.drawString("Sobrevivência Jogo", ((Game.getWIDTH() * Game.getSCALE() / 4)),
+				(Game.getHEIGHT() * Game.getSCALE() / 5));
 
-		
-		// menu 
+		// menu
 		g.setFont(new Font("Arial", Font.BOLD, 48));
-		
-		if(pause == false)
-			g.drawString("Novo Jogo",  ((Game.getWIDTH()*Game.getSCALE()/3)), ((Game.getHEIGHT()*Game.getSCALE()/3)+100));
-		else 
-			g.drawString("Continuar",  ((Game.getWIDTH()*Game.getSCALE()/3)), ((Game.getHEIGHT()*Game.getSCALE()/3)+100));
 
-		g.drawString("Carregar Jogo",  ((Game.getWIDTH()*Game.getSCALE()/3)), ((Game.getHEIGHT()*Game.getSCALE()/3)+200));
-		g.drawString("Sair",  ((Game.getWIDTH()*Game.getSCALE()-250)), ((Game.getHEIGHT()*Game.getSCALE())-50));
-		
-		if(options[currentOption] == "novo jogo") {
-			g.drawString(" > ",  (((Game.getWIDTH()*Game.getSCALE()/3)-100)), ((Game.getHEIGHT()*Game.getSCALE()/3)+100));
-		} else if(options[currentOption] == "carregar") {
-			g.drawString(" > ",  (((Game.getWIDTH()*Game.getSCALE()/3)-100)), ((Game.getHEIGHT()*Game.getSCALE()/3)+200));
-		} else if(options[currentOption] == "sair") {
-			g.drawString(" > ",  (((Game.getWIDTH()*Game.getSCALE()-350))), ((Game.getHEIGHT()*Game.getSCALE())-50));
+		if (pause == false)
+			g.drawString("Novo Jogo", ((Game.getWIDTH() * Game.getSCALE() / 3)),
+					((Game.getHEIGHT() * Game.getSCALE() / 3) + 50));
+		else
+			g.drawString("Continuar", ((Game.getWIDTH() * Game.getSCALE() / 3)),
+					((Game.getHEIGHT() * Game.getSCALE() / 3) + 50));
+
+		g.drawString("Carregar Jogo", ((Game.getWIDTH() * Game.getSCALE() / 3)),
+				((Game.getHEIGHT() * Game.getSCALE() / 3) + 150));
+		g.drawString("Status do Jogo", ((Game.getWIDTH() * Game.getSCALE() / 3)),
+				((Game.getHEIGHT() * Game.getSCALE() / 3) + 250));
+		g.drawString("Sair", ((Game.getWIDTH() * Game.getSCALE() - 250)), ((Game.getHEIGHT() * Game.getSCALE()) - 50));
+
+		if (options[currentOption] == "novo jogo") {
+			g.drawString(" > ", (((Game.getWIDTH() * Game.getSCALE() / 3) - 100)),
+					((Game.getHEIGHT() * Game.getSCALE() / 3) + 50));
+		} else if (options[currentOption] == "carregar") {
+			g.drawString(" > ", (((Game.getWIDTH() * Game.getSCALE() / 3) - 100)),
+					((Game.getHEIGHT() * Game.getSCALE() / 3) + 150));
+		} else if (options[currentOption] == "Status do Jogo") {
+			g.drawString(" > ", (((Game.getWIDTH() * Game.getSCALE() / 3) - 100)),
+					((Game.getHEIGHT() * Game.getSCALE() / 3) + 250));
+		} else if (options[currentOption] == "sair") {
+			g.drawString(" > ", (((Game.getWIDTH() * Game.getSCALE() - 350))),
+					((Game.getHEIGHT() * Game.getSCALE()) - 50));
 		}
 
 	}

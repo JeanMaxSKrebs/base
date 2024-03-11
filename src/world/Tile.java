@@ -13,7 +13,7 @@ public class Tile {
 	public static BufferedImage TILE_FLOOR = Game.spritesheet_Walls.getSprite(112, 0, 112, 112);
 	public static BufferedImage TILE_WALL = Game.spritesheet_Walls.getSprite(0, 0, 112, 112);
 	public static BufferedImage TILE_WALL_DESERT = Game.spritesheet_Walls.getSprite(224, 0, 112, 112);
-	public static BufferedImage TILE_DOOR = Game.spritesheet.getSprite(32, 224, 32, 32);
+	public static BufferedImage TILE_DOOR = Game.spritesheet_Doors.getSprite(0, 0, 112, 112);
 
 	protected BufferedImage sprite;
 	protected int x, y;

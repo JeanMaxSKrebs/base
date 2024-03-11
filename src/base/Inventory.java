@@ -14,7 +14,7 @@ import java.io.IOException;
 
 import entities.Player;
 import entities.itens.Item;
-import entities.itens.frutas.Fruta;
+import entities.itens.comidas.frutas.Fruta;
 import world.World;
 
 public class Inventory {
@@ -46,6 +46,11 @@ public class Inventory {
 	public static boolean pause = false;
 
 	public static boolean saveExists = false;
+
+	// Renderização do inventário
+	public static int slotSize = 60; // Tamanho do slot
+	public static int inventoryX = 45; // Posição X inicial do inventário
+	public static int inventoryY = 45; // Posição Y inicial do inventário
 
 	public void tick() {
 
@@ -81,7 +86,7 @@ public class Inventory {
 				int currentOptionInventoryTemp = currentOptionInventory;
 				currentOptionInventory = currentOptionInventory + cols;
 				if (currentOptionInventory > maxOptionInventory) {
-					
+
 					currentOptionInventory = currentOptionInventoryTemp - (rows * cols) + cols;
 
 				}
@@ -100,14 +105,10 @@ public class Inventory {
 				right = false;
 
 				currentOptionInventory++;
-				System.out.println("currentOptionInventory");
-				System.out.println(currentOptionInventory);
-				System.out.println("(Player.getItens().size()))");
-				System.out.println((Player.getItens().size()));
 				if (currentOptionInventory >= (Player.getItens().size())) {
 					showItemDetails = false;
 				}
-				
+
 				if (currentOptionInventory > maxOptionInventory) {
 					currentOptionInventory = 0;
 				}
@@ -117,14 +118,9 @@ public class Inventory {
 				enter = false;
 
 				if (currentOptionInventory >= 0 && currentOptionInventory < Player.getItens().size()) {
-					System.out.println("currentOptionInventory");
-					System.out.println(currentOptionInventory);
-					System.out.println("inventoryItens[currentOptionInventory]");
-					System.out.println(inventoryItens[currentOptionInventory]);
 
 					Item selectedItem = inventoryItens[currentOptionInventory];
-					System.out.println("selectedItem");
-					System.out.println(selectedItem);
+
 					if (selectedItem != null) {
 						showItemDetails = true;
 					}
@@ -133,7 +129,7 @@ public class Inventory {
 						// Aqui você pode adicionar lógica para usar ou dropar o item selecionado
 					}
 				}
-				
+
 				if (usarItem) {
 
 				}
@@ -179,11 +175,7 @@ public class Inventory {
 
 	public void render(Graphics g) {
 
-		// Renderização do inventário
-		int slotSize = 60; // Tamanho do slot
-		int inventoryX = 100; // Posição X inicial do inventário
-		int inventoryY = 200; // Posição Y inicial do inventário
-
+		// Preencher o fundo da tela de inventário com a cor Marrom
 		g.setColor(new Color(139, 69, 19)); // Marrom
 		g.fillRect(0, 0, Game.getWIDTH() * Game.getSCALE(), Game.getHEIGHT() * Game.getSCALE());
 
@@ -191,10 +183,37 @@ public class Inventory {
 		g.setColor(new Color(255, 218, 185));
 		g.fillRect(inventoryX - 10, inventoryY - 10, cols * slotSize + 20, rows * slotSize + 20);
 
+		// Escrever Inventário no fundo a cor preta
 		g.setColor(Color.black);
 		g.setFont(new Font("Arial", Font.BOLD, 20));
 		g.drawString("Inventário", inventoryX, inventoryY - 20);
 
+		renderEachItem(g, slotSize, inventoryX, inventoryY);
+
+		g.setFont(new Font("Arial", Font.BOLD, 40));
+		g.drawString("Usar item", ((Game.getWIDTH() * Game.getSCALE() / 2 + (Game.getWIDTH() / 5))),
+				((Game.getHEIGHT() * Game.getSCALE() / 2)));
+
+		g.drawString("Dropar item", ((Game.getWIDTH() * Game.getSCALE() / 2 + (Game.getWIDTH() / 5))),
+				((Game.getHEIGHT() * Game.getSCALE() / 2) + 50));
+
+		g.drawString("Voltar", ((Game.getWIDTH() * Game.getSCALE() - 250)),
+				((Game.getHEIGHT() * Game.getSCALE()) - 100));
+
+		if (options[currentOption] == "usar item") {
+			g.drawString(" > ", (((Game.getWIDTH() * Game.getSCALE() / 2 + (Game.getWIDTH() / 5)) - 50)),
+					((Game.getHEIGHT() * Game.getSCALE() / 2)));
+		} else if (options[currentOption] == "dropar item") {
+			g.drawString(" > ", (((Game.getWIDTH() * Game.getSCALE() / 2 + (Game.getWIDTH() / 5)) - 50)),
+					((Game.getHEIGHT() * Game.getSCALE() / 2) + 50));
+		} else if (options[currentOption] == "voltar") {
+			g.drawString(" > ", (((Game.getWIDTH() * Game.getSCALE() - 300))),
+					((Game.getHEIGHT() * Game.getSCALE()) - 100));
+		}
+	}
+
+	private void renderEachItem(Graphics g, int slotSize, int inventoryX, int inventoryY) {
+		// TODO Auto-generated method stub
 		// Render each item in the inventory
 		int index = 0;
 		for (Item item : Player.getItens()) {
@@ -204,15 +223,23 @@ public class Inventory {
 			int x = inventoryX + col * slotSize;
 			int y = inventoryY + row * slotSize;
 
-			g.drawRect(x, y, slotSize, slotSize); // Desenha o contorno do slot
+			// Desenha o contorno do slot
+			g.drawRect(x, y, slotSize, slotSize);
+
+			// Desenha o contorno da quantidade
+			g.setColor(Color.GRAY);
+			g.fillRect(x, y + slotSize - (slotSize / 4), slotSize * 2 / 3, slotSize / 3);
+			g.setColor(Color.black);
 
 			// Render item name and details
 			g.setFont(new Font("Arial", Font.BOLD, 15));
 			g.drawImage(item.getSprite(), x + 5, y + 10, slotSize - 5, slotSize - 10, null);
 
-//	        g.drawString(item.getNome(), x + 5, y + 20); // Render item name
 			g.setFont(new Font("Arial", Font.BOLD, 10));
-			g.drawString("QTD: " + item.getQuantidade(), x, y + 10); // Render item quantity
+			g.drawString(item.getNome(), x + 2, y + 10); // Render item name
+
+			g.setFont(new Font("Arial", Font.BOLD, 10));
+			g.drawString("QTD: " + item.getQuantidade(), x + 3, y + slotSize - 4); // Render item quantity
 
 			// Increment the index for the next item
 			index++;
@@ -252,38 +279,21 @@ public class Inventory {
 
 				}
 
-//				System.out.println("itens");
-//				System.out.println(Player.getItens());
-				// Se houver um item no inventário, desenha o item no slot
+//						System.out.println("itens");
+//						System.out.println(Player.getItens());
 
-				if (inventory[row * cols + col] != null) {
-
-					g.drawString(inventory[row * cols + col], x + 5, y + 20);
-
-					// Verifica se é uma fruta e renderiza o sprite
-					String itemName = inventory[row * cols + col];
-					for (int i = 0; i < Fruta.getNomesFrutas().length; i++) {
-						if (itemName.equals(Fruta.getNomesFrutas()[i])) {
-							BufferedImage frutaSprite = Fruta.FRUTAS_SPRITES[i];
-							if (frutaSprite != null) {
-								g.drawImage(frutaSprite, x, y, null); // Desenha o sprite da fruta no slot atual do
-							}
-							break;
-						}
-					}
-				}
 			}
 		}
 
 		// Renderize o detalhamento do item selecionado se a exibição estiver ativada
 		if (showItemDetails) {
-//			System.out.println("showItemDetails");
-//			System.out.println(showItemDetails);
+//					System.out.println("showItemDetails");
+//					System.out.println(showItemDetails);
 			// Defina as coordenadas e o tamanho do quadro de detalhamento do item
 			int detailFrameX = inventoryX + cols * slotSize + 20; // Posição X do quadro de detalhamento
 			int detailFrameY = inventoryY; // Posição Y do quadro de detalhamento
 			int detailFrameWidth = 200; // Largura do quadro de detalhamento
-			int detailFrameHeight = Game.getHEIGHT() - 50; // Altura do quadro de detalhamento
+			int detailFrameHeight = Game.getHEIGHT() / 2; // Altura do quadro de detalhamento
 
 			// Desenhe o quadro de detalhamento
 			g.setColor(Color.GRAY);
@@ -291,8 +301,8 @@ public class Inventory {
 
 			// Obtenha o item selecionado
 			Item selectedItem = Player.getItens().get(currentOptionInventory);
-			System.out.println("selectedItem");
-			System.out.println(selectedItem);
+//					System.out.println("selectedItem");
+//					System.out.println(selectedItem);
 			// Renderize as informações detalhadas do item
 			g.setColor(Color.BLACK);
 			g.setFont(new Font("Arial", Font.BOLD, 16));
@@ -309,10 +319,10 @@ public class Inventory {
 				int tickRegen = frutaSelecionada.getTickRegen();
 				double curaTotal = frutaSelecionada.getCuraTotal();
 
-//		        // Imprime os valores
-//		        System.out.println("Regen: " + regen);
-//		        System.out.println("Tick Regen: " + tickRegen);
-//		        System.out.println("Cura Total: " + curaTotal);
+//				        // Imprime os valores
+//				        System.out.println("Regen: " + regen);
+//				        System.out.println("Tick Regen: " + tickRegen);
+//				        System.out.println("Cura Total: " + curaTotal);
 				g.drawString("Regen: " + regen, detailFrameX + 10, detailFrameY + 110);
 				g.drawString("Tick Regen: " + tickRegen, detailFrameX + 10, detailFrameY + 140);
 				g.drawString("Cura Total: " + curaTotal, detailFrameX + 10, detailFrameY + 170);
@@ -320,25 +330,5 @@ public class Inventory {
 			// Renderize outras informações do item, conforme necessário
 		}
 
-		g.setFont(new Font("Arial", Font.BOLD, 48));
-		g.drawString("Usar item", ((Game.getWIDTH() * Game.getSCALE() / 2)),
-				((Game.getHEIGHT() * Game.getSCALE() / 2) + 100));
-
-		g.drawString("Dropar item", ((Game.getWIDTH() * Game.getSCALE() / 2)),
-				((Game.getHEIGHT() * Game.getSCALE() / 2) + 200));
-
-		g.drawString("Voltar", ((Game.getWIDTH() * Game.getSCALE() - 250)),
-				((Game.getHEIGHT() * Game.getSCALE()) - 50));
-
-		if (options[currentOption] == "usar item") {
-			g.drawString(" > ", (((Game.getWIDTH() * Game.getSCALE() / 2) - 50)),
-					((Game.getHEIGHT() * Game.getSCALE() / 2) + 100));
-		} else if (options[currentOption] == "dropar item") {
-			g.drawString(" > ", (((Game.getWIDTH() * Game.getSCALE() / 2) - 50)),
-					((Game.getHEIGHT() * Game.getSCALE() / 2) + 200));
-		} else if (options[currentOption] == "voltar") {
-			g.drawString(" > ", (((Game.getWIDTH() * Game.getSCALE() - 300))),
-					((Game.getHEIGHT() * Game.getSCALE()) - 50));
-		}
 	}
 }

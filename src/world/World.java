@@ -7,17 +7,20 @@ import java.util.ArrayList;
 import javax.imageio.ImageIO;
 
 import base.Game;
-import entities.BagPack;
 import entities.Bala;
 import entities.Enemy;
 import entities.EnemyNormal;
 import entities.EnemyStrong;
 import entities.Entity;
-
 import entities.Player;
-import entities.itens.frutas.Fruta;
-import entities.itens.frutas.Maca;
-import entities.itens.frutas.Uva;
+import entities.itens.Key;
+import entities.itens.SpecialKey;
+import entities.itens.comidas.Comida;
+import entities.itens.comidas.frutas.Fruta;
+import entities.itens.comidas.frutas.Maca;
+import entities.itens.comidas.frutas.Uva;
+import entities.itens.utensilios.BagPack;
+import entities.itens.utensilios.Fogueira;
 import base.Spritesheet;
 
 public class World {
@@ -30,6 +33,7 @@ public class World {
 	public static int yDoor = 0;
 
 	public static final int TILE_SIZE = 112;
+	public static final int TILE_SIZE_64 = 64;
 
 	public World(String path) {
 		try {
@@ -56,15 +60,17 @@ public class World {
 								Tile.TILE_WALL);
 					} else if (pixelAtual == 0xFF7F0037) {
 						// door
-						tiles[xx + (yy * WIDTH)] = new Normaldoor(xx * TILE_SIZE, yy * TILE_SIZE,
+						tiles[xx + (yy * WIDTH)] = new Normaldoor(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE,
 								Tiledoor.TILE_NORMALDOOR);
-						Tiledoor door = new Normaldoor(xx * TILE_SIZE, yy * TILE_SIZE, Tiledoor.TILE_NORMALDOOR);
+						Tiledoor door = new Normaldoor(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE,
+								Tiledoor.TILE_NORMALDOOR);
 						Game.tiledoors.add(door);
 					} else if (pixelAtual == 0xFF7F006E) {
 						// special door
-						tiles[xx + (yy * WIDTH)] = new Specialdoor(xx * TILE_SIZE, yy * TILE_SIZE,
+						tiles[xx + (yy * WIDTH)] = new Specialdoor(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE,
 								Tiledoor.TILE_SPECIALDOOR);
-						Tiledoor door = new Specialdoor(xx * TILE_SIZE, yy * TILE_SIZE, Tiledoor.TILE_SPECIALDOOR);
+						Tiledoor door = new Specialdoor(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE,
+								Tiledoor.TILE_SPECIALDOOR);
 						Game.tiledoors.add(door);
 					} else if (pixelAtual == 0xFF000CFF) {
 						// player
@@ -92,29 +98,52 @@ public class World {
 						// bagpack
 						BagPack bagpack = new BagPack(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE,
 								Entity.BAGPACK_EN);
-						bagpack.setMask(7, 7, 18, 18);
+						bagpack.setMask(0, 0, 112, 112);
 						Game.entities.add(bagpack);
+					} else if (pixelAtual == 0xFFD1951F) {
+						// Fogueira
+						Fogueira fogueira = new Fogueira(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Entity.FOGUEIRA_IT);
+						fogueira.setMask(0, 0, 112, 112);
+						Game.entities.add(fogueira);
+		
+
+					} else if (pixelAtual == 0xFF808080) {
+						// Comida
+						Comida comida = new Comida(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Entity.COMIDA_IT);
+						comida.setMask(28, 28, 56, 56);
+						Game.entities.add(comida);
+
 					} else if (pixelAtual == 0xFF00FF15) {
 						// Fruta
-						Fruta fruta = new Fruta(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Entity.FRUTA_EN);
-						fruta.setMask(0, 10, 32, 16);
+						Fruta fruta = new Fruta(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Entity.FRUTA_CO);
+						fruta.setMask(28, 28, 56, 56);
 						Game.entities.add(fruta);
-						Game.frutas.add(fruta);
 
 					} else if (pixelAtual == 0xFFD4195E) {
 						// Maca
 						Maca maca = new Maca(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Fruta.MACA_FR);
-						maca.setMask(0, 10, 32, 16);
+						maca.setMask(8, 8, 48, 48);
 						Game.entities.add(maca);
-						Game.frutas.add(maca);
 
 					} else if (pixelAtual == 0xFF953FFF) {
 						// Uva
 						Uva uva = new Uva(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Fruta.UVA_FR);
-						uva.setMask(0, 10, 32, 16);
+						uva.setMask(8, 8, 48, 48);
 						Game.entities.add(uva);
-						Game.frutas.add(uva);
 
+					} else if (pixelAtual == 0xFFFF00A5) {
+						// key
+						Key key = new Key(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Entity.KEY_EN);
+						key.setMask(10, 20, 84, 56);
+						Game.entities.add(key);
+
+					} else if (pixelAtual == 0xFFF0BAFF) {
+						// specialkey
+						SpecialKey specialkey = new SpecialKey(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE,
+								Entity.SPECIALKEY_EN);
+						specialkey.setMask(10, 20, 84, 56);
+						Game.entities.add(specialkey);
+						
 					} else {
 						// Piso
 						tiles[xx + (yy * WIDTH)] = new Tilefloor(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE,

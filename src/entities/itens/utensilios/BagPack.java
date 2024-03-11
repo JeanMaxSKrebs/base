@@ -1,6 +1,8 @@
-package entities;
+package entities.itens.utensilios;
 
 import java.awt.image.BufferedImage;
+
+import entities.Entity;
 
 public class BagPack extends Entity {
 

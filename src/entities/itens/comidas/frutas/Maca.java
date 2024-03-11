@@ -1,5 +1,6 @@
-package entities.itens.frutas;
+package entities.itens.comidas.frutas;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
@@ -13,17 +14,16 @@ public class Maca extends Fruta {
 	public static final double curaTotal = 20;
 	public static final String nome = "Maca";
 
-
 	private BufferedImage[] spritesMaca;
 
 	public Maca(int x, int y, int width, int height, BufferedImage sprite) {
-		super(x, y, width, height, sprite,  nome, regen, tickRegen, curaTotal);
+		super(x, y, width, height, sprite, nome, regen, tickRegen, curaTotal);
 
 		spritesMaca = new BufferedImage[qtdDirecoes];
 
 		for (int i = 0; i < qtdDirecoes; i++) {
 
-			spritesMaca[i] = Game.spritesheet.getSprite(224 + (i * 32), 64, 32, 32);
+			spritesMaca[i] = Game.spritesheet_Fruits.getSprite(64 * i, 64, 64, 64);
 
 		}
 
@@ -43,6 +43,5 @@ public class Maca extends Fruta {
 //		g.setColor(Color.red);
 //		g.fillRect(this.getX() + maskx - Camera.x, this.getY() + masky - Camera.y, mwidth, mheight);
 	}
-	
-	
+
 }

@@ -22,7 +22,9 @@ import entities.Bala;
 import entities.Enemy;
 import entities.Entity;
 import entities.Player;
-import entities.itens.frutas.Fruta;
+import entities.itens.Item;
+import entities.itens.comidas.Comida;
+import entities.itens.comidas.frutas.Fruta;
 import graficos.UI;
 import world.Tile;
 import world.Tiledoor;
@@ -30,6 +32,10 @@ import world.World;
 
 @SuppressWarnings("serial")
 public class Game extends Canvas implements Runnable, KeyListener {
+
+	private final static int WIDTH = 1120;
+	private final static int HEIGHT = 560;
+	private final static int SCALE = 1;
 
 	private static final long serialVersionUID = 1L;
 	private static JFrame frame;
@@ -40,20 +46,22 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	public static int maximumDodge = 50;
 
 	public static Spritesheet spritesheet;
+	public static Spritesheet spritesheet_Itens;
 	public static Spritesheet spritesheet_Walls;
+	public static Spritesheet spritesheet_Doors;
+	public static Spritesheet spritesheet_Foods;
+	public static Spritesheet spritesheet_Fruits;
 	public static Spritesheet spritesheet_Player;
 
 	public static Player player;
 	public static List<Entity> entities;
 	public static List<Enemy> enemies;
+	public static List<Item> itens;
+	public static List<Comida> comidas;
 	public static List<Fruta> frutas;
 	public static List<Tile> tiles;
 	public static List<Tiledoor> tiledoors;
 	public static List<Bala> balas;
-
-	private final static int WIDTH = 1120;
-	private final static int HEIGHT = 560;
-	private final static int SCALE = 1;
 
 	public BufferedImage image;
 
@@ -63,6 +71,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 
 	public UI ui;
 
+	public static Status status;
 	public Menu menu;
 	public Inventory inventory;
 	public static boolean openInventory = false;
@@ -74,6 +83,20 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	private boolean restartGame = false;
 	private boolean showMessageGameOver = true;
 	private int framesGameOver = 0;
+
+	// mudar iluminação
+
+	public static long timeStart; // Total time in seconds since game start
+	public static long timeElapsedSeconds; // Total time in seconds since game start
+	private int secondsInGameMinute = 1; // Adjust this to control in-game time progression
+	public static long minutes;
+	public static int hours;
+	public static int days;
+	public int months;
+	public int years;
+	private Color baseLightColor = Color.WHITE; // Base ambient light color
+	private Color nightLightColor = new Color(30, 30, 30); // Night-time light color
+	private float lightIntensity = 1.0f; // Ambient light intensity (0.0 - 1.0)
 
 	public Game() {
 		addKeyListener(this);
@@ -88,20 +111,30 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		tiledoors = new ArrayList<Tiledoor>();
 		entities = new ArrayList<Entity>();
 		enemies = new ArrayList<Enemy>();
+		itens = new ArrayList<Item>();
+		comidas = new ArrayList<Comida>();
 		frutas = new ArrayList<Fruta>();
 
 		spritesheet = new Spritesheet("/spritesheet.png");
+		spritesheet_Itens = new Spritesheet("/spritesheet_Itens.png");
 		spritesheet_Walls = new Spritesheet("/spritesheet_Walls.png");
+		spritesheet_Doors = new Spritesheet("/spritesheet_Doors.png");
+		spritesheet_Foods = new Spritesheet("/spritesheet_Foods.png");
+		spritesheet_Fruits = new Spritesheet("/spritesheet_Fruits.png");
 		spritesheet_Player = new Spritesheet("/spritesheet_Player.png");
 
 		player = new Player(0, 0, 112, 112, spritesheet_Player.getSprite(0, 112, 112, 112));
-//		world = new World("/teste.png");
+//		world = new World("/teste.png");	
 		world = new World("/" + ILHA + ".png");
 		entities.add(player);
 
+		status = new Status();
 		menu = new Menu();
 		inventory = new Inventory();
 
+		// Start in-game time counter
+		timeStart = System.currentTimeMillis();
+		timeElapsedSeconds = 0;
 	}
 
 	public void initFrame() {
@@ -138,7 +171,52 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	public void tick() {
 //		System.out.println("gameState");
 //		System.out.println(gameState);
+
 		if (gameState == "NORMAL") {
+
+			long currentTime = System.currentTimeMillis();
+			long deltaTime = currentTime - timeStart;
+
+			if (deltaTime > 0) {
+				// Calcula minutos no jogo, considerando a velocidade ajustada
+				minutes = (int) (deltaTime / (24 * 60) * secondsInGameMinute);
+				// Calcula hora no jogo, considerando a velocidade ajustada
+				hours = (int) (minutes / 60.0);
+				// Calcula dias no jogo, considerando a velocidade ajustada
+				days += hours / 24;
+				hours %= 24;
+
+				// Calcula meses no jogo, considerando a velocidade ajustada
+				// (considerando 30 dias por mês)
+				months += days / 30;
+				days %= 30;
+
+				// Calcula anos (considerando 12 meses por ano)
+				years += months / 12;
+				months %= 12;
+				// Limita o valor de minutes a 60
+				minutes %= 60;
+				// Limita o valor de horas a 24
+				hours %= 24;
+			} else {
+				minutes = 0; // Define as horas como 0 se deltaTime for menor ou igual a 0
+				hours = 0; // Define as horas como 0 se deltaTime for menor ou igual a 0
+			}
+
+			// Adjust light intensity based on time
+			if (minutes >= (12 * 60) && minutes < (18 * 60)) { // Evening
+				lightIntensity = 0.75f;
+			} else if (minutes >= (18 * 60)) { // Night
+				lightIntensity = 0.25f;
+			} else { // Daytime
+				lightIntensity = 1.0f;
+			}
+
+			// Fazer eventos específicos acontecerem em determinados momentos
+			if (minutes == 10) {
+				// Fazer algo específico
+			}
+
 //			System.out.println("saveGame");
 //			System.out.println(saveGame);
 			if (saveGame) {
@@ -168,6 +246,16 @@ public class Game extends Canvas implements Runnable, KeyListener {
 			// movimentar entidades
 			for (int i = 0; i < enemies.size(); i++) {
 				Enemy e = enemies.get(i);
+				e.tick();
+			}
+			// mover itens
+			for (int i = 0; i < itens.size(); i++) {
+				Item e = itens.get(i);
+				e.tick();
+			}
+			// mover comidas
+			for (int i = 0; i < comidas.size(); i++) {
+				Comida e = comidas.get(i);
 				e.tick();
 			}
 			// girar frutas
@@ -213,6 +301,8 @@ public class Game extends Canvas implements Runnable, KeyListener {
 			gameState = "NORMAL";
 		} else if (gameState == "MENU") {
 			menu.tick();
+		} else if (gameState == "STATUS") {
+			status.tick();
 		} else if (gameState == "INVENTORY") {
 			inventory.tick();
 		}
@@ -241,6 +331,16 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		for (int i = 0; i < enemies.size(); i++) {
 			Enemy e = enemies.get(i);
 			e.render(g);
+		}
+//		//render itens
+		for (int i = 0; i < itens.size(); i++) {
+			Item f = itens.get(i);
+			f.render(g);
+		}
+//		//render comidas
+		for (int i = 0; i < comidas.size(); i++) {
+			Comida f = comidas.get(i);
+			f.render(g);
 		}
 //		//render frutas
 		for (int i = 0; i < frutas.size(); i++) {
@@ -326,6 +426,8 @@ public class Game extends Canvas implements Runnable, KeyListener {
 				g.drawString(">> PRESSIONE ENTER <<", WIDTH * getSCALE() / 5, (HEIGHT * getSCALE() / 2) + 96);
 		} else if (gameState == "MENU") {
 			menu.render(g);
+		} else if (gameState == "STATUS") {
+			status.render(g);
 		} else if (gameState == "INVENTORY") {
 			inventory.render(g);
 		}
@@ -338,6 +440,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		double amountOfTicks = 60.0;
 		double ns = 1000000000 / amountOfTicks;
 		double delta = 0;
+		@SuppressWarnings("unused")
 		int frames = 0;
 		double timer = System.currentTimeMillis();
 		System.out.println("Jogo Rodando...");
@@ -372,6 +475,9 @@ public class Game extends Canvas implements Runnable, KeyListener {
 
 		if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_W) {
 			player.up = true;
+			if (gameState == "STATUS") {
+				status.up = true;
+			}
 			if (gameState == "MENU") {
 				menu.up = true;
 			}
@@ -380,6 +486,9 @@ public class Game extends Canvas implements Runnable, KeyListener {
 			}
 		} else if (e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_S) {
 			player.down = true;
+			if (gameState == "STATUS") {
+				status.down = true;
+			}
 			if (gameState == "MENU") {
 				menu.down = true;
 			}
@@ -406,6 +515,9 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		}
 		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 			restartGame = true;
+			if (gameState == "STATUS") {
+				status.enter = true;
+			}
 			if (gameState == "MENU") {
 				menu.enter = true;
 			}
@@ -431,6 +543,8 @@ public class Game extends Canvas implements Runnable, KeyListener {
 				}
 
 			}
+		} else if (gameState.equals("MENU")) {
+			
 		}
 
 	}

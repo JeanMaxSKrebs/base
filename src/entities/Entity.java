@@ -2,13 +2,9 @@ package entities;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
-import java.util.List;
-
 import base.Game;
-import entities.itens.frutas.Fruta;
 import world.Camera;
 
 public abstract class Entity {
@@ -16,6 +12,9 @@ public abstract class Entity {
 
 	public static BufferedImage ENEMY_EN = Game.spritesheet.getSprite(0, 224, 32, 32);
 
+	public static BufferedImage KEY_EN = Game.spritesheet_Doors.getSprite(112, 0, 112, 112);
+	public static BufferedImage SPECIALKEY_EN = Game.spritesheet_Doors.getSprite(336, 0, 112, 112);
+	
 	public static BufferedImage HPBAG_EN = Game.spritesheet.getSprite(128, 32, 32, 32);
 	public static BufferedImage STAMINEBAG_EN = Game.spritesheet.getSprite(160, 32, 32, 32);
 	public static BufferedImage BAGPACK_EN = Game.spritesheet.getSprite(192, 32, 32, 32);
@@ -24,10 +23,13 @@ public abstract class Entity {
 	public static BufferedImage BAGPACK_LEFT = Game.spritesheet.getSprite(192, 64, 32, 32);
 	public static BufferedImage BAGPACK_UP = Game.spritesheet.getSprite(128, 64, 32, 32);
 
-	public static BufferedImage ITEM_EN = Game.spritesheet.getSprite(192, 0, 32, 32);
+	public static BufferedImage ITEM_EN = Game.spritesheet.getSprite(192, 0, 112, 112);
 
+	public static BufferedImage FOGUEIRA_IT = Game.spritesheet_Itens.getSprite(0, 112, 112, 112);
 	
-	public static BufferedImage FRUTA_EN = Game.spritesheet.getSprite(224, 0, 32, 32);
+	public static BufferedImage COMIDA_IT = Game.spritesheet_Foods.getSprite(0, 0, 112, 112);
+
+	public static BufferedImage FRUTA_CO = Game.spritesheet_Fruits.getSprite(0, 0, 64, 64);
 
 	
 	protected double x;
@@ -78,11 +80,12 @@ public abstract class Entity {
 	public void render(Graphics g) {
 		g.drawImage(sprite, this.getX() - Camera.x, this.getY() - Camera.y, null);
 		
-//		g.setColor(Color.green);
+//		g.setColor(Color.red);
 //		g.fillRect(this.getX() + maskx - Camera.x, this.getY() + masky - Camera.y, mwidth, mheight);
 		
 		
 	}
+	
 	
 	public int getX() {
 		return (int) x;
