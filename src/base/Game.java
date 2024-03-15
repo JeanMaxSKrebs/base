@@ -26,6 +26,8 @@ import entities.itens.Item;
 import entities.itens.comidas.Comida;
 import entities.itens.comidas.frutas.Fruta;
 import graficos.UI;
+import tempo.DiaDaSemana;
+import tempo.Tempo;
 import world.Tile;
 import world.Tiledoor;
 import world.World;
@@ -71,6 +73,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 
 	public UI ui;
 
+	public Tempo tempo;
 	public static Status status;
 	public Menu menu;
 	public Inventory inventory;
@@ -83,20 +86,10 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	private boolean restartGame = false;
 	private boolean showMessageGameOver = true;
 	private int framesGameOver = 0;
-
-	// mudar iluminação
-
-	public static long timeStart; // Total time in seconds since game start
-	public static long timeElapsedSeconds; // Total time in seconds since game start
-	private int secondsInGameMinute = 1; // Adjust this to control in-game time progression
-	public static long minutes;
-	public static int hours;
-	public static int days;
-	public int months;
-	public int years;
-	private Color baseLightColor = Color.WHITE; // Base ambient light color
-	private Color nightLightColor = new Color(30, 30, 30); // Night-time light color
-	private float lightIntensity = 1.0f; // Ambient light intensity (0.0 - 1.0)
+	
+	//mudar linguagem
+	public static String linguagem = "Português";
+	
 
 	public Game() {
 		addKeyListener(this);
@@ -130,11 +123,12 @@ public class Game extends Canvas implements Runnable, KeyListener {
 
 		status = new Status();
 		menu = new Menu();
+		tempo = new Tempo();
 		inventory = new Inventory();
 
 		// Start in-game time counter
-		timeStart = System.currentTimeMillis();
-		timeElapsedSeconds = 0;
+		Tempo.timeStart = System.currentTimeMillis();
+		Tempo.timeElapsedSeconds = 0;
 	}
 
 	public void initFrame() {
@@ -169,54 +163,13 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	}
 
 	public void tick() {
+
+
 //		System.out.println("gameState");
 //		System.out.println(gameState);
 
 		if (gameState == "NORMAL") {
-
-			long currentTime = System.currentTimeMillis();
-			long deltaTime = currentTime - timeStart;
-
-			if (deltaTime > 0) {
-				// Calcula minutos no jogo, considerando a velocidade ajustada
-				minutes = (int) (deltaTime / (24 * 60) * secondsInGameMinute);
-				// Calcula hora no jogo, considerando a velocidade ajustada
-				hours = (int) (minutes / 60.0);
-				// Calcula dias no jogo, considerando a velocidade ajustada
-				days += hours / 24;
-				hours %= 24;
-
-				// Calcula meses no jogo, considerando a velocidade ajustada
-				// (considerando 30 dias por mês)
-				months += days / 30;
-				days %= 30;
-
-				// Calcula anos (considerando 12 meses por ano)
-				years += months / 12;
-				months %= 12;
-				// Limita o valor de minutes a 60
-				minutes %= 60;
-				// Limita o valor de horas a 24
-				hours %= 24;
-			} else {
-				minutes = 0; // Define as horas como 0 se deltaTime for menor ou igual a 0
-				hours = 0; // Define as horas como 0 se deltaTime for menor ou igual a 0
-			}
-
-			// Adjust light intensity based on time
-			if (minutes >= (12 * 60) && minutes < (18 * 60)) { // Evening
-				lightIntensity = 0.75f;
-			} else if (minutes >= (18 * 60)) { // Night
-				lightIntensity = 0.25f;
-			} else { // Daytime
-				lightIntensity = 1.0f;
-			}
-
-			// Fazer eventos específicos acontecerem em determinados momentos
-			if (minutes == 10) {
-				// Fazer algo específico
-			}
-
+			tempo.tick();
 //			System.out.println("saveGame");
 //			System.out.println(saveGame);
 			if (saveGame) {
@@ -544,7 +497,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 
 			}
 		} else if (gameState.equals("MENU")) {
-			
+
 		}
 
 	}

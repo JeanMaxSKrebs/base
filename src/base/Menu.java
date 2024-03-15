@@ -37,16 +37,25 @@ public class Menu {
 		if (up) {
 			up = false;
 			currentOption--;
+
 			if (currentOption < 0) {
 				currentOption = maxOption;
 			}
+
+			if (pause == false && options[currentOption] == "Status do Jogo")
+				currentOption--;
 		}
+		
 		if (down) {
 			down = false;
 			currentOption++;
+
 			if (currentOption > maxOption) {
 				currentOption = 0;
 			}
+			
+			if (pause == false && options[currentOption] == "Status do Jogo")
+				currentOption++;
 		}
 		if (enter) {
 			enter = false;
@@ -63,8 +72,8 @@ public class Menu {
 				}
 			} else if (options[currentOption] == "Status do Jogo") {
 				Game.gameState = "STATUS";
-		
-			}else if (options[currentOption] == "sair") {
+
+			} else if (options[currentOption] == "sair") {
 				System.exit(1);
 			}
 		}
@@ -203,8 +212,11 @@ public class Menu {
 
 		g.drawString("Carregar Jogo", ((Game.getWIDTH() * Game.getSCALE() / 3)),
 				((Game.getHEIGHT() * Game.getSCALE() / 3) + 150));
-		g.drawString("Status do Jogo", ((Game.getWIDTH() * Game.getSCALE() / 3)),
-				((Game.getHEIGHT() * Game.getSCALE() / 3) + 250));
+
+		if (pause == true)
+			g.drawString("Status do Jogo", ((Game.getWIDTH() * Game.getSCALE() / 3)),
+					((Game.getHEIGHT() * Game.getSCALE() / 3) + 250));
+
 		g.drawString("Sair", ((Game.getWIDTH() * Game.getSCALE() - 250)), ((Game.getHEIGHT() * Game.getSCALE()) - 50));
 
 		if (options[currentOption] == "novo jogo") {

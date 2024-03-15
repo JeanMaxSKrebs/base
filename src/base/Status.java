@@ -4,6 +4,10 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import tempo.Tempo;
 
 public class Status {
 	public String[] options = { "ver horario", "outros status", "outros", "voltar" };
@@ -56,9 +60,18 @@ public class Status {
 		g.drawString("Outros Status", ((widthBase / 6)), ((heightBase / 4) + 150));
 		g.drawString("Outros", ((widthBase / 6)), ((heightBase / 4) + 250));
 		g.drawString("Outros", ((widthBase / 6)), ((heightBase / 4) + 250));
-		
+
 		g.drawString("Voltar", ((widthBase - 175)), ((heightBase) - 50));
 //		desenhar >
+
+		if (options[currentOption] != "voltar") {
+			g.setFont(new Font("Arial", Font.BOLD, 64));
+			g.setColor(Color.gray);
+			g.fillRect((widthBase / 2), ((heightBase) / 4), widthBase / 2 - 30, heightBase / 2 + 30);
+			g.setColor(Color.WHITE);
+
+		}
+
 		if (options[currentOption] == "ver horario") {
 			g.drawString(" > ", (((widthBase / 6) - 100)), ((heightBase / 4) + 50));
 		} else if (options[currentOption] == "outros status") {
@@ -69,10 +82,41 @@ public class Status {
 			g.drawString(" > ", (((widthBase - 225))), ((heightBase) - 50));
 		}
 		if (options[currentOption] == "ver horario") {
-			g.setFont(new Font("Arial", Font.BOLD, 64));
-			g.setColor(Color.gray);
-			g.fillRect((widthBase / 2), ((heightBase) / 4), widthBase / 2 - 50, heightBase / 2);
+			// Get current date and time
+			Date now = new Date();
+
+			// Format time with leading zeros
+			String formattedTime = String.format("%02d:%02d", Tempo.hours, Tempo.minutes);
+
+			// Format date in a user-friendly way (modify format as desired)
+			String formattedDate = String.format("%02d/%02d/%02d", Tempo.days, Tempo.months, Tempo.years); // Adjust format
+			// (e.g., MMM yyyy
+			// Combine formatted time and date
+			String combinedString = formattedTime + "  " + formattedDate; // Newline for separation
+
+			// rectangle
+			// positioning
 			g.setColor(Color.WHITE);
+			g.setFont(new Font("Arial", Font.BOLD, 48)); // Adjust font size for combined string
+//			g.fillRect((widthBase / 2), ((heightBase) / 4), widthBase / 2 - 30, heightBase / 2 + 30);
+
+			// Center the combined string within the rectangle
+			int stringWidth = g.getFontMetrics().stringWidth(combinedString);
+			int x = (widthBase / 2 + 100); // Center horizontally based on string width
+			int y = (heightBase / 3);
+			// vertically
+			// based on font
+			// metrics
+			g.drawString(combinedString, x, y);
+			String diaDaSemana = "Dia de Deus";
+
+			int resto = Tempo.days % 7;
+			if (Game.linguagem == "Inglês") {
+				diaDaSemana = Tempo.DIAS_DA_SEMANA[resto].getNomePortugues();
+			} else if (Game.linguagem == "Português") {
+				diaDaSemana = Tempo.DIAS_DA_SEMANA[resto].getNomePortugues();
+			}
+			g.drawString(diaDaSemana, x, y + 100);
 
 		} else if (options[currentOption] == "outros status") {
 

@@ -8,6 +8,7 @@ import java.util.List;
 
 import base.Game;
 import entities.Player;
+import tempo.Tempo;
 
 public class UI {
 
@@ -26,7 +27,7 @@ public class UI {
 		g.drawString((int) (Game.player.life) + " / " + (int) (Player.maxLife), 26, 28);
         
         // Formatação do tempo
-        String formattedTime = String.format("%02d:%02d", Game.hours, Game.minutes);
+        String formattedTime = String.format("%02d:%02d", Tempo.hours, Tempo.minutes);
 
         // Exibição do tempo na tela
         g.setColor(Color.white);
