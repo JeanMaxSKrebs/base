@@ -38,17 +38,21 @@ public class Status {
 			enter = false;
 			if (options[currentOption] == "ver horario") {
 				verHorario = true;
+				Tempo.addHoras();
+			} else if (options[currentOption] == "outros status") {
+			} else if (options[currentOption] == "outros") {
 			} else if (options[currentOption] == "voltar") {
 				Game.gameState = "MENU";
-				;
 			}
 		}
+
 	}
 
 	public void render(Graphics g) {
 		g.setFont(new Font("Arial", Font.BOLD, 64));
 		int widthBase = Game.getWIDTH() * Game.getSCALE();
 		int heightBase = Game.getHEIGHT() * Game.getSCALE();
+
 		g.fillRect(0, 0, widthBase, heightBase);
 		g.setColor(Color.WHITE);
 		g.drawString("Status", ((widthBase / 8)), (heightBase / 6));
@@ -82,26 +86,20 @@ public class Status {
 			g.drawString(" > ", (((widthBase - 225))), ((heightBase) - 50));
 		}
 		if (options[currentOption] == "ver horario") {
-			// Get current date and time
-			Date now = new Date();
-
 			// Format time with leading zeros
 			String formattedTime = String.format("%02d:%02d", Tempo.hours, Tempo.minutes);
 
 			// Format date in a user-friendly way (modify format as desired)
-			String formattedDate = String.format("%02d/%02d/%02d", Tempo.days, Tempo.months, Tempo.years); // Adjust format
+			String formattedDate = String.format("%02d/%02d/%02d", Tempo.days, Tempo.months, Tempo.years); // Adjust
+																											// format
 			// (e.g., MMM yyyy
 			// Combine formatted time and date
 			String combinedString = formattedTime + "  " + formattedDate; // Newline for separation
 
-			// rectangle
-			// positioning
 			g.setColor(Color.WHITE);
 			g.setFont(new Font("Arial", Font.BOLD, 48)); // Adjust font size for combined string
 //			g.fillRect((widthBase / 2), ((heightBase) / 4), widthBase / 2 - 30, heightBase / 2 + 30);
 
-			// Center the combined string within the rectangle
-			int stringWidth = g.getFontMetrics().stringWidth(combinedString);
 			int x = (widthBase / 2 + 100); // Center horizontally based on string width
 			int y = (heightBase / 3);
 			// vertically
@@ -110,13 +108,35 @@ public class Status {
 			g.drawString(combinedString, x, y);
 			String diaDaSemana = "Dia de Deus";
 
-			int resto = Tempo.days % 7;
 			if (Game.linguagem == "Inglês") {
-				diaDaSemana = Tempo.DIAS_DA_SEMANA[resto].getNomePortugues();
+				diaDaSemana = Tempo.DIAS_DA_SEMANA[Tempo.restoDia].getNomePortugues();
 			} else if (Game.linguagem == "Português") {
-				diaDaSemana = Tempo.DIAS_DA_SEMANA[resto].getNomePortugues();
+				diaDaSemana = Tempo.DIAS_DA_SEMANA[Tempo.restoDia].getNomePortugues();
 			}
 			g.drawString(diaDaSemana, x, y + 100);
+
+			String faseDaLua = "Lua do Diabo";
+
+			System.out.println("Tempo.FASES_DA_LUA");
+			System.out.println(Tempo.FASES_DA_LUA[0]);
+			System.out.println(Tempo.FASES_DA_LUA[1]);
+			int teste = Tempo.restoLua;
+			if (Game.linguagem == "Inglês") {
+				faseDaLua = Tempo.FASES_DA_LUA[Tempo.restoLua].getNomeIngles();
+
+			} else if (Game.linguagem == "Português") {
+				faseDaLua = Tempo.FASES_DA_LUA[teste].getNomePortugues();
+			}
+			System.out.println("faseDaLua");
+			System.out.println(faseDaLua);
+			System.out.println("Tempo.restoLua");
+			System.out.println(Tempo.restoLua);
+//			System.out.println("Tempo.FASES_DA_LUA[Tempo.restoLua]");
+//			System.out.println(Tempo.FASES_DA_LUA[Tempo.restoLua]);
+//			System.out.println(Tempo.FASES_DA_LUA[0]);
+//			System.out.println("faseDaLua");
+//			System.out.println(faseDaLua);
+			g.drawString(faseDaLua, x, y + 200);
 
 		} else if (options[currentOption] == "outros status") {
 

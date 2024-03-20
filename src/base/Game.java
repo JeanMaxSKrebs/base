@@ -48,6 +48,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	public static int maximumDodge = 50;
 
 	public static Spritesheet spritesheet;
+	public static Spritesheet spritesheet_Moons;
 	public static Spritesheet spritesheet_Itens;
 	public static Spritesheet spritesheet_Walls;
 	public static Spritesheet spritesheet_Doors;
@@ -79,17 +80,16 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	public Inventory inventory;
 	public static boolean openInventory = false;
 
-	private long messageDisplayStartTime = 0;
-	private final long MESSAGE_DISPLAY_DURATION = 3000; // 3 segundos em milissegundos
+	public static long messageDisplayStartTime = 0;
+	public static long MESSAGE_DISPLAY_DURATION = 3000; // 3 segundos em milissegundos
 
 	public static boolean saveGame = false;
 	private boolean restartGame = false;
 	private boolean showMessageGameOver = true;
 	private int framesGameOver = 0;
-	
-	//mudar linguagem
+
+	// mudar linguagem
 	public static String linguagem = "Português";
-	
 
 	public Game() {
 		addKeyListener(this);
@@ -109,6 +109,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		frutas = new ArrayList<Fruta>();
 
 		spritesheet = new Spritesheet("/spritesheet.png");
+		spritesheet_Moons = new Spritesheet("/spritesheet_Moons.png");
 		spritesheet_Itens = new Spritesheet("/spritesheet_Itens.png");
 		spritesheet_Walls = new Spritesheet("/spritesheet_Walls.png");
 		spritesheet_Doors = new Spritesheet("/spritesheet_Doors.png");
@@ -164,12 +165,11 @@ public class Game extends Canvas implements Runnable, KeyListener {
 
 	public void tick() {
 
-
 //		System.out.println("gameState");
 //		System.out.println(gameState);
+		tempo.tick();
 
 		if (gameState == "NORMAL") {
-			tempo.tick();
 //			System.out.println("saveGame");
 //			System.out.println(saveGame);
 			if (saveGame) {
@@ -494,6 +494,12 @@ public class Game extends Canvas implements Runnable, KeyListener {
 					gameState = "INVENTORY";
 					Inventory.pause = true;
 				}
+
+			}
+			
+			if (e.getKeyCode() == KeyEvent.VK_L) {
+				ui.mensagem = true;
+				messageDisplayStartTime = System.currentTimeMillis(); // Inicia a contagem do tempo de exibição da
 
 			}
 		} else if (gameState.equals("MENU")) {

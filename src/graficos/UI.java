@@ -2,19 +2,24 @@ package graficos;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.awt.image.BufferedImage;
 import java.text.SimpleDateFormat;
+import java.util.Iterator;
 import java.util.List;
 
 import base.Game;
 import entities.Player;
+import tempo.FaseDaLua;
 import tempo.Tempo;
+import world.Camera;
 
 public class UI {
 
 	int frame;
-    private final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm"); // Time format (hours:minutes)
-
+	private final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm"); // Time format (hours:minutes)
+	public boolean mensagem;
 
 	public void render(Graphics g) {
 		// Health bar
@@ -25,14 +30,14 @@ public class UI {
 		g.setColor(Color.white);
 		g.setFont(new Font("arial", Font.BOLD, 11));
 		g.drawString((int) (Game.player.life) + " / " + (int) (Player.maxLife), 26, 28);
-        
-        // Formatação do tempo
-        String formattedTime = String.format("%02d:%02d", Tempo.hours, Tempo.minutes);
 
-        // Exibição do tempo na tela
-        g.setColor(Color.white);
-        g.setFont(new Font("roboto", Font.BOLD, 40));
-        g.drawString(formattedTime, Game.getWIDTH()/2-50, 40);
+		// Formatação do tempo
+		String formattedTime = String.format("%02d:%02d", Tempo.hours, Tempo.minutes);
+
+		// Exibição do tempo na tela
+		g.setColor(Color.white);
+		g.setFont(new Font("roboto", Font.BOLD, 40));
+		g.drawString(formattedTime, Game.getWIDTH() / 2 - 50, 40);
 
 //		System.out.println("Game.hours");
 //		System.out.println("Game.minutes");
@@ -75,6 +80,76 @@ public class UI {
 		g.drawString("ARMADURA: " + Player.getArmor(), Game.getWIDTH() - 72, Game.getHEIGHT() - 25);
 		g.drawString("ESQUIVA: " + Player.getDodgeChance(), Game.getWIDTH() - 72, Game.getHEIGHT() - 15);
 		g.drawString("VELOCIDADE: " + Player.getSpeed(), Game.getWIDTH() - 72, Game.getHEIGHT() - 5);
+
+		int widthBase = Game.getWIDTH() * Game.getSCALE();
+		int heightBase = Game.getHEIGHT() * Game.getSCALE();
+
+		if (mensagem) {
+			long startTime = System.currentTimeMillis(); // Momento inicial
+			long lastSpriteUpdateTime = System.currentTimeMillis(); // Momento da última atualização do sprite
+
+			if (startTime - Game.messageDisplayStartTime < Game.MESSAGE_DISPLAY_DURATION) {
+				long elapsedTime = lastSpriteUpdateTime - Game.messageDisplayStartTime; // Tempo decorrido
+
+				int spriteIndex = 0; // Índice do sprite atual
+				int maximoFrameCounter = Tempo.FASES_DA_LUA[Tempo.restoLua].getQtdSprites(); // Contador de frames
+
+				g.setColor(new Color(155, 155, 165)); // Cinza
+				int rectWidth = (Game.getWIDTH() * Game.getSCALE()); // Largura do retângulo
+				int rectHeight = (Game.getHEIGHT() * Game.getSCALE()) / 5; // Altura do retângulo
+				int rectX = (Game.getWIDTH() * Game.getSCALE() - rectWidth) / 2; // Posição X centralizada
+				int rectY = (Game.getHEIGHT() * Game.getSCALE() - rectHeight) / 2; // Posição Y centralizada
+				g.fillRect(rectX, rectY, rectWidth, rectHeight); // Desenhar o retângulo
+
+				String faseDaLuaString = "Lua do Diabo";
+
+				if (Game.linguagem == "Inglês") {
+					faseDaLuaString = Tempo.FASES_DA_LUA[Tempo.restoLua].getNomeIngles();
+				} else if (Game.linguagem == "Português") {
+					faseDaLuaString = Tempo.FASES_DA_LUA[Tempo.restoLua].getNomePortugues();
+				}
+
+				// Medir tamanho da string
+				FontMetrics metrics = g.getFontMetrics();
+
+				int ascent = metrics.getAscent(); // Distance above the baseline
+				int descent = metrics.getDescent(); // Distance below the baseline
+
+				int stringHeight = ascent + descent;
+				int stringWidth = metrics.stringWidth(faseDaLuaString);
+
+				// Calcular coordenadas para centralização
+				int x = (int) ((widthBase / 2) - (stringWidth * 3.5));
+				int y = (heightBase / 2) + (stringHeight * 2);
+				g.setColor(new Color(0, 0, 0)); // Preta
+				g.setFont(new Font("calibri", Font.BOLD, 72));
+				g.drawString(faseDaLuaString, x, y);
+
+				// Cálculo do índice do sprite
+				spriteIndex = (int) (elapsedTime / 500 % Tempo.FASES_DA_LUA[Tempo.restoLua].getQtdSprites());
+
+//				System.out.println("tempo passado: " + (elapsedTime));
+
+				spriteIndex++;
+				if (spriteIndex >= maximoFrameCounter) {
+					spriteIndex = 0; // Resetar o spriteIndex se ultrapassar o máximo
+				}
+
+				x = (int) ((widthBase / 5) + stringWidth);
+				y = (int) ((heightBase / 2) - (stringHeight * 5.5));
+
+				// Exibir o sprite
+				g.drawImage(Tempo.FASES_DA_LUA[Tempo.restoLua].getSpritesheet()[spriteIndex], x, y, null);
+
+				x = (int) ((widthBase / 2) + stringWidth * 3.2);
+				y = (int) ((heightBase / 2) - (stringHeight * 5.5));
+				g.drawImage(Tempo.FASES_DA_LUA[Tempo.restoLua].getSpritesheet()[spriteIndex], x, y, null);
+
+			}
+		} else {
+			Game.gameState = "NORMAL";
+			Game.openInventory = false; // Se passaram 3 segundos, a mensagem não é mais exibida
+		}
 
 	}
 
