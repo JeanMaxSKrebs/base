@@ -19,7 +19,7 @@ public class UI {
 
 	int frame;
 	private final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm"); // Time format (hours:minutes)
-	public boolean mensagem;
+	public static boolean mensagem;
 
 	public void render(Graphics g) {
 		// Health bar
@@ -111,16 +111,16 @@ public class UI {
 
 				// Medir tamanho da string
 				FontMetrics metrics = g.getFontMetrics();
+				int ascent = metrics.getAscent(); // Distância acima da linha base
+				int descent = metrics.getDescent(); // Distância abaixo da linha base
+				int leading = metrics.getLeading(); // Espaço adicional entre as linhas
 
-				int ascent = metrics.getAscent(); // Distance above the baseline
-				int descent = metrics.getDescent(); // Distance below the baseline
-
-				int stringHeight = ascent + descent;
+				int stringHeight = ascent + descent + leading; // Altura total do texto
 				int stringWidth = metrics.stringWidth(faseDaLuaString);
 
 				// Calcular coordenadas para centralização
-				int x = (int) ((widthBase / 2) - (stringWidth * 3.5));
-				int y = (heightBase / 2) + (stringHeight * 2);
+				int x = ((widthBase / 2) - stringWidth * 3); // Centralizar horizontalmente
+				int y = (heightBase + stringHeight) / 2 + ascent;
 				g.setColor(new Color(0, 0, 0)); // Preta
 				g.setFont(new Font("calibri", Font.BOLD, 72));
 				g.drawString(faseDaLuaString, x, y);
@@ -135,14 +135,14 @@ public class UI {
 					spriteIndex = 0; // Resetar o spriteIndex se ultrapassar o máximo
 				}
 
-				x = (int) ((widthBase / 5) + stringWidth);
-				y = (int) ((heightBase / 2) - (stringHeight * 5.5));
+				x = (int) ((widthBase / 10));
+				y = (int) ((heightBase / 2) - (stringHeight * 4.7));
 
 				// Exibir o sprite
 				g.drawImage(Tempo.FASES_DA_LUA[Tempo.restoLua].getSpritesheet()[spriteIndex], x, y, null);
 
-				x = (int) ((widthBase / 2) + stringWidth * 3.2);
-				y = (int) ((heightBase / 2) - (stringHeight * 5.5));
+				x = (int) ((widthBase) - (widthBase / 5));
+				y = (int) ((heightBase / 2) - (stringHeight * 4.7));
 				g.drawImage(Tempo.FASES_DA_LUA[Tempo.restoLua].getSpritesheet()[spriteIndex], x, y, null);
 
 			}

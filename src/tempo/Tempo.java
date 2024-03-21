@@ -8,6 +8,7 @@ import java.util.Date;
 
 import base.Game;
 import entities.Bala;
+import graficos.UI;
 
 public class Tempo {
 
@@ -35,7 +36,8 @@ public class Tempo {
 	public static int moonPhase;
 
 	public static int restoLua = 0;
-	
+    private static int lastRestoLua = -1;
+
 	FaseDaLua faseDaLua = FASES_DA_LUA[restoLua];
 
 	public static final  FaseDaLua[] FASES_DA_LUA = { new FaseDaLua(1),
@@ -63,6 +65,7 @@ public class Tempo {
 		Tempo.years = offset;
 		Tempo.restoDia = 0;
 		Tempo.restoLua = 0;
+		Tempo.lastRestoLua = -1;
 		Tempo.weeksTotal = 0;
 		Tempo.moonPhase = 0;
 		this.unidadeTempo = UnidadeTempo.minutes;
@@ -71,14 +74,15 @@ public class Tempo {
 
 	public void tick() {
 
+//		timeElapsedSeconds+=500;
 		timeElapsedSeconds++;
 		restoDia = days % 7;
 				
 		if (timeElapsedSeconds > 0) {
 
 			// Calcula minutos no jogo, considerando a velocidade ajustada
-//			int offsetmin = 50;
-//			int offsethour = 23 * 60;
+			int offsetmin = 50;
+			int offsethour = 23 * 60;
 			int offsetday = 60 * 60 * 24;
 			int offsetmonth = 60 * 60 * 24 * 28;
 //			minutes = (int) (((timeElapsedSeconds / 60) * secondsInGameMinute) + offsetmin + offsethour + offsetday);
@@ -93,8 +97,18 @@ public class Tempo {
 			years = (int) (months / 13) + offset;
 
 			weeksTotal = hours / (24 * 7); // Calculate total weeks
+			
 			restoLua = weeksTotal % 4;
 
+			 if (restoLua != lastRestoLua) {
+			        // Atualizar lastRestoLua para o novo valor
+			        lastRestoLua = restoLua;
+
+			        // Executar ação quando restoLua mudar
+			        UI.mensagem = true;
+			        Game.messageDisplayStartTime = System.currentTimeMillis(); // Inicia a contagem do tempo de exibição da mensagem
+			    }
+			
 			// Limit values
 			minutes %= 60;
 			hours %= 24;

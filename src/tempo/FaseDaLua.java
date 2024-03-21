@@ -32,6 +32,7 @@ public class FaseDaLua {
 			}
 
 			this.setSpritesheet(minguante);
+			break;
 		}
 		case 2: {
 			this.nomePortugues = "Nova";
@@ -45,6 +46,7 @@ public class FaseDaLua {
 			}
 
 			this.setSpritesheet(nova);
+			break;
 		}
 		case 3: {
 			this.nomePortugues = "Crescente";
@@ -58,6 +60,8 @@ public class FaseDaLua {
 			}
 
 			this.setSpritesheet(crescente);
+			break;
+
 		}
 		case 4: {
 			this.nomePortugues = "Cheia";
@@ -71,6 +75,8 @@ public class FaseDaLua {
 			}
 
 			this.setSpritesheet(cheia);
+			break;
+
 		}
 		default:
 			this.nomePortugues = "Cheia";
@@ -83,6 +89,8 @@ public class FaseDaLua {
 				cheia[i] = Game.spritesheet_Moons.getSprite((i * 112), 112 * 3, 112, 112);
 			}
 			this.setSpritesheet(cheia);
+			break;
+
 		}
 	}
 

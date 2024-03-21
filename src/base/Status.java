@@ -117,25 +117,13 @@ public class Status {
 
 			String faseDaLua = "Lua do Diabo";
 
-			System.out.println("Tempo.FASES_DA_LUA");
-			System.out.println(Tempo.FASES_DA_LUA[0]);
-			System.out.println(Tempo.FASES_DA_LUA[1]);
-			int teste = Tempo.restoLua;
 			if (Game.linguagem == "Inglês") {
 				faseDaLua = Tempo.FASES_DA_LUA[Tempo.restoLua].getNomeIngles();
 
 			} else if (Game.linguagem == "Português") {
-				faseDaLua = Tempo.FASES_DA_LUA[teste].getNomePortugues();
+				faseDaLua = Tempo.FASES_DA_LUA[Tempo.restoLua].getNomePortugues();
 			}
-			System.out.println("faseDaLua");
-			System.out.println(faseDaLua);
-			System.out.println("Tempo.restoLua");
-			System.out.println(Tempo.restoLua);
-//			System.out.println("Tempo.FASES_DA_LUA[Tempo.restoLua]");
-//			System.out.println(Tempo.FASES_DA_LUA[Tempo.restoLua]);
-//			System.out.println(Tempo.FASES_DA_LUA[0]);
-//			System.out.println("faseDaLua");
-//			System.out.println(faseDaLua);
+
 			g.drawString(faseDaLua, x, y + 200);
 
 		} else if (options[currentOption] == "outros status") {
