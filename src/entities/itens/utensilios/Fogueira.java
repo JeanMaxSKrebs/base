@@ -20,6 +20,7 @@ public class Fogueira extends Item {
 	private BufferedImage[] spritesFogueira;
 
 
+	protected String nome = "Fogueira";
 
 	public void tick() {
 
@@ -36,7 +37,7 @@ public class Fogueira extends Item {
 		spritesFogueira = new BufferedImage[4];
 
 		for (int i = 0; i < qtdDirecoes; i++) {
-			spritesFogueira[i] = Game.spritesheet_Itens.getSprite(112 * i, 112*1, 112, 112);
+			spritesFogueira[i] = Game.spritesheet_Items.getSprite(112 * i, 112*1, 112, 112);
 		}
 	}
 

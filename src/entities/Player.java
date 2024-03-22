@@ -210,7 +210,7 @@ public class Player extends Entity {
 					if (Entity.isColliding(this, e)) {
 						SpecialKey specialKeyColetada = (SpecialKey) e;
 						specialKeys++;
-						obtainItem(specialKeyColetada); 
+						obtainItem(specialKeyColetada);
 
 						Game.entities.remove(i);
 						return;
@@ -378,17 +378,17 @@ public class Player extends Entity {
 		if (dir == right_dir) {
 			g.drawImage(rightPlayer[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
 			if (hasBagpack) {
-				g.drawImage(Entity.BAGPACK_RIGHT, this.getX() - Camera.x, this.getY() - Camera.y, null);
+				g.drawImage(BagPack.getSpritesBackpack(1), this.getX() - Camera.x, this.getY() - Camera.y, null);
 			}
 		} else if (dir == left_dir) {
 			g.drawImage(leftPlayer[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
 			if (hasBagpack) {
-				g.drawImage(Entity.BAGPACK_LEFT, this.getX() - Camera.x, this.getY() - Camera.y, null);
+				g.drawImage(BagPack.getSpritesBackpack(2), this.getX() - Camera.x, this.getY() - Camera.y, null);
 			}
 		} else if (dir == up_dir) {
 			g.drawImage(upPlayer[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
 			if (hasBagpack) {
-				g.drawImage(Entity.BAGPACK_UP, this.getX() - Camera.x, this.getY() - Camera.y, null);
+				g.drawImage(BagPack.getSpritesBackpack(3), this.getX() - Camera.x, this.getY() - Camera.y, null);
 			}
 		} else if (dir == down_dir) {
 			g.drawImage(downPlayer[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
@@ -403,15 +403,15 @@ public class Player extends Entity {
 //		g.drawRect(this.getX() + maskx - Camera.x, this.getY() + masky - Camera.y, mwidth, mheight);
 	}
 
-	   public void heal(double amount) {
-	        this.life += amount;
+	public void heal(double amount) {
+		this.life += amount;
 
-	        // Ensure health doesn't exceed maximum
-	        if (this.life > 100) {
-	            this.life = 100;
-	        }
-	    }
-	
+		// Ensure health doesn't exceed maximum
+		if (this.life > 100) {
+			this.life = 100;
+		}
+	}
+
 	public double getLife() {
 		return life;
 	}

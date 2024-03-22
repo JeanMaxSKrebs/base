@@ -49,7 +49,8 @@ public class Game extends Canvas implements Runnable, KeyListener {
 
 	public static Spritesheet spritesheet;
 	public static Spritesheet spritesheet_Moons;
-	public static Spritesheet spritesheet_Itens;
+	public static Spritesheet spritesheet_Items;
+	public static Spritesheet spritesheet_UsableItems;
 	public static Spritesheet spritesheet_Walls;
 	public static Spritesheet spritesheet_Doors;
 	public static Spritesheet spritesheet_Foods;
@@ -110,7 +111,8 @@ public class Game extends Canvas implements Runnable, KeyListener {
 
 		spritesheet = new Spritesheet("/spritesheet.png");
 		spritesheet_Moons = new Spritesheet("/spritesheet_Moons.png");
-		spritesheet_Itens = new Spritesheet("/spritesheet_Itens.png");
+		spritesheet_Items = new Spritesheet("/spritesheet_Items.png");
+		spritesheet_UsableItems = new Spritesheet("/spritesheet_UsableItems.png");
 		spritesheet_Walls = new Spritesheet("/spritesheet_Walls.png");
 		spritesheet_Doors = new Spritesheet("/spritesheet_Doors.png");
 		spritesheet_Foods = new Spritesheet("/spritesheet_Foods.png");

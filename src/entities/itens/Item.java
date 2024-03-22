@@ -12,6 +12,9 @@ public class Item extends Entity {
 	protected String nome = "Item";
 	public int quantidade = 1;
 	
+	public static BufferedImage KEY_EN = Game.spritesheet_Doors.getSprite(112, 0, 112, 112);
+	public static BufferedImage SPECIALKEY_EN = Game.spritesheet_Doors.getSprite(336, 0, 112, 112);
+	
 	protected boolean girando;
 	
 	protected int frames = 0, maxFrames = 60;

@@ -97,7 +97,7 @@ public class World {
 					} else if (pixelAtual == 0xFF4E3333) {
 						// bagpack
 						BagPack bagpack = new BagPack(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE,
-								Entity.BAGPACK_EN);
+								BagPack.BAGPACK_EN);
 						bagpack.setMask(0, 0, 112, 112);
 						Game.entities.add(bagpack);
 					} else if (pixelAtual == 0xFFD1951F) {
