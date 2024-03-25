@@ -8,10 +8,10 @@ import entities.itens.Item;
 public class Comida extends Item {
 
 	public static String nome = "Comida";
-	protected static double regen = 2; // Amount of health regenerated
-	protected static int tickRegen = 5; // Ticks between regeneration events
-	protected static double curaTotal = 10; // Maximum health restored
-	protected boolean isCooked; // Flag indicating if the food is cooked
+	public static double regen = 2; // Amount of health regenerated
+	public static int tickRegen = 5; // Ticks between regeneration events
+	public static double curaTotal = 10; // Maximum health restored
+	public boolean isCooked; // Flag indicating if the food is cooked
 
 	public Comida(int x, int y, int width, int height, BufferedImage sprite, String nome, double regen, int tickRegen,
 			double curaTotal) {
@@ -24,6 +24,10 @@ public class Comida extends Item {
 
 	public Comida(int x, int y, int width, int height, BufferedImage sprite) {
 		super(x, y, width, height, sprite, nome);
+	}
+
+	public Comida(Comida outraComida) {
+		super(outraComida); // Chama o construtor da superclasse para copiar atributos de Item
 	}
 
 	public void use(Player player) {

@@ -12,13 +12,13 @@ public class Maca extends Fruta {
 	public static final double regen = 2;
 	public static final int tickRegen = 10;
 	public static final double curaTotal = 20;
-	public static final String nome = "Maca";
+	public static String nome = "Maca";
 
 	private BufferedImage[] spritesMaca;
 
-	public Maca(int x, int y, int width, int height, BufferedImage sprite) {
+	public Maca(int x, int y, int width, int height, BufferedImage sprite, String nome) {
 		super(x, y, width, height, sprite, nome, regen, tickRegen, curaTotal);
-
+		Maca.nome = nome;
 		spritesMaca = new BufferedImage[qtdDirecoes];
 
 		for (int i = 0; i < qtdDirecoes; i++) {

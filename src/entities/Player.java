@@ -126,25 +126,28 @@ public class Player extends Entity {
 	}
 
 	public void obtainItem(Item newItem) {
-		boolean itemExists = false;
-		// Verifica se o item já existe na lista
-		for (Item item : itens) {
-			if (item.getNome().equals(newItem.getNome())) {
+	    boolean itemExists = false;
 
-				int newItemTemp = item.quantidade + 1;
-				item.quantidade = newItemTemp;
+	    // Verifica se o item já existe na lista
+	    for (Item item : itens) {
+	        if (item.getNome().equals(newItem.getNome())) {
+	            item.incrementQuantity(); // Incrementa a quantidade do item existente
+	            itemExists = true;
+	            break;
+	        }
+	    }
 
-				itemExists = true;
-				break;
-			}
-		}
-
-		// Se o item não foi encontrado na lista, adiciona-o
-		if (!itemExists) {
-
-			itens.add(newItem);
-		}
-
+	    // Se o item não foi encontrado na lista, adiciona-o
+	    if (!itemExists) {
+	        // Adiciona uma nova instância do item final à lista
+	        if (newItem instanceof Fruta) {
+	            itens.add(new Fruta((Fruta) newItem));
+	        } else if (newItem instanceof Comida) {
+	            itens.add(new Comida((Comida) newItem));
+	        } else {
+	            itens.add(newItem); // Se não for uma subclasse, adiciona diretamente
+	        }
+	    }
 	}
 
 	public void checkItems() {
@@ -171,6 +174,8 @@ public class Player extends Entity {
 				if (e instanceof Fruta) {
 					if (Entity.isColliding(this, e)) {
 						Fruta frutaColetada = (Fruta) e;
+						System.out.println(e);
+						System.out.println(e);
 
 						obtainItem(frutaColetada); // itens.add(frutaColetada);
 
@@ -181,8 +186,11 @@ public class Player extends Entity {
 						return;
 					}
 				}
+
 				if (e instanceof Comida) {
 					if (Entity.isColliding(this, e)) {
+						System.out.println("CREDO");
+
 						Comida comidaColetada = (Comida) e;
 
 						obtainItem(comidaColetada);

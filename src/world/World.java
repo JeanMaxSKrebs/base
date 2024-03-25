@@ -121,7 +121,7 @@ public class World {
 
 					} else if (pixelAtual == 0xFFD4195E) {
 						// Maca
-						Maca maca = new Maca(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Fruta.MACA_FR);
+						Maca maca = new Maca(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Fruta.MACA_FR, "Maçã");
 						maca.setMask(8, 8, 48, 48);
 						Game.entities.add(maca);
 

@@ -14,6 +14,7 @@ import java.io.IOException;
 
 import entities.Player;
 import entities.itens.Item;
+import entities.itens.comidas.Comida;
 import entities.itens.comidas.frutas.Fruta;
 import world.World;
 
@@ -240,6 +241,8 @@ public class Inventory {
 
 			g.setFont(new Font("Arial", Font.BOLD, 10));
 			g.drawString("QTD: " + item.getQuantidade(), x + 3, y + slotSize - 4); // Render item quantity
+
+//			}
 
 			// Increment the index for the next item
 			index++;

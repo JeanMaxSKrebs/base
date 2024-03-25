@@ -11,12 +11,12 @@ import world.Camera;
 public class Item extends Entity {
 	protected String nome = "Item";
 	public int quantidade = 1;
-	
+
 	public static BufferedImage KEY_EN = Game.spritesheet_Doors.getSprite(112, 0, 112, 112);
 	public static BufferedImage SPECIALKEY_EN = Game.spritesheet_Doors.getSprite(336, 0, 112, 112);
-	
+
 	protected boolean girando;
-	
+
 	protected int frames = 0, maxFrames = 60;
 	protected int index = 1;
 	protected int qtdDirecoes = 3;
@@ -30,11 +30,16 @@ public class Item extends Entity {
 		super(x, y, width, height, sprite);
 	}
 
+	public Item(Item outroItem) {
+		this.nome = outroItem.nome;
+		this.quantidade = outroItem.quantidade;
+		// Copie outros atributos, se houver
+	}
 
 //	public Item(int x, int y, BufferedImage sprite) {
 //		super(x, y, width, height, sprite);
 //	}
-	
+
 	public void girar() {
 		girando = true;
 	}
@@ -64,10 +69,20 @@ public class Item extends Entity {
 
 	public void setQuantidade(int i) {
 		// TODO Auto-generated method stub
-		
+
 	}
+
+	public void incrementQuantity() {
+		quantidade++;
+	}
+
 	public void tick() {
-		
+
+	}
+
+	@Override
+	public String toString() {
+		return "Item{" + "nome='" + nome + '\'' + ", quantidade=" + quantidade + '}';
 	}
 
 }
