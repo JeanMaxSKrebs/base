@@ -6,9 +6,11 @@ import java.awt.image.BufferedImage;
 
 import base.Game;
 import entities.Entity;
+import entities.Player;
 import world.Camera;
 
-public class Item extends Entity {
+@SuppressWarnings("unused")
+public abstract class Item extends Entity {
 	protected String nome = "Item";
 	public int quantidade = 1;
 
@@ -21,6 +23,7 @@ public class Item extends Entity {
 	protected int index = 1;
 	protected int qtdDirecoes = 3;
 
+	//
 	public Item(int x, int y, int width, int height, BufferedImage sprite, String nome) {
 		super(x, y, width, height, sprite);
 		this.nome = nome;
@@ -31,14 +34,21 @@ public class Item extends Entity {
 	}
 
 	public Item(Item outroItem) {
+		super();
 		this.nome = outroItem.nome;
 		this.quantidade = outroItem.quantidade;
 		// Copie outros atributos, se houver
 	}
 
-//	public Item(int x, int y, BufferedImage sprite) {
-//		super(x, y, width, height, sprite);
-//	}
+    public void coletar(Player player) {
+        incrementQuantity(); // Incrementa a quantidade do item
+        player.obtainItem(this); // Adiciona o item à lista de itens do jogador
+    }
+    
+
+	// Método abstrato para fornecer uma implementação específica nas subclasses, se
+	// necessário
+	public abstract void coletarEspecifico();
 
 	public void girar() {
 		girando = true;
@@ -52,6 +62,14 @@ public class Item extends Entity {
 				index = Game.random(qtdDirecoes);
 			}
 		}
+	}
+	
+	public BufferedImage getSprite() {
+		return sprite;
+	}
+
+	public void setSprite(BufferedImage sprite) {
+		this.sprite = sprite;
 	}
 
 	public String getNome() {

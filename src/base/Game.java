@@ -73,7 +73,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	public static String gameState = "MENU";
 	public static String ILHA = "INICIAL";
 
-	public UI ui;
+	public static UI ui;
 
 	public Tempo tempo;
 	public static Status status;

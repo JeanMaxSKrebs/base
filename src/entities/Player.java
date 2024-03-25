@@ -1,6 +1,5 @@
 package entities;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -12,6 +11,8 @@ import entities.itens.Key;
 import entities.itens.SpecialKey;
 import entities.itens.comidas.Comida;
 import entities.itens.comidas.frutas.Fruta;
+import entities.itens.comidas.frutas.Maca;
+import entities.itens.comidas.frutas.Uva;
 import entities.itens.utensilios.BagPack;
 import world.Camera;
 import world.Normaldoor;
@@ -126,28 +127,30 @@ public class Player extends Entity {
 	}
 
 	public void obtainItem(Item newItem) {
-	    boolean itemExists = false;
+		boolean itemExists = false;
 
-	    // Verifica se o item já existe na lista
-	    for (Item item : itens) {
-	        if (item.getNome().equals(newItem.getNome())) {
-	            item.incrementQuantity(); // Incrementa a quantidade do item existente
-	            itemExists = true;
-	            break;
-	        }
-	    }
+		// Verifica se o item já existe na lista
+		for (Item item : itens) {
+			System.out.println(item.getClass());
+			System.out.println(newItem.getClass());
+			System.out.println(item.getNome());
+	    	System.out.println(newItem.getNome());
+			if (item.getClass().equals(newItem.getClass())) {
+				item.incrementQuantity(); // Incrementa a quantidade do item existente
+				itemExists = true;
+				break;
+			}
 
-	    // Se o item não foi encontrado na lista, adiciona-o
-	    if (!itemExists) {
-	        // Adiciona uma nova instância do item final à lista
-	        if (newItem instanceof Fruta) {
-	            itens.add(new Fruta((Fruta) newItem));
-	        } else if (newItem instanceof Comida) {
-	            itens.add(new Comida((Comida) newItem));
-	        } else {
-	            itens.add(newItem); // Se não for uma subclasse, adiciona diretamente
-	        }
-	    }
+		}
+
+		// Se o item não foi encontrado na lista, adiciona-o
+		if (!itemExists) {
+			System.out.println("add");
+			System.out.println(newItem);
+
+			itens.add(newItem); // Se não for uma subclasse, adiciona diretamente
+
+		}
 	}
 
 	public void checkItems() {
@@ -171,59 +174,81 @@ public class Player extends Entity {
 
 			// Itens que são guardados
 			if (hasBagpack) {
-				if (e instanceof Fruta) {
+				
+				if (e instanceof Item) {
 					if (Entity.isColliding(this, e)) {
-						Fruta frutaColetada = (Fruta) e;
-						System.out.println(e);
-						System.out.println(e);
+						Item newItem = (Item) e;
 
-						obtainItem(frutaColetada); // itens.add(frutaColetada);
-
-						frutasColetadas.add(frutaColetada);
-						Game.entities.remove(i);
-						Game.frutas.remove(e); // Remover da lista de frutas
-
-						return;
-					}
-				}
-
-				if (e instanceof Comida) {
-					if (Entity.isColliding(this, e)) {
-						System.out.println("CREDO");
-
-						Comida comidaColetada = (Comida) e;
-
-						obtainItem(comidaColetada);
-
-						comidasColetadas.add(comidaColetada);
-						Game.entities.remove(i);
-						Game.comidas.remove(e); // Remover da lista de comidas
-
-						return;
-					}
-
-				}
-				if (e instanceof Key) {
-					if (Entity.isColliding(this, e)) {
-						Key keyColetada = (Key) e;
-
-						keys++;
-						obtainItem(keyColetada); // itens.add(frutaColetada);
+						obtainItem(newItem); // itens.add(frutaColetada);
 
 						Game.entities.remove(i);
 						return;
 					}
 				}
-				if (e instanceof SpecialKey) {
-					if (Entity.isColliding(this, e)) {
-						SpecialKey specialKeyColetada = (SpecialKey) e;
-						specialKeys++;
-						obtainItem(specialKeyColetada);
-
-						Game.entities.remove(i);
-						return;
-					}
-				}
+//				if (e instanceof Fruta) {
+//					if (Entity.isColliding(this, e)) {
+//
+//						if (e instanceof Uva) {
+//							Uva frutaColetada = (Uva) e;
+//														
+//							frutaColetada.coletar(this); // Chamada do método polimórfico
+//							frutasColetadas.add(frutaColetada);
+//
+//						} else if (e instanceof Maca) {
+//							Maca frutaColetada = (Maca) e;
+//
+//							frutaColetada.coletar(this); // Chamada do método polimórfico
+//							frutasColetadas.add(frutaColetada);
+//
+//						} else {
+//							Fruta frutaColetada = (Fruta) e;
+//
+//							frutaColetada.coletar(this); // Chamada do método polimórfico
+//							frutasColetadas.add(frutaColetada);
+//						}
+//						Game.entities.remove(i);
+//						Game.frutas.remove(e);
+//
+//
+//						return;
+//					}
+//				}
+//
+//				if (e instanceof Comida) {
+//					if (Entity.isColliding(this, e)) {
+//
+//						Comida comidaColetada = (Comida) e;
+//
+//						comidaColetada.coletar(this); // Chamada do método polimórfico
+//						comidasColetadas.add(comidaColetada);
+//						Game.entities.remove(i);
+//						Game.comidas.remove(e); // Remover da lista de comidas
+//
+//						return;
+//					}
+//
+//				}
+//				if (e instanceof Key) {
+//					if (Entity.isColliding(this, e)) {
+//						Key keyColetada = (Key) e;
+//
+//						keys++;
+//						obtainItem(keyColetada); // itens.add(frutaColetada);
+//
+//						Game.entities.remove(i);
+//						return;
+//					}
+//				}
+//				if (e instanceof SpecialKey) {
+//					if (Entity.isColliding(this, e)) {
+//						SpecialKey specialKeyColetada = (SpecialKey) e;
+//						specialKeys++;
+//						obtainItem(specialKeyColetada);
+//
+//						Game.entities.remove(i);
+//						return;
+//					}
+//				}
 //			System.out.println("frutasColetadas");
 //			System.out.println(frutasColetadas);
 			}

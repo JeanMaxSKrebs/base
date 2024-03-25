@@ -3,20 +3,10 @@ package base;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.image.BufferedImage;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
 
 import entities.Player;
 import entities.itens.Item;
-import entities.itens.comidas.Comida;
 import entities.itens.comidas.frutas.Fruta;
-import world.World;
 
 public class Inventory {
 
@@ -318,9 +308,9 @@ public class Inventory {
 				Fruta frutaSelecionada = (Fruta) selectedItem;
 
 				// Acessa os atributos específicos de Fruta
-				double regen = frutaSelecionada.getRegen();
-				int tickRegen = frutaSelecionada.getTickRegen();
-				double curaTotal = frutaSelecionada.getCuraTotal();
+				double regen = frutaSelecionada.regen;
+				int tickRegen = frutaSelecionada.tickRegen;
+				double curaTotal = frutaSelecionada.curaTotal;
 
 //				        // Imprime os valores
 //				        System.out.println("Regen: " + regen);

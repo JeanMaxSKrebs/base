@@ -105,7 +105,7 @@ public class Tempo {
 			        lastRestoLua = restoLua;
 
 			        // Executar ação quando restoLua mudar
-			        UI.mensagem = true;
+			        Game.ui.mensagem = true;
 			        Game.messageDisplayStartTime = System.currentTimeMillis(); // Inicia a contagem do tempo de exibição da mensagem
 			    }
 			

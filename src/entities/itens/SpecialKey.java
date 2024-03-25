@@ -7,6 +7,7 @@ import java.awt.image.BufferedImage;
 import entities.Entity;
 import world.Camera;
 
+@SuppressWarnings("unused")
 public class SpecialKey extends Item {
 	public static final String nome = "SpecialKey";
 
@@ -20,5 +21,11 @@ public class SpecialKey extends Item {
 
 //		g.setColor(Color.yellow);
 //		g.fillRect(this.getX() + maskx - Camera.x, this.getY() + masky - Camera.y, mwidth, mheight);
+	}
+
+	@Override
+	public void coletarEspecifico() {
+		// TODO Auto-generated method stub
+		
 	}
 }

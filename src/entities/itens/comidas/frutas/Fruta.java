@@ -3,9 +3,10 @@ package entities.itens.comidas.frutas;
 import java.awt.image.BufferedImage;
 
 import base.Game;
+import entities.Player;
 import entities.itens.comidas.Comida;
 
-public class Fruta extends Comida implements Comparable<Fruta> {
+public abstract class Fruta extends Comida implements Comparable<Fruta> {
 	// A IMAGEM PADRÃO FICA NO SUPERIOR // ENTITY
 	public static BufferedImage TOMATE_FR = Game.spritesheet_Fruits.getSprite(0, 64*1, 64, 64);
 	public static BufferedImage UVA_FR = Game.spritesheet_Fruits.getSprite(0, 64*2, 64, 64);
@@ -22,13 +23,16 @@ public class Fruta extends Comida implements Comparable<Fruta> {
 	// Array para armazenar as imagens das frutas
 	public static BufferedImage[] FRUTAS_SPRITES  = new BufferedImage[getNomesFrutas().length];
 
-    public static String nome = "Fruta";
 
 	@SuppressWarnings("unused")
-	private BufferedImage sprite;
+	protected BufferedImage sprite;
 
 	protected int qtdDirecoes = 3;
 
+	public String nome = "Fruta";
+	public double regen = 2; // Amount of health regenerated
+	public int tickRegen = 5; // Ticks between regeneration events
+	public double curaTotal = 10;
 
 
 
@@ -39,12 +43,12 @@ public class Fruta extends Comida implements Comparable<Fruta> {
 	}
 
 	public Fruta(int x, int y, int width, int height, BufferedImage sprite, String nome) {
-		super(x, y, width, height, sprite, nome, regen, tickRegen, curaTotal);
+		super(x, y, width, height, sprite, nome);
 
 	}
 
 	public Fruta(int x, int y, int width, int height, BufferedImage sprite) {
-		super(x, y, width, height, sprite, nome, regen, tickRegen, curaTotal);
+		super(x, y, width, height, sprite);
 
 	}
 	
@@ -54,9 +58,10 @@ public class Fruta extends Comida implements Comparable<Fruta> {
     }
 
 	// Incrementa a quantidade quando uma fruta é coletada
-	public void coletar() {
-		quantidade++;
-	}
+    public void coletar(Player player) {
+        incrementQuantity(); // Incrementa a quantidade do item
+        player.obtainItem(this); // Adiciona o item à lista de itens do jogador
+    }
 
 	// Decrementa a quantidade quando uma fruta é comida
 	public void comer() {
@@ -69,12 +74,10 @@ public class Fruta extends Comida implements Comparable<Fruta> {
 		}
 	}
 
-	@Override
 	public int compareTo(Fruta outraFruta) {
-		return Fruta.nome.compareTo(outraFruta.getNome());
+		return this.nome.compareTo(outraFruta.getNome());
 	}
 
-	@Override
 	public String toString() {
 		return "Fruta{" + "nome='" + nome + '\'' + ", quantidade=" + quantidade + ", regen=" + regen + ", tickRegen="
 				+ tickRegen + ", curaTotal=" + curaTotal + '}';

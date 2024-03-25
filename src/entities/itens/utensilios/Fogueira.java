@@ -12,15 +12,14 @@ import entities.itens.Item;
 import entities.itens.comidas.Comida;
 import world.Camera;
 
-public class Fogueira extends Item {
+public class Fogueira extends Utensilio {
 
-    private boolean isLit;
-    private Map<Comida, Integer> cookingFoods; // Map of cooking foods to their remaining cook time
+	protected boolean isLit;
+    protected Map<Comida, Integer> cookingFoods; // Map of cooking foods to their remaining cook time
 
-	private BufferedImage[] spritesFogueira;
+    protected BufferedImage[] spritesFogueira;
 
-
-	protected String nome = "Fogueira";
+    protected static final String nome = "Fogueira";
 
 	public void tick() {
 
@@ -32,7 +31,7 @@ public class Fogueira extends Item {
 
 	
 	public Fogueira(int x, int y, int width, int height, BufferedImage sprite) {
-		super(x, y, width, height, sprite);
+		super(x, y, width, height, sprite, nome);
 		
 		spritesFogueira = new BufferedImage[4];
 
@@ -56,7 +55,7 @@ public class Fogueira extends Item {
     public void aplicarCalor(Comida comida) {
         if (isLit && !comida.isCooked()) {
             if (!cookingFoods.containsKey(comida)) {
-                cookingFoods.put(comida, comida.getTickRegen()); // Adiciona comida ao mapa
+                cookingFoods.put(comida, comida.tickRegen); // Adiciona comida ao mapa
             }
             int remainingTime = cookingFoods.get(comida);
             remainingTime--;
@@ -113,4 +112,12 @@ public class Fogueira extends Item {
     public void setCookingFoods(Map<Comida, Integer> cookingFoods) {
         this.cookingFoods = cookingFoods;
     }
+
+
+
+	@Override
+	public void coletarEspecifico() {
+		// TODO Auto-generated method stub
+		
+	}
 }

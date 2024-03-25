@@ -5,24 +5,26 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
 import base.Game;
+import entities.Player;
 import world.Camera;
 
+@SuppressWarnings("unused")
 public class Uva extends Fruta {
 
-	public static final double regen = 2;
-	public static final int tickRegen = 5;
-	public static final double curaTotal = 10;
-	public static final String nome = "Uva";
+	protected static double regen = 3;
+	protected static int tickRegen = 5;
+	protected static double curaTotal = 20;
+	protected static final String nome = "Uva";
 
 	private BufferedImage[] spritesUva;
 
 	public Uva(int x, int y, int width, int height, BufferedImage sprite) {
-		super(x, y, width, height, sprite, nome, regen, tickRegen, curaTotal);
+		super(x, y, width, height, sprite, nome);
 
 		spritesUva = new BufferedImage[3];
 
 		for (int i = 0; i < qtdDirecoes; i++) {
-			spritesUva[i] = Game.spritesheet_Fruits.getSprite(64 * i, 64*2, 64, 64);
+			spritesUva[i] = Game.spritesheet_Fruits.getSprite(64 * i, 64 * 2, 64, 64);
 		}
 
 	}
@@ -40,6 +42,17 @@ public class Uva extends Fruta {
 
 //		g.setColor(Color.red);
 //		g.fillRect(this.getX() + maskx - Camera.x, this.getY() + masky - Camera.y, mwidth, mheight);
+	}
+
+    public void coletar(Player player) {
+        incrementQuantity(); // Incrementa a quantidade do item
+        player.obtainItem(this); // Adiciona o item à lista de itens do jogador
+    }
+	
+	@Override
+	public void coletarEspecifico() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

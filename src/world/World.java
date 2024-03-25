@@ -15,7 +15,6 @@ import entities.Entity;
 import entities.Player;
 import entities.itens.Key;
 import entities.itens.SpecialKey;
-import entities.itens.comidas.Comida;
 import entities.itens.comidas.frutas.Fruta;
 import entities.itens.comidas.frutas.Maca;
 import entities.itens.comidas.frutas.Uva;
@@ -107,21 +106,9 @@ public class World {
 						Game.entities.add(fogueira);
 		
 
-					} else if (pixelAtual == 0xFF808080) {
-						// Comida
-						Comida comida = new Comida(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Entity.COMIDA_IT);
-						comida.setMask(28, 28, 56, 56);
-						Game.entities.add(comida);
-
-					} else if (pixelAtual == 0xFF00FF15) {
-						// Fruta
-						Fruta fruta = new Fruta(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Entity.FRUTA_CO);
-						fruta.setMask(28, 28, 56, 56);
-						Game.entities.add(fruta);
-
 					} else if (pixelAtual == 0xFFD4195E) {
 						// Maca
-						Maca maca = new Maca(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Fruta.MACA_FR, "Maçã");
+						Maca maca = new Maca(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Fruta.MACA_FR);
 						maca.setMask(8, 8, 48, 48);
 						Game.entities.add(maca);
 

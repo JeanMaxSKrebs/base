@@ -19,7 +19,7 @@ public class UI {
 
 	int frame;
 	private final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm"); // Time format (hours:minutes)
-	public static boolean mensagem;
+	public boolean mensagem;
 
 	public void render(Graphics g) {
 		// Health bar

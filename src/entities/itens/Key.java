@@ -21,4 +21,10 @@ public class Key extends Item {
 //		g.fillRect(this.getX() + maskx - Camera.x, this.getY() + masky - Camera.y, mwidth, mheight);
 	}
 
+	@Override
+	public void coletarEspecifico() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
