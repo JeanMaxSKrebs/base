@@ -11,10 +11,10 @@ import world.Camera;
 @SuppressWarnings("unused")
 public class Uva extends Fruta {
 
-	protected static double regen = 3;
-	protected static int tickRegen = 5;
-	protected static double curaTotal = 20;
-	protected static final String nome = "Uva";
+	public double regen = 3;
+	public int tickRegen = 5;
+	public double curaTotal = 20;
+	public static final String nome = "Uva";
 
 	private BufferedImage[] spritesUva;
 

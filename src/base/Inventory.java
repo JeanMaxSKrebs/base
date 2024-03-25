@@ -7,6 +7,8 @@ import java.awt.Graphics;
 import entities.Player;
 import entities.itens.Item;
 import entities.itens.comidas.frutas.Fruta;
+import entities.itens.comidas.frutas.Maca;
+import entities.itens.comidas.frutas.Uva;
 
 public class Inventory {
 
@@ -204,8 +206,6 @@ public class Inventory {
 	}
 
 	private void renderEachItem(Graphics g, int slotSize, int inventoryX, int inventoryY) {
-		// TODO Auto-generated method stub
-		// Render each item in the inventory
 		int index = 0;
 		for (Item item : Player.getItens()) {
 			int row = index / cols; // Calculate the row for the current item
@@ -217,11 +217,6 @@ public class Inventory {
 			// Desenha o contorno do slot
 			g.drawRect(x, y, slotSize, slotSize);
 
-			// Desenha o contorno da quantidade
-			g.setColor(Color.GRAY);
-			g.fillRect(x, y + slotSize - (slotSize / 4), slotSize * 2 / 3, slotSize / 3);
-			g.setColor(Color.black);
-
 			// Render item name and details
 			g.setFont(new Font("Arial", Font.BOLD, 15));
 			g.drawImage(item.getSprite(), x + 5, y + 10, slotSize - 5, slotSize - 10, null);
@@ -229,10 +224,21 @@ public class Inventory {
 			g.setFont(new Font("Arial", Font.BOLD, 10));
 			g.drawString(item.getNome(), x + 2, y + 10); // Render item name
 
-			g.setFont(new Font("Arial", Font.BOLD, 10));
-			g.drawString("QTD: " + item.getQuantidade(), x + 3, y + slotSize - 4); // Render item quantity
+			// Desenha o contorno da quantidade
+			g.setColor(Color.white);
+			g.fillOval(x, y + slotSize - (slotSize / 4), slotSize / 4, slotSize / 4);
+			g.setColor(Color.black);
 
-//			}
+			if (item.getQuantidade() >= 100) {
+				g.setFont(new Font("Arial", Font.BOLD, 10));
+				g.drawString(String.valueOf(item.getQuantidade()), x, y + slotSize - 4); // Render item quantity
+			} else if (item.getQuantidade() >= 10) {
+				g.setFont(new Font("Arial", Font.BOLD, 10));
+				g.drawString(String.valueOf(item.getQuantidade()), x + 2, y + slotSize - 4); // Render item quantity
+			} else {
+				g.setFont(new Font("Arial", Font.BOLD, 10));
+				g.drawString(String.valueOf(item.getQuantidade()), x + 5, y + slotSize - 4); // Render item quantity
+			}
 
 			// Increment the index for the next item
 			index++;
@@ -303,23 +309,33 @@ public class Inventory {
 			g.drawString("Nome: " + selectedItem.getNome(), detailFrameX + 10, detailFrameY + 50);
 			g.drawString("Quantidade: " + selectedItem.getQuantidade(), detailFrameX + 10, detailFrameY + 80);
 
-			if (selectedItem instanceof Fruta) {
-				// Faz um cast para Fruta
-				Fruta frutaSelecionada = (Fruta) selectedItem;
+			Fruta frutaColetada = null;
+			double regen = 0;
+			int tickRegen = 0;
+			double curaTotal = 0;
 
-				// Acessa os atributos específicos de Fruta
-				double regen = frutaSelecionada.regen;
-				int tickRegen = frutaSelecionada.tickRegen;
-				double curaTotal = frutaSelecionada.curaTotal;
-
-//				        // Imprime os valores
-//				        System.out.println("Regen: " + regen);
-//				        System.out.println("Tick Regen: " + tickRegen);
-//				        System.out.println("Cura Total: " + curaTotal);
-				g.drawString("Regen: " + regen, detailFrameX + 10, detailFrameY + 110);
-				g.drawString("Tick Regen: " + tickRegen, detailFrameX + 10, detailFrameY + 140);
-				g.drawString("Cura Total: " + curaTotal, detailFrameX + 10, detailFrameY + 170);
+			if (selectedItem instanceof Uva) {
+				Uva uvaColetada = (Uva) selectedItem;
+				frutaColetada = uvaColetada;
+				regen = uvaColetada.regen;
+				tickRegen = uvaColetada.tickRegen;
+				curaTotal = uvaColetada.curaTotal;
+			} else if (selectedItem instanceof Maca) {
+				Maca macaColetada = (Maca) selectedItem;
+				frutaColetada = macaColetada;
+				regen = macaColetada.regen;
+				tickRegen = macaColetada.tickRegen;
+				curaTotal = macaColetada.curaTotal;
 			}
+
+//			// Imprime os valores
+//			System.out.println("Regen: " + regen);
+//			System.out.println("Tick Regen: " + tickRegen);
+//			        System.out.println("Cura Total: " + curaTotal);
+			g.drawString("Regen: " + regen, detailFrameX + 10, detailFrameY + 110);
+			g.drawString("Tick Regen: " + tickRegen, detailFrameX + 10, detailFrameY + 140);
+			g.drawString("Cura Total: " + curaTotal, detailFrameX + 10, detailFrameY + 170);
+
 			// Renderize outras informações do item, conforme necessário
 		}
 

@@ -9,9 +9,9 @@ import world.Camera;
 
 public class Maca extends Fruta {
 
-	protected static double regen = 5;
-	protected static int tickRegen = 3;
-	protected static double curaTotal = 15;
+	public double regen = 5;
+	public int tickRegen = 3;
+	public double curaTotal = 15;
 	protected static final String nome = "Maçã";
 
 	private BufferedImage[] spritesMaca;
