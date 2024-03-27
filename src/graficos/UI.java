@@ -22,14 +22,26 @@ public class UI {
 	public boolean mensagem;
 
 	public void render(Graphics g) {
+		int height = (Game.getHEIGHT() * Game.getSCALE());
+		int width = (Game.getWIDTH() * Game.getSCALE());
+
 		// Health bar
+		int xHealthBar = 15;
+		int yHealthBar = 15;
+		int widthHealthBar = 100 * 2;
+		int heightHealthBar = 30;
 		g.setColor(Color.black);
-		g.fillRect(16, 8, 66, 32);
+		g.fillRect(xHealthBar - 5, yHealthBar - 5, (widthHealthBar + 10), heightHealthBar + 10);
 		g.setColor(Color.green);
-		g.fillRect(24, 16, (int) ((Game.player.life / Player.maxLife) * 50), 16);
+		g.fillRect(xHealthBar, yHealthBar, (int) ((Game.player.life / Player.maxLife) * widthHealthBar),
+				heightHealthBar);
 		g.setColor(Color.white);
-		g.setFont(new Font("arial", Font.BOLD, 11));
-		g.drawString((int) (Game.player.life) + " / " + (int) (Player.maxLife), 26, 28);
+		int tamFont = 24;
+		g.setFont(new Font("roboto", Font.BOLD, tamFont));
+		String stringHealthBar = (int) (Game.player.life) + " / " + (int) (Player.maxLife);
+		int tamString = stringHealthBar.length();
+		g.drawString((int) (Game.player.life) + " / " + (int) (Player.maxLife), widthHealthBar / 2 - tamString * 3,
+				heightHealthBar + tamFont / 3);
 
 		// Formatação do tempo
 		String formattedTime = String.format("%02d:%02d", Tempo.hours, Tempo.minutes);
@@ -149,6 +161,10 @@ public class UI {
 		} else {
 			Game.gameState = "NORMAL";
 			Game.openInventory = false; // Se passaram 3 segundos, a mensagem não é mais exibida
+		}
+		
+		if (mensagem) {
+			
 		}
 
 	}

@@ -19,10 +19,18 @@ public class Inventory {
 
 	public boolean up, down, enter;
 
-	public int rows = 8; // Quantidade de linhas do inventário
-	public int cols = 8; // Quantidade de colunas do inventário
+	public static int rows = 8; // Quantidade de linhas do inventário
+	public static int cols = 8; // Quantidade de colunas do inventário
+
 	public String[] inventory = new String[rows * cols]; // Inventário com 5 linhas e 10 colunas
 	public Item[] inventoryItens = new Item[rows * cols];
+
+	// Renderização do inventário
+	public static int slotSize = (rows * cols) - cols / 2; // Tamanho do slot
+	public static int inventoryX = 45; // Posição X inicial do inventário
+	public static int inventoryY = 45; // Posição Y inicial do inventário
+	public static int inventoryWidth = slotSize * cols; // width do inventário
+	public static int inventoryHeight = slotSize * rows; // height do inventário
 
 	public static boolean entrouInventario = false;
 	public static boolean showItemDetails = false;
@@ -39,11 +47,6 @@ public class Inventory {
 	public static boolean pause = false;
 
 	public static boolean saveExists = false;
-
-	// Renderização do inventário
-	public static int slotSize = 60; // Tamanho do slot
-	public static int inventoryX = 45; // Posição X inicial do inventário
-	public static int inventoryY = 45; // Posição Y inicial do inventário
 
 	public void tick() {
 
@@ -174,14 +177,14 @@ public class Inventory {
 
 		// Preencher o fundo do inventário com a cor marromfraco
 		g.setColor(new Color(255, 218, 185));
-		g.fillRect(inventoryX - 10, inventoryY - 10, cols * slotSize + 20, rows * slotSize + 20);
+		g.fillRect(inventoryX - 10, inventoryY - 10, inventoryWidth + 20, inventoryHeight + 20);
 
 		// Escrever Inventário no fundo a cor preta
 		g.setColor(Color.black);
 		g.setFont(new Font("Arial", Font.BOLD, 20));
 		g.drawString("Inventário", inventoryX, inventoryY - 20);
 
-		renderEachItem(g, slotSize, inventoryX, inventoryY);
+		renderEachItem(g, slotSize, inventoryX, inventoryY, inventoryWidth, inventoryHeight);
 
 		g.setFont(new Font("Arial", Font.BOLD, 40));
 		g.drawString("Usar item", ((Game.getWIDTH() * Game.getSCALE() / 2 + (Game.getWIDTH() / 5))),
@@ -205,8 +208,10 @@ public class Inventory {
 		}
 	}
 
-	private void renderEachItem(Graphics g, int slotSize, int inventoryX, int inventoryY) {
+	private void renderEachItem(Graphics g, int slotSize, int inventoryX, int inventoryY, int inventoryWidth,
+			int inventoryHeight) {
 		int index = 0;
+		int maxIndex = Player.inventario;
 		for (Item item : Player.getItens()) {
 			int row = index / cols; // Calculate the row for the current item
 			int col = index % cols; // Calculate the column for the current item
@@ -254,13 +259,13 @@ public class Inventory {
 				if (row * cols + col == currentOptionInventory) {
 					g.setColor(Color.BLACK);
 
-					for (int i = 2; i <= 10; i++) {
+					for (int i = 2; i <= 5; i++) {
 						if (i % 2 != 0) {
-							g.setColor(Color.YELLOW); // Change the color to yellow (or any color you prefer)
+							g.setColor(Color.BLACK); // Change the color to yellow (or any color you prefer)
 						} else {
-							g.setColor(Color.black); // Change the color to white for even iterations
+							g.setColor(Color.BLACK); // Change the color to white for even iterations
 						}
-						g.drawRect(x - i, y - i, slotSize + i * 2, slotSize + i * 2);
+						g.drawRect(x + i / 2, y + i / 2, slotSize - i / 2, slotSize - i / 2);
 					}
 					g.setColor(Color.BLACK);
 

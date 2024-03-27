@@ -498,7 +498,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 				}
 
 			}
-			
+
 			if (e.getKeyCode() == KeyEvent.VK_L) {
 				ui.mensagem = true;
 				messageDisplayStartTime = System.currentTimeMillis(); // Inicia a contagem do tempo de exibição da
@@ -513,7 +513,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	public void keyReleased(KeyEvent e) {
 		if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_W) {
 			player.up = false;
-		} else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+		} else if (e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_S) {
 			player.down = false;
 		}
 

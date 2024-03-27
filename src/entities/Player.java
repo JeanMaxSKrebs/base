@@ -52,6 +52,7 @@ public class Player extends Entity {
 	public static double maxLife = 100;
 	public double stamine = 0;
 	public static double maxStamine = 100;
+	public static int inventario = 32;
 
 	public boolean usingPower = false;
 	public boolean atirar = false;
@@ -165,6 +166,7 @@ public class Player extends Entity {
 				if (Entity.isColliding(this, e)) {
 					hasBagpack = true;
 					speed = 10;
+					inventario = ((BagPack) e).getQuantidade();
 
 					Game.entities.remove(i);
 

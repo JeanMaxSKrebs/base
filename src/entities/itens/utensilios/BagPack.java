@@ -33,7 +33,7 @@ public class BagPack extends Utensilio {
 
 
 	public void setSpritesBackpack(BufferedImage[] spritesBackpack) {
-		this.spritesBackpack = spritesBackpack;
+		BagPack.spritesBackpack = spritesBackpack;
 	}
 
 }
