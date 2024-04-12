@@ -93,7 +93,8 @@ public class Fogueira extends Utensilio {
 
 		  g2d.setColor(lightColor);
 		  g2d.fillOval(this.getX() + + this.getWidth()/2 - Camera.x - lightRadius / 2, this.getY()  + this.getHeight()/2 - Camera.y - lightRadius / 2, lightRadius, lightRadius);
-		}
+		
+	}
 
     // Getters and setters (optional, based on your needs)
 

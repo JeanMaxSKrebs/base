@@ -18,3 +18,14 @@ todo
 //criar moeda do jogo
 //criar galapagus //pq criação: benção de lilith
 //npc
+
+			if (isCollidingItem) {
+
+			}
+
+			Item newItem = (Item) e;
+
+			obtainItem(newItem);
+
+			Game.entities.remove(i);
+			return;

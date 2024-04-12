@@ -45,6 +45,9 @@ public abstract class Item extends Entity {
         player.obtainItem(this); // Adiciona o item à lista de itens do jogador
     }
     
+    public void use() {
+        decrementQuantity(); // Incrementa a quantidade do item
+    }
 
 	// Método abstrato para fornecer uma implementação específica nas subclasses, se
 	// necessário
@@ -92,6 +95,9 @@ public abstract class Item extends Entity {
 
 	public void incrementQuantity() {
 		quantidade++;
+	}
+	public void decrementQuantity() {
+		quantidade--;
 	}
 
 	public void tick() {

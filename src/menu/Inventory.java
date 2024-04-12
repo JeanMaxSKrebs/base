@@ -1,9 +1,10 @@
-package base;
+package menu;
 
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 
+import base.Game;
 import entities.Player;
 import entities.itens.Item;
 import entities.itens.comidas.frutas.Fruta;
@@ -19,18 +20,18 @@ public class Inventory {
 
 	public boolean up, down, enter;
 
-	public static int rows = 8; // Quantidade de linhas do inventário
-	public static int cols = 8; // Quantidade de colunas do inventário
+	public static int maximoRows = 8; // Quantidade de linhas do inventário
+	public static int maximoCols = 8; // Quantidade de colunas do inventário
 
-	public String[] inventory = new String[rows * cols]; // Inventário com 5 linhas e 10 colunas
-	public Item[] inventoryItens = new Item[rows * cols];
+	public String[] inventory = new String[maximoRows * maximoCols]; // Inventário com 5 linhas e 10 colunas
+	public Item[] inventoryItens = new Item[maximoRows * maximoCols];
 
 	// Renderização do inventário
-	public static int slotSize = (rows * cols) - cols / 2; // Tamanho do slot
+	public static int slotSize = (maximoRows * maximoCols) - maximoCols / 2; // Tamanho do slot
 	public static int inventoryX = 45; // Posição X inicial do inventário
 	public static int inventoryY = 45; // Posição Y inicial do inventário
-	public static int inventoryWidth = slotSize * cols; // width do inventário
-	public static int inventoryHeight = slotSize * rows; // height do inventário
+	public static int inventoryWidth = slotSize * maximoCols; // width do inventário
+	public static int inventoryHeight = slotSize * maximoRows; // height do inventário
 
 	public static boolean entrouInventario = false;
 	public static boolean showItemDetails = false;
@@ -54,25 +55,25 @@ public class Inventory {
 		int index = 0;
 		for (Item item : Player.getItens()) {
 			// Calcula a linha e a coluna para o item atual
-			int row = index / cols;
-			int col = index % cols;
+			int row = index / maximoCols;
+			int col = index % maximoCols;
 
 			// Atualiza o inventário com o nome do item
-			inventoryItens[row * cols + col] = item;
+			inventoryItens[row * maximoCols + col] = item;
 
 			// Incrementa o índice para o próximo item
 			index++;
 		}
-		if (entrouInventario) {
 
+		if (entrouInventario) {
 			if (up) {
 				up = false;
 
 				int currentOptionInventoryTemp = currentOptionInventory;
-				currentOptionInventory = currentOptionInventory - cols;
+				currentOptionInventory = currentOptionInventory - maximoCols;
 				if (currentOptionInventory < 0) {
 					showItemDetails = false;
-					currentOptionInventory = currentOptionInventoryTemp + (cols * rows) - cols;
+					currentOptionInventory = currentOptionInventoryTemp + (maximoCols * maximoRows) - maximoCols;
 				}
 			}
 			if (down) {
@@ -80,10 +81,10 @@ public class Inventory {
 				showItemDetails = false;
 
 				int currentOptionInventoryTemp = currentOptionInventory;
-				currentOptionInventory = currentOptionInventory + cols;
+				currentOptionInventory = currentOptionInventory + maximoCols;
 				if (currentOptionInventory > maxOptionInventory) {
 
-					currentOptionInventory = currentOptionInventoryTemp - (rows * cols) + cols;
+					currentOptionInventory = currentOptionInventoryTemp - (maximoRows * maximoCols) + maximoCols;
 
 				}
 			}
@@ -118,20 +119,22 @@ public class Inventory {
 					Item selectedItem = inventoryItens[currentOptionInventory];
 
 					if (selectedItem != null) {
-						showItemDetails = true;
+						if (showItemDetails) {
+							if (usarItem) {
+								selectedItem.use();
+							}
+
+							if (droparItem) {
+
+							}
+						} else {
+							showItemDetails = true;
+						}
 					}
 					// Verifica se o item selecionado não é nulo e executa a ação adequada
 					if (selectedItem != null) {
 						// Aqui você pode adicionar lógica para usar ou dropar o item selecionado
 					}
-				}
-
-				if (usarItem) {
-
-				}
-
-				if (droparItem) {
-
 				}
 			}
 
@@ -213,8 +216,8 @@ public class Inventory {
 		int index = 0;
 		int maxIndex = Player.inventario;
 		for (Item item : Player.getItens()) {
-			int row = index / cols; // Calculate the row for the current item
-			int col = index % cols; // Calculate the column for the current item
+			int row = index / maximoRows; // Calculate the row for the current item
+			int col = index % maximoCols; // Calculate the column for the current item
 
 			int x = inventoryX + col * slotSize;
 			int y = inventoryY + row * slotSize;
@@ -249,14 +252,14 @@ public class Inventory {
 			index++;
 		}
 
-		for (int row = 0; row < rows; row++) {
-			for (int col = 0; col < cols; col++) {
+		for (int row = 0; row < maximoRows; row++) {
+			for (int col = 0; col < maximoCols; col++) {
 				int x = inventoryX + col * slotSize;
 				int y = inventoryY + row * slotSize;
 				g.drawRect(x, y, slotSize, slotSize); // Desenha o contorno do slot
 
 				// Render a different color around the selected inventory item
-				if (row * cols + col == currentOptionInventory) {
+				if (row * maximoCols + col == currentOptionInventory) {
 					g.setColor(Color.BLACK);
 
 					for (int i = 2; i <= 5; i++) {
@@ -294,7 +297,7 @@ public class Inventory {
 //					System.out.println("showItemDetails");
 //					System.out.println(showItemDetails);
 			// Defina as coordenadas e o tamanho do quadro de detalhamento do item
-			int detailFrameX = inventoryX + cols * slotSize + 20; // Posição X do quadro de detalhamento
+			int detailFrameX = inventoryX + maximoCols * slotSize + 20; // Posição X do quadro de detalhamento
 			int detailFrameY = inventoryY; // Posição Y do quadro de detalhamento
 			int detailFrameWidth = 200; // Largura do quadro de detalhamento
 			int detailFrameHeight = Game.getHEIGHT() / 2; // Altura do quadro de detalhamento

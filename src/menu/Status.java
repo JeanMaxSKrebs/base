@@ -1,4 +1,4 @@
-package base;
+package menu;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -7,6 +7,7 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import base.Game;
 import tempo.Tempo;
 
 public class Status {
@@ -42,7 +43,7 @@ public class Status {
 			} else if (options[currentOption] == "outros status") {
 			} else if (options[currentOption] == "outros") {
 			} else if (options[currentOption] == "voltar") {
-				Game.gameState = "MENU";
+				Game.gameState = "MENUPAUSE";
 			}
 		}
 
