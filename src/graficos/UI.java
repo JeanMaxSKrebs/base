@@ -133,9 +133,9 @@ public class UI {
 			}
 			g.setColor(new Color(155, 155, 155));
 			g.fillRect(rectX, rectY, rectWidth, rectHeight); // Desenhar o retângulo
-			
-			int progressoBarraWidth = Game.player.tempoEspera;
-			
+
+			int progressoBarraWidth =  Game.player.tempoEspera;
+
 			g.setColor(new Color(0, 0, 0)); // preto
 			g.drawRect(rectX, rectY, rectWidth, rectHeight); // Desenhar a borda
 			g.setColor(new Color(155, 255, 165)); // verde
@@ -209,11 +209,35 @@ public class UI {
 			}
 		} else {
 			Game.gameState = "NORMAL";
-			Game.openInventory = false; // Se passaram 3 segundos, a mensagem não é mais exibida
 		}
 
-		if (mensagem) {
+		if (Game.openInventory) {
+			if (!Game.player.hasBagpack) {
+				if (System.currentTimeMillis() - Game.messageDisplayStartTime < Game.MESSAGE_DISPLAY_DURATION) {
+					// Desenhar o quadro
+					g.setColor(new Color(139, 69, 19)); // Marrom
+					int rectWidth = (Game.getWIDTH() * Game.getSCALE()); // Largura do retângulo
+					int rectHeight = (Game.getHEIGHT() * Game.getSCALE()) / 4; // Altura do retângulo
+					int rectX = (Game.getWIDTH() * Game.getSCALE() - rectWidth) / 2; // Posição X centralizada
+					int rectY = (Game.getHEIGHT() * Game.getSCALE() - rectHeight) / 2; // Posição Y centralizada
+					g.fillRect(rectX, rectY, rectWidth, rectHeight); // Desenhar o retângulo
 
+					// Desenhar o texto
+					g.setColor(Color.black);
+					g.setFont(new Font("calibri", Font.BOLD, 48));
+					String message = "Você precisa de uma mochila primeiro!";
+					int textWidth = g.getFontMetrics().stringWidth(message); // Largura do texto
+					int textX = rectX + (rectWidth - textWidth) / 2; // Posição X centralizada
+					int textY = rectY + rectHeight / 2 + g.getFontMetrics().getHeight() / 4; // Posição Y centralizada
+					g.drawString(message, textX, textY); // Desenhar o texto
+//					g.setColor(Color.black);
+//					g.setFont(new Font("calibri", Font.BOLD, 48));
+//					g.drawString("Você precisa de uma mochila primeiro!", ((WIDTH * getSCALE() / 5)),
+//							((HEIGHT * getSCALE() / 2)));
+				} else {
+					Game.openInventory = false; // Se passaram 3 segundos, a mensagem não é mais exibida
+				}
+			}
 		}
 
 	}

@@ -65,12 +65,12 @@ public class Player extends Entity {
 	public static boolean isCollidingItem = false;
 
 	public boolean coletando = false;
-	public int tempoColeta = 180; // 3 segundos
-	public int tempoColetaMax = 180 ; // 3 segundos
+	public int tempoColeta = 0; // 3 segundos
+	public int tempoColetaMax = 180; // 3 segundos
 	public boolean possoColetar = true;
 	public boolean coletar = false;
-	public int tempoEspera = 180; // 3 segundos
-	public int tempoEsperaMax = 180 ; // 3 segundos
+	public int tempoEspera = 0; // 3 segundos
+	public int tempoEsperaMax = 180; // 3 segundos
 
 	public Player(int x, int y, int width, int height, BufferedImage sprite) {
 		super(x, y, width, height, sprite);
@@ -195,6 +195,7 @@ public class Player extends Entity {
 					if (coletar) {
 						coletar = false;
 						possoColetar = false;
+						
 
 						if (i instanceof BagPack) {
 							hasBagpack = true;
@@ -205,6 +206,7 @@ public class Player extends Entity {
 							tempoEspera = tempoEsperaMax;
 							return;
 						}
+
 
 						// Itens que são guardados
 						if (hasBagpack) {
@@ -219,7 +221,11 @@ public class Player extends Entity {
 								tempoEspera = tempoEsperaMax;
 								return;
 							}
+						} else {
+							Game.openInventory = true;
+							Game.messageDisplayStartTime = System.currentTimeMillis(); // Inicia a contagem do tempo de exibição da
 						}
+
 					}
 				}
 			}
@@ -373,7 +379,7 @@ public class Player extends Entity {
 		}
 
 		checkItems();
-		
+
 		if (tempoEspera <= 0) {
 			possoColetar = true;
 
@@ -381,7 +387,6 @@ public class Player extends Entity {
 		} else {
 			tempoEspera -= 1;
 		}
-		
 
 		Camera.x = Camera.clamp(this.getX() - (Game.getWIDTH() / 2), 0, World.WIDTH * 112 - Game.getWIDTH());
 		Camera.y = Camera.clamp(this.getY() - (Game.getHEIGHT() / 2), 0, World.HEIGHT * 112 - Game.getHEIGHT());

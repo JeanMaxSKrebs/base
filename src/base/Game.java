@@ -262,7 +262,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 				restartGame = false;
 				previousGameState = gameState;
 				gameState = "NORMAL";
-				String newWorld = "/INICIAL" + ".png";
+				String newWorld = "INICIAL" + ".png";
 				World.restartGame(newWorld);
 
 			}
@@ -353,37 +353,6 @@ public class Game extends Canvas implements Runnable, KeyListener {
 			g.setColor(Color.black);
 			g.setFont(new Font("calibri", Font.BOLD, 48));
 			g.drawString("Jogo Salvo", ((WIDTH * getSCALE() / 3)), ((HEIGHT * getSCALE() / 3) + 50));
-		}
-
-		if (Game.openInventory == true) {
-			if (!Game.player.hasBagpack) {
-				if (System.currentTimeMillis() - messageDisplayStartTime < MESSAGE_DISPLAY_DURATION) {
-					// Desenhar o quadro
-					g.setColor(new Color(139, 69, 19)); // Marrom
-					int rectWidth = (WIDTH * getSCALE()); // Largura do retângulo
-					int rectHeight = (HEIGHT * getSCALE()) / 4; // Altura do retângulo
-					int rectX = (WIDTH * getSCALE() - rectWidth) / 2; // Posição X centralizada
-					int rectY = (HEIGHT * getSCALE() - rectHeight) / 2; // Posição Y centralizada
-					g.fillRect(rectX, rectY, rectWidth, rectHeight); // Desenhar o retângulo
-
-					// Desenhar o texto
-					g.setColor(Color.black);
-					g.setFont(new Font("calibri", Font.BOLD, 48));
-					String message = "Você precisa de uma mochila primeiro!";
-					int textWidth = g.getFontMetrics().stringWidth(message); // Largura do texto
-					int textX = rectX + (rectWidth - textWidth) / 2; // Posição X centralizada
-					int textY = rectY + rectHeight / 2 + g.getFontMetrics().getHeight() / 4; // Posição Y centralizada
-					g.drawString(message, textX, textY); // Desenhar o texto
-//					g.setColor(Color.black);
-//					g.setFont(new Font("calibri", Font.BOLD, 48));
-//					g.drawString("Você precisa de uma mochila primeiro!", ((WIDTH * getSCALE() / 5)),
-//							((HEIGHT * getSCALE() / 2)));
-				} else {
-					previousGameState = gameState;
-					Game.gameState = "NORMAL";
-					Game.openInventory = false; // Se passaram 3 segundos, a mensagem não é mais exibida
-				}
-			}
 		}
 
 		if (gameState == "GAME_OVER") {
