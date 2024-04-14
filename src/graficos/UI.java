@@ -17,6 +17,7 @@ import world.Camera;
 
 public class UI {
 
+	public static boolean showColetar = false;
 	int frame;
 	private final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm"); // Time format (hours:minutes)
 	public boolean mensagem;
@@ -77,7 +78,6 @@ public class UI {
 
 //		System.out.println("FPS: " + Game.FPS);
 
-		
 		// frutas da UI
 		g.setColor(Color.black);
 		g.drawString("UVA:  " + Game.player.countFrutaEspecifica("UVA"), 0, Game.getHEIGHT() - 65);
@@ -95,22 +95,51 @@ public class UI {
 		g.drawString("ARMADURA: " + Player.getArmor(), Game.getWIDTH() - 72, Game.getHEIGHT() - 25);
 		g.drawString("ESQUIVA: " + Player.getDodgeChance(), Game.getWIDTH() - 72, Game.getHEIGHT() - 15);
 		g.drawString("VELOCIDADE: " + Player.getSpeed(), Game.getWIDTH() - 72, Game.getHEIGHT() - 5);
-		
-		
-		if(Player.isCollidingItem) {
-			int rectWidth = (Game.getWIDTH()/5 * Game.getSCALE()); // Largura do retângulo
-			int rectHeight = (Game.getHEIGHT()/2 * Game.getSCALE()) / 5; // Altura do retângulo
+
+		if (showColetar) {
+			showColetar = false;
+
+			int rectWidth = (Game.getWIDTH() / 5 * Game.getSCALE()); // Largura do retângulo
+			int rectHeight = (Game.getHEIGHT() / 2 * Game.getSCALE()) / 6; // Altura do retângulo
 			int rectX = (Game.getWIDTH() * Game.getSCALE() - rectWidth) / 2; // Posição X centralizada
 			int rectY = (Game.getHEIGHT() * Game.getSCALE() - rectHeight - 10); // Posição Y centralizada
-			
+
 			g.setColor(new Color(0, 0, 0)); // black
 			int borderWidth = 5; // Espessura da borda
 			for (int i = 0; i < borderWidth; i++) {
-			    g.drawRect(rectX - i, rectY - i, rectWidth + (2 * i), rectHeight + (2 * i));
+				g.drawRect(rectX - i, rectY - i, rectWidth + (2 * i), rectHeight + (2 * i));
 			}
 			g.setColor(new Color(155, 255, 165)); // verde
 			g.fillRect(rectX, rectY, rectWidth, rectHeight); // Desenhar o retângulo
+			if (Game.player.coletando) {
+				int progressoBarraWidth = (rectWidth * Game.player.tempoColeta) / Game.player.tempoColetaMax;
+				g.setColor(new Color(0, 0, 0)); // preto
+				g.drawRect(rectX, rectY, rectWidth, rectHeight); // Desenhar a borda
+				g.setColor(new Color(0, 155, 0));
+				g.fillRect(rectX, rectY, progressoBarraWidth, rectHeight); // Desenhar a barra
+			}
+		}
 
+		if (!Game.player.possoColetar) {
+			int rectWidth = (Game.getWIDTH() / 5 * Game.getSCALE()); // Largura do retângulo
+			int rectHeight = (Game.getHEIGHT() / 2 * Game.getSCALE()) / 6; // Altura do retângulo
+			int rectX = (Game.getWIDTH() * Game.getSCALE() - rectWidth) / 2; // Posição X centralizada
+			int rectY = (Game.getHEIGHT() * Game.getSCALE() - rectHeight - 10); // Posição Y centralizada
+
+			g.setColor(new Color(0, 0, 0)); // black
+			int borderWidth = 5; // Espessura da borda
+			for (int i = 0; i < borderWidth; i++) {
+				g.drawRect(rectX - i, rectY - i, rectWidth + (2 * i), rectHeight + (2 * i));
+			}
+			g.setColor(new Color(155, 155, 155));
+			g.fillRect(rectX, rectY, rectWidth, rectHeight); // Desenhar o retângulo
+			
+			int progressoBarraWidth = Game.player.tempoEspera;
+			
+			g.setColor(new Color(0, 0, 0)); // preto
+			g.drawRect(rectX, rectY, rectWidth, rectHeight); // Desenhar a borda
+			g.setColor(new Color(155, 255, 165)); // verde
+			g.fillRect(rectX, rectY, progressoBarraWidth, rectHeight); // Desenhar a barra
 		}
 
 		int widthBase = Game.getWIDTH() * Game.getSCALE();
@@ -182,9 +211,9 @@ public class UI {
 			Game.gameState = "NORMAL";
 			Game.openInventory = false; // Se passaram 3 segundos, a mensagem não é mais exibida
 		}
-		
+
 		if (mensagem) {
-			
+
 		}
 
 	}

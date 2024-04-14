@@ -193,7 +193,8 @@ public class Game extends Canvas implements Runnable, KeyListener {
 				int estamina = (int) Game.player.stamine;
 				int premium = (int) Game.player.premium;
 
-				String[] options = { "nivel", "qtdNivel", "vida", "estamina", "premium", "gameState", "previousGameState" };
+				String[] options = { "nivel", "qtdNivel", "vida", "estamina", "premium", "gameState",
+						"previousGameState" };
 				int[] values = { nivel, qtdNivel, vida, estamina, premium };
 
 				System.out.println("Salvando o jogo:");
@@ -341,7 +342,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 			Entity e = entities.get(i);
 			e.render(g);
 		}
-		
+
 		ui.render(g);
 
 		g.dispose();
@@ -516,21 +517,24 @@ public class Game extends Canvas implements Runnable, KeyListener {
 			if (gameState == "STATUS") {
 				status.enter = true;
 			}
-			
+
 			if (gameState == "OPTIONS") {
 				options.enter = true;
 			}
-			
+
 			if (gameState == "MENUPRINCIPAL") {
 				menuPrincipal.enter = true;
 			}
-			
+
 			if (gameState == "MENUPAUSE") {
 				menuPause.enter = true;
 			}
-			
+
 			if (gameState == "INVENTORY") {
 				inventory.enter = true;
+			}
+			if (gameState == "NORMAL") {
+				player.coletando = true;
 			}
 		}
 
@@ -573,6 +577,10 @@ public class Game extends Canvas implements Runnable, KeyListener {
 			player.right = false;
 		} else if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_A) {
 			player.left = false;
+		}
+
+		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+			player.coletando = false;
 		}
 	}
 

@@ -14,6 +14,7 @@ import entities.itens.comidas.frutas.Fruta;
 import entities.itens.comidas.frutas.Maca;
 import entities.itens.comidas.frutas.Uva;
 import entities.itens.utensilios.BagPack;
+import graficos.UI;
 import world.Camera;
 import world.Normaldoor;
 import world.Tiledoor;
@@ -62,6 +63,14 @@ public class Player extends Entity {
 	public double nivel;
 	public double qtdNivel;
 	public static boolean isCollidingItem = false;
+
+	public boolean coletando = false;
+	public int tempoColeta = 180; // 3 segundos
+	public int tempoColetaMax = 180 ; // 3 segundos
+	public boolean possoColetar = true;
+	public boolean coletar = false;
+	public int tempoEspera = 180; // 3 segundos
+	public int tempoEsperaMax = 180 ; // 3 segundos
 
 	public Player(int x, int y, int width, int height, BufferedImage sprite) {
 		super(x, y, width, height, sprite);
@@ -164,31 +173,53 @@ public class Player extends Entity {
 //			System.out.println(e);
 			if (Item.isColliding(this, i)) {
 				isCollidingItem = true;
+				UI.showColetar = true;
 			}
 
 			if (isCollidingItem) {
 				isCollidingItem = false;
 
-				if (i instanceof BagPack) {
-					hasBagpack = true;
-					speed = 10;
-					inventario = ((BagPack) i).getQuantidade();
+				if (possoColetar) {
 
-					Game.itens.remove(j);
-					return;
-				}
+					if (coletando) {
+						if (tempoColeta >= tempoColetaMax) {
+							coletar = true;
+							tempoColeta = 0;
 
-				// Itens que são guardados
-				if (hasBagpack) {
+						} else {
+							tempoColeta += 1;
+						}
+					} else {
+						tempoColeta = 0;
+					}
+					if (coletar) {
+						coletar = false;
+						possoColetar = false;
 
-					if (i instanceof Item) {
+						if (i instanceof BagPack) {
+							hasBagpack = true;
+							speed = 10;
+							inventario = ((BagPack) i).getQuantidade();
 
-						Item newItem = (Item) i;
+							Game.itens.remove(j);
+							tempoEspera = tempoEsperaMax;
+							return;
+						}
 
-						obtainItem(newItem);
+						// Itens que são guardados
+						if (hasBagpack) {
 
-						Game.itens.remove(j);
-						return;
+							if (i instanceof Item) {
+
+								Item newItem = (Item) i;
+
+								obtainItem(newItem);
+
+								Game.itens.remove(j);
+								tempoEspera = tempoEsperaMax;
+								return;
+							}
+						}
 					}
 				}
 			}
@@ -342,6 +373,15 @@ public class Player extends Entity {
 		}
 
 		checkItems();
+		
+		if (tempoEspera <= 0) {
+			possoColetar = true;
+
+			tempoEspera = tempoEsperaMax;
+		} else {
+			tempoEspera -= 1;
+		}
+		
 
 		Camera.x = Camera.clamp(this.getX() - (Game.getWIDTH() / 2), 0, World.WIDTH * 112 - Game.getWIDTH());
 		Camera.y = Camera.clamp(this.getY() - (Game.getHEIGHT() / 2), 0, World.HEIGHT * 112 - Game.getHEIGHT());
