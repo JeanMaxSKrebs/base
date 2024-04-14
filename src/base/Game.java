@@ -76,6 +76,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	public BufferedImage image;
 
 	public static World world;
+	public static String previousGameState = "MENUPRINCIPAL";
 	public static String gameState = "MENUPRINCIPAL";
 	public static String ILHA = "INICIAL";
 
@@ -192,13 +193,14 @@ public class Game extends Canvas implements Runnable, KeyListener {
 				int estamina = (int) Game.player.stamine;
 				int premium = (int) Game.player.premium;
 
-				String[] options = { "nivel", "qtdNivel", "vida", "estamina", "premium", "gameState" };
+				String[] options = { "nivel", "qtdNivel", "vida", "estamina", "premium", "gameState", "previousGameState" };
 				int[] values = { nivel, qtdNivel, vida, estamina, premium };
 
 				System.out.println("Salvando o jogo:");
 				System.out.println("Nível: " + nivel + ", XP: " + qtdNivel);
 				System.out.println("Vida: " + vida + ", Estamina: " + estamina + ", Premium: " + premium);
 				System.out.println("GameState: " + gameState);
+				System.out.println("previousGameState: " + previousGameState);
 
 				MenuPrincipal.saveGame(options, values, loadGame);
 
@@ -257,6 +259,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 			}
 			if (restartGame) {
 				restartGame = false;
+				previousGameState = gameState;
 				gameState = "NORMAL";
 				String newWorld = "/INICIAL" + ".png";
 				World.restartGame(newWorld);
@@ -269,7 +272,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 			Game.player.setLife((int) Game.player.getLife());
 			Game.player.setStamine((int) Player.getMaxStamine());
 			Game.player.setArmor(0);
-
+			previousGameState = gameState;
 			gameState = "NORMAL";
 		} else if (gameState == "MENUPRINCIPAL") {
 			menuPrincipal.tick();
@@ -375,6 +378,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 //					g.drawString("Você precisa de uma mochila primeiro!", ((WIDTH * getSCALE() / 5)),
 //							((HEIGHT * getSCALE() / 2)));
 				} else {
+					previousGameState = gameState;
 					Game.gameState = "NORMAL";
 					Game.openInventory = false; // Se passaram 3 segundos, a mensagem não é mais exibida
 				}
@@ -533,6 +537,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		if (gameState.equals("NORMAL")) {
 
 			if (e.getKeyCode() == KeyEvent.VK_ESCAPE || e.getKeyCode() == KeyEvent.VK_P) {
+				previousGameState = gameState;
 				gameState = "MENUPAUSE";
 			}
 			if (e.getKeyCode() == KeyEvent.VK_I) {
@@ -541,6 +546,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 					messageDisplayStartTime = System.currentTimeMillis(); // Inicia a contagem do tempo de exibição da
 																			// mensagem
 				} else {
+					previousGameState = gameState;
 					gameState = "INVENTORY";
 					Inventory.pause = true;
 				}

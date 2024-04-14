@@ -17,7 +17,7 @@ import world.World;
 
 public abstract class Menu {
 
-	protected String[] options;
+	protected Option[] options;
 	protected int currentOption;
 	protected int maxOption;
 
@@ -25,7 +25,7 @@ public abstract class Menu {
 	public boolean down;
 	public boolean enter;
 
-	public Menu(String[] options) {
+	public Menu(Option[] options) {
 		this.options = options;
 		this.currentOption = 0;
 		this.maxOption = options.length - 1;

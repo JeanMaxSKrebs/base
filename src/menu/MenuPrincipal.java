@@ -18,8 +18,13 @@ import world.World;
 
 public class MenuPrincipal extends Menu {
 
+	public static final Option[] options = { new Option("Novo Jogo", "New Game"),
+			new Option("Carregar", "Load Game"), new Option("Opções", "Options"),
+			new Option("Sair do Jogo", "Exit Game") };
+
+	
 	public MenuPrincipal() {
-		super(new String[] { "Novo Jogo", "Carregar", "Opcoes", "Sair" });
+		super(options);
 	}
 
 	public static boolean saveExists = false;
@@ -50,22 +55,23 @@ public class MenuPrincipal extends Menu {
 		}
 		if (enter) {
 			enter = false;
-			if (options[currentOption] == "Novo Jogo") {
+			if (options[currentOption].getNomePortugues() == "Novo Jogo") {
 				Game.gameState = "NORMAL";
 				file = new File("save.txt");
 				file.delete();
 
-			} else if (options[currentOption] == "Carregar") {
+			} else if (options[currentOption].getNomePortugues() == "Carregar") {
 				file = new File("save.txt");
 				if (file.exists()) {
 					String saver = loadGame(0);
 					applySave(saver);
 				}
 
-			} else if (options[currentOption] == "Opcoes") {
+			} else if (options[currentOption].getNomePortugues() == "Opções") {
 				Game.gameState = "OPTIONS";
+				Game.previousGameState = "MENUPRINCIPAL";
 
-			} else if (options[currentOption] == "Sair") {
+			} else if (options[currentOption].getNomePortugues() == "Sair") {
 				System.exit(1);
 
 			}
@@ -82,28 +88,28 @@ public class MenuPrincipal extends Menu {
 		g.drawString("Sobrevivência Jogo", larguraDesejada / 4, alturaDesejada / 5);
 
 		// menu
-		g.setFont(new Font("Arial", Font.BOLD, 40));
+		g.setFont(new Font("Arial", Font.BOLD, 48));
 
 		int alturaDesejadaUMTERCO = alturaDesejada / 3;
 		int larguraDesejadaUMTERCO = larguraDesejada / 3;
 
-		int spacingRows = 60;
+		int spacingRows = 80;
 
 		g.drawString("Novo Jogo", larguraDesejadaUMTERCO, alturaDesejadaUMTERCO + spacingRows * 1);
 		g.drawString("Carregar Jogo", larguraDesejadaUMTERCO, alturaDesejadaUMTERCO + spacingRows * 2);
 		g.drawString("Opções", larguraDesejadaUMTERCO, alturaDesejadaUMTERCO + spacingRows * 3);
-		g.drawString("Sair do Jogo", larguraDesejada - 300, alturaDesejada - 30);
+		g.drawString("Sair do Jogo", larguraDesejada - 325, alturaDesejada - 30);
 
 		int spacingWidth = 60;
 		
-		if (options[currentOption] == "Novo Jogo") {
+		if (options[currentOption].getNomePortugues() == "Novo Jogo") {
 			g.drawString(" > ", larguraDesejadaUMTERCO - spacingWidth, alturaDesejadaUMTERCO + spacingRows * 1);
-		} else if (options[currentOption] == "Carregar") {
+		} else if (options[currentOption].getNomePortugues() == "Carregar") {
 			g.drawString(" > ", larguraDesejadaUMTERCO - spacingWidth, alturaDesejadaUMTERCO + spacingRows * 2);
-		} else if (options[currentOption] == "Opcoes") {
+		} else if (options[currentOption].getNomePortugues() == "Opções") {
 			g.drawString(" > ", larguraDesejadaUMTERCO - spacingWidth, alturaDesejadaUMTERCO + spacingRows * 3);
-		} else if (options[currentOption] == "Sair") {
-			g.drawString(" > ", larguraDesejada - 300 - spacingWidth, alturaDesejada - 30);
+		} else if (options[currentOption].getNomePortugues() == "Sair do Jogo") {
+			g.drawString(" > ", larguraDesejada - 325 - spacingWidth, alturaDesejada - 30);
 		}
 
 	}

@@ -18,8 +18,11 @@ import world.World;
 
 public class MenuPause extends Menu {
 
+	public static final Option[] options = { new Option("Continuar", "Continue"), new Option("Carregar", "Load Game"),
+			new Option("Opções", "Options"), new Option("Status", "Status"), new Option("Voltar", "Go Back") };
+
 	public MenuPause() {
-		super(new String[] { "Continuar", "Carregar", "Opcoes", "Status", "Voltar" });
+		super(options);
 	}
 
 	public static boolean saveExists = false;
@@ -52,21 +55,26 @@ public class MenuPause extends Menu {
 		}
 		if (enter) {
 			enter = false;
-			if (options[currentOption] == "Continuar") {
+			if (options[currentOption].getNomePortugues() == "Continuar") {
+				Game.previousGameState = Game.gameState;
 				Game.gameState = "NORMAL";
-			} else if (options[currentOption] == "Carregar") {
+			} else if (options[currentOption].getNomePortugues() == "Carregar") {
 				file = new File("save.txt");
 				if (file.exists()) {
 					String saver = loadGame(0);
 					applySave(saver);
 				}
-			} else if (options[currentOption] == "Opcoes") {
+			} else if (options[currentOption].getNomePortugues() == "Opções") {
+				Game.previousGameState = Game.gameState;
 				Game.gameState = "OPTIONS";
 
-			} else if (options[currentOption] == "Status") {
+			} else if (options[currentOption].getNomePortugues() == "Status") {
+				Game.previousGameState = Game.gameState;
 				Game.gameState = "STATUS";
 
-			} else if (options[currentOption] == "Voltar") {
+			} else if (options[currentOption].getNomePortugues() == "Voltar") {
+				currentOption = 0;
+				Game.previousGameState = Game.gameState;
 				Game.gameState = "NORMAL";
 			}
 		}
@@ -89,22 +97,22 @@ public class MenuPause extends Menu {
 
 		int spacingRows = 60;
 
-			g.drawString("Continuar", larguraDesejadaUMTERCO, alturaDesejadaUMTERCO + spacingRows * 1);
-			g.drawString("Carregar", larguraDesejadaUMTERCO, alturaDesejadaUMTERCO + spacingRows * 2);
-			g.drawString("Opções", larguraDesejadaUMTERCO, alturaDesejadaUMTERCO + spacingRows * 3);
-			g.drawString("Status do Jogo", larguraDesejadaUMTERCO, alturaDesejadaUMTERCO + spacingRows * 4);
-			g.drawString("Voltar", larguraDesejada - 150, ((alturaDesejada) - 50));
+		g.drawString("Continuar", larguraDesejadaUMTERCO, alturaDesejadaUMTERCO + spacingRows * 1);
+		g.drawString("Carregar", larguraDesejadaUMTERCO, alturaDesejadaUMTERCO + spacingRows * 2);
+		g.drawString("Opções", larguraDesejadaUMTERCO, alturaDesejadaUMTERCO + spacingRows * 3);
+		g.drawString("Status do Jogo", larguraDesejadaUMTERCO, alturaDesejadaUMTERCO + spacingRows * 4);
+		g.drawString("Voltar", larguraDesejada - 150, ((alturaDesejada) - 50));
 
-		if (options[currentOption] == "Continuar") {
-			g.drawString(" > ", larguraDesejadaUMTERCO - 100, alturaDesejadaUMTERCO + spacingRows * 1);
-		} else if (options[currentOption] == "Carregar") {
-			g.drawString(" > ", larguraDesejadaUMTERCO - 100, alturaDesejadaUMTERCO + spacingRows * 2);
-		} else if (options[currentOption] == "Opcoes") {
-			g.drawString(" > ", larguraDesejadaUMTERCO - 100, alturaDesejadaUMTERCO + spacingRows * 3);
-		} else if (options[currentOption] == "Status") {
-			g.drawString(" > ", larguraDesejadaUMTERCO - 100, alturaDesejadaUMTERCO + spacingRows * 4);
-		} else if (options[currentOption] == "Voltar") {
-			g.drawString(" > ", larguraDesejada - 150 - 100, alturaDesejada - 50);
+		if (options[currentOption].getNomePortugues() == "Continuar") {
+			g.drawString(" > ", larguraDesejadaUMTERCO - 50, alturaDesejadaUMTERCO + spacingRows * 1);
+		} else if (options[currentOption].getNomePortugues() == "Carregar") {
+			g.drawString(" > ", larguraDesejadaUMTERCO - 50, alturaDesejadaUMTERCO + spacingRows * 2);
+		} else if (options[currentOption].getNomePortugues() == "Opções") {
+			g.drawString(" > ", larguraDesejadaUMTERCO - 50, alturaDesejadaUMTERCO + spacingRows * 3);
+		} else if (options[currentOption].getNomePortugues() == "Status") {
+			g.drawString(" > ", larguraDesejadaUMTERCO - 50, alturaDesejadaUMTERCO + spacingRows * 4);
+		} else if (options[currentOption].getNomePortugues() == "Voltar") {
+			g.drawString(" > ", larguraDesejada - 150 - 50, alturaDesejada - 50);
 		}
 
 	}

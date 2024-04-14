@@ -14,7 +14,7 @@ public class Options extends Menu {
 			new Option("Voltar", "go back") };
 
 	public Options() {
-		super(new String[] { "Novo Jogo", "Carregar", "Opcoes", "Sair" });
+		super(options);
 	}
 
 	private boolean verHorario = false;
@@ -43,7 +43,12 @@ public class Options extends Menu {
 			} else if (options[currentOption].getNomePortugues() == "Outras Configurações") {
 			} else if (options[currentOption].getNomePortugues() == "Outros") {
 			} else if (options[currentOption].getNomePortugues() == "Voltar") {
-				Game.gameState = "MENUPAUSE";
+				currentOption = 0;
+				String inverte = Game.gameState;
+
+				Game.gameState = Game.previousGameState;
+				// Y / Y 
+				Game.previousGameState = inverte;
 			}
 		}
 
@@ -56,83 +61,83 @@ public class Options extends Menu {
 
 		g.fillRect(0, 0, widthBase, heightBase);
 		g.setColor(Color.WHITE);
-		Option option = new Option();
-		g.drawString(option.getNomePortugues(), ((widthBase / 8)), (heightBase / 6));
+		
+//		desenhar quadro cinza e >
+		
+		if (options[currentOption].getNomePortugues() != "Voltar") {
+			g.setFont(new Font("Arial", Font.BOLD, 40));
+			g.drawString(" > ", (((widthBase / 10) - 50)), ((heightBase / 4) + (currentOption*100)+50));
 
-		// menu
-		g.setFont(new Font("Arial", Font.BOLD, 48));
-
-		g.drawString("Ver Horário", ((widthBase / 6)), ((heightBase / 4) + 50));
-		g.drawString("Outros Status", ((widthBase / 6)), ((heightBase / 4) + 150));
-		g.drawString("Outros", ((widthBase / 6)), ((heightBase / 4) + 250));
-		g.drawString("Outros", ((widthBase / 6)), ((heightBase / 4) + 250));
-
-		g.drawString("Voltar", ((widthBase - 175)), ((heightBase) - 50));
-//		desenhar >
-
-		if (options[currentOption].getNomePortugues() != "voltar") {
 			g.setFont(new Font("Arial", Font.BOLD, 64));
 			g.setColor(Color.gray);
 			g.fillRect((widthBase / 2), ((heightBase) / 4), widthBase / 2 - 30, heightBase / 2 + 30);
 			g.setColor(Color.WHITE);
 
-		}
-
-		if (options[currentOption].getNomePortugues() == "ver horario") {
-			g.drawString(" > ", (((widthBase / 6) - 100)), ((heightBase / 4) + 50));
-		} else if (options[currentOption].getNomePortugues() == "outros status") {
-			g.drawString(" > ", (((widthBase / 6) - 100)), ((heightBase / 4) + 150));
-		} else if (options[currentOption].getNomePortugues() == "outros") {
-			g.drawString(" > ", (((widthBase / 6) - 100)), ((heightBase / 4) + 250));
-		} else if (options[currentOption].getNomePortugues() == "voltar") {
+		} else {
+			g.setFont(new Font("Arial", Font.BOLD, 40));
 			g.drawString(" > ", (((widthBase - 225))), ((heightBase) - 50));
 		}
-		if (options[currentOption].getNomePortugues() == "ver horario") {
-			// Format time with leading zeros
-			String formattedTime = String.format("%02d:%02d", Tempo.hours, Tempo.minutes);
 
-			// Format date in a user-friendly way (modify format as desired)
-			String formattedDate = String.format("%02d/%02d/%02d", Tempo.days, Tempo.months, Tempo.years); // Adjust
-																											// format
-			// (e.g., MMM yyyy
-			// Combine formatted time and date
-			String combinedString = formattedTime + "  " + formattedDate; // Newline for separation
+		switch (Game.linguagem) {
+		case "Inglês":
+			g.setFont(new Font("Arial", Font.BOLD, 64));
+			g.drawString("Options", ((widthBase / 12)), (heightBase / 6));
 
-			g.setColor(Color.WHITE);
-			g.setFont(new Font("Arial", Font.BOLD, 48)); // Adjust font size for combined string
-//			g.fillRect((widthBase / 2), ((heightBase) / 4), widthBase / 2 - 30, heightBase / 2 + 30);
-
-			int x = (widthBase / 2 + 100); // Center horizontally based on string width
-			int y = (heightBase / 3);
-			// vertically
-			// based on font
-			// metrics
-			g.drawString(combinedString, x, y);
-			String diaDaSemana = "Dia de Deus";
-
-			if (Game.linguagem == "Inglês") {
-				diaDaSemana = Tempo.DIAS_DA_SEMANA[Tempo.restoDia].getNomePortugues();
-			} else if (Game.linguagem == "Português") {
-				diaDaSemana = Tempo.DIAS_DA_SEMANA[Tempo.restoDia].getNomePortugues();
+			g.setFont(new Font("Arial", Font.BOLD, 40));
+			for (int i = 0; i < options.length-1; i++) {
+				g.drawString(options[i].getNomeIngles(), ((widthBase / 10)), ((heightBase / 4) + ((i*100)+50)));//0 50 //1 100
 			}
-			g.drawString(diaDaSemana, x, y + 100);
+			g.drawString(options[options.length-1].getNomeIngles(), ((widthBase - 175)), ((heightBase) - 50));
+			
+			if (options[currentOption].getNomePortugues() == "Configuração do FPS") {
+				int x = (widthBase / 2 + 100); // Center horizontally based on string width
+				int y = (heightBase / 3);
+				
+				String FPS = "FPS";
+				
+				String combinedString = FPS + ":" + Game.FPS;
+				
+				g.drawString(combinedString, x, y);
 
-			String faseDaLua = "Lua do Diabo";
+			}  else if (options[currentOption].getNomePortugues() == "Outras Configurações") {
 
-			if (Game.linguagem == "Inglês") {
-				faseDaLua = Tempo.FASES_DA_LUA[Tempo.restoLua].getNomeIngles();
+			} else if (options[currentOption].getNomePortugues() == "Outros") {
+			} else if (options[currentOption].getNomePortugues() == "Voltar") {
 
-			} else if (Game.linguagem == "Português") {
-				faseDaLua = Tempo.FASES_DA_LUA[Tempo.restoLua].getNomePortugues();
 			}
+			break;
+		case "Português":
+			g.setFont(new Font("Arial", Font.BOLD, 64));
+			g.drawString("Opções", ((widthBase / 12)), (heightBase / 6));
 
-			g.drawString(faseDaLua, x, y + 200);
+			g.setFont(new Font("Arial", Font.BOLD, 40));
+			for (int i = 0; i < options.length-1; i++) {
+				g.drawString(options[i].getNomePortugues(), ((widthBase / 10)), ((heightBase / 4) + ((i*100)+50)));//0 50 //1 100
+			}
+			g.drawString(options[options.length-1].getNomePortugues(), ((widthBase - 175)), ((heightBase) - 50));
 
-		} else if (options[currentOption].getNomePortugues() == "outros status") {
+			if (options[currentOption].getNomePortugues() == "Configuração do FPS") {
+				int x = (widthBase / 2 + 25); // Center horizontally based on string width
+				int y = (heightBase / 3);
+				
+				String FPS = "FPS";
+				
+				String combinedString = FPS + ":" + Game.FPS;
+				
+				g.drawString(combinedString, x, y);
 
-		} else if (options[currentOption].getNomePortugues() == "voltar") {
+			}  else if (options[currentOption].getNomePortugues() == "Outras Configurações") {
 
+			} else if (options[currentOption].getNomePortugues() == "Outros") {
+			} else if (options[currentOption].getNomePortugues() == "Voltar") {
+
+			}
+			break;
+		default:
+			break;
 		}
+
+		
 
 	}
 
