@@ -5,7 +5,10 @@ import java.awt.image.BufferedImage;
 
 import base.Game;
 import entities.Player;
+import entities.itens.Item;
+import entities.itens.utensilios.Fogueira;
 import world.Camera;
+import world.World;
 
 public class Maca extends Fruta {
 
@@ -27,6 +30,16 @@ public class Maca extends Fruta {
 
 	}
 
+	public Maca(Maca outraMaca) {
+		super(outraMaca);
+		
+		spritesMaca = new BufferedImage[4];
+
+		for (int i = 0; i < qtdDirecoes; i++) {
+			spritesMaca[i] = Game.spritesheet_Fruits.getSprite(64 * i, 64 * 1, 64, 64);
+		}
+	}
+	
 	public void tick() {
 
 		girar();
@@ -42,14 +55,15 @@ public class Maca extends Fruta {
 //		g.fillRect(this.getX() + maskx - Camera.x, this.getY() + masky - Camera.y, mwidth, mheight);
 	}
 
-	public void coletar(Player player) {
-		incrementQuantity(); // Incrementa a quantidade do item
-		player.obtainItem(this); // Adiciona o item à lista de itens do jogador
-	}
-
 	@Override
 	public void coletarEspecifico() {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public Item clone() {
+		// Crie uma nova instância do subtipo de item usando o construtor de cópia
+		return new Maca(this);
 	}
 }

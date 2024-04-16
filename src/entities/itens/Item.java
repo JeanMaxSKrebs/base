@@ -3,16 +3,19 @@ package entities.itens;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.lang.reflect.Constructor;
 
 import base.Game;
 import entities.Entity;
 import entities.Player;
+import entities.itens.utensilios.Fogueira;
 import world.Camera;
+import world.World;
 
 @SuppressWarnings("unused")
 public abstract class Item extends Entity {
 	protected String nome = "Item";
-	public int quantidade = 1;
+	protected int quantidade = 0;
 
 	public static BufferedImage KEY_EN = Game.spritesheet_Doors.getSprite(112, 0, 112, 112);
 	public static BufferedImage SPECIALKEY_EN = Game.spritesheet_Doors.getSprite(336, 0, 112, 112);
@@ -36,18 +39,32 @@ public abstract class Item extends Entity {
 	public Item(Item outroItem) {
 		super();
 		this.nome = outroItem.nome;
-		this.quantidade = outroItem.quantidade;
+		this.sprite = outroItem.sprite;
 		// Copie outros atributos, se houver
 	}
 
-    public void coletar(Player player) {
-        incrementQuantity(); // Incrementa a quantidade do item
-        player.obtainItem(this); // Adiciona o item à lista de itens do jogador
-    }
-    
-    public void use() {
-        decrementQuantity(); // Incrementa a quantidade do item
-    }
+//	public void mudar(String itemName) {
+//		try {
+//		    Class<?> itemClass = Class.forName(itemName);
+//		    Constructor<?> constructor = itemClass.getConstructor(int.class, int.class, int.class, int.class, Sprite.class);
+//		    
+//		    // Aqui você pode passar os argumentos necessários para o construtor, neste caso estou assumindo que os parâmetros são inteiros
+//		    Object itemInstance = constructor.newInstance(Game.player.getX(), Game.player.getY(), World.TILE_SIZE, World.TILE_SIZE, this.sprite);
+//		    
+//		    // Adicione a instância à lista de itens
+//		    Player.getItens().add((Item) itemInstance);
+//		} catch (Exception e) {
+//		    e.printStackTrace();
+//		}
+//	}
+
+	public void serDropado(Player player) {
+		player.dropar(this);
+	};
+
+	public void serUsado(Player player) {
+		player.use(this);
+	};
 
 	// Método abstrato para fornecer uma implementação específica nas subclasses, se
 	// necessário
@@ -66,7 +83,7 @@ public abstract class Item extends Entity {
 			}
 		}
 	}
-	
+
 	public BufferedImage getSprite() {
 		return sprite;
 	}
@@ -96,9 +113,13 @@ public abstract class Item extends Entity {
 	public void incrementQuantity() {
 		quantidade++;
 	}
+
 	public void decrementQuantity() {
 		quantidade--;
 	}
+	
+    public abstract Item clone();
+
 
 	public void tick() {
 
@@ -108,5 +129,6 @@ public abstract class Item extends Entity {
 	public String toString() {
 		return "Item{" + "nome='" + nome + '\'' + ", quantidade=" + quantidade + '}';
 	}
+
 
 }

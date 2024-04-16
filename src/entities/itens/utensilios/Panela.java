@@ -2,8 +2,11 @@ package entities.itens.utensilios;
 
 import java.awt.image.BufferedImage;
 
+import base.Game;
 import entities.itens.Item;
 import entities.itens.comidas.Comida;
+import entities.itens.comidas.frutas.Maca;
+import entities.itens.comidas.frutas.Uva;
 
 public class Panela extends Item {
 
@@ -20,4 +23,20 @@ public class Panela extends Item {
             return false;
         }
     }
+
+	@Override
+	public void coletarEspecifico() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public Panela(Panela outraPanela) {
+		super(outraPanela);
+	}
+	
+	@Override
+	public Item clone() {
+		// Crie uma nova instância do subtipo de item usando o construtor de cópia
+		return new Panela(this);
+	}
 }

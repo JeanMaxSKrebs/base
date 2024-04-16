@@ -3,6 +3,8 @@ package entities;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.lang.reflect.Array;
+
 import base.Game;
 import world.Camera;
 
@@ -30,7 +32,7 @@ public abstract class Entity {
 	protected int height;
 
 	protected BufferedImage sprite;
-
+	
 	protected int maskx, masky, mwidth, mheight;
 
 	public Entity() {
@@ -50,6 +52,13 @@ public abstract class Entity {
 		this.mheight = height;
 	}
 
+	public void setMask(int[] i) {
+		this.maskx = i[0];
+		this.masky = i[1];
+		this.mwidth = i[2];
+		this.mheight = i[3];
+	}
+	
 	public void setMask(int maskx, int masky, int mwidth, int mheight) {
 		this.maskx = maskx;
 		this.masky = masky;
@@ -115,6 +124,39 @@ public abstract class Entity {
 	public void setSprite(BufferedImage sprite) {
 		this.sprite = sprite;
 	}
+	
+	public int getMaskX() {
+		return maskx;
+	}
+
+	public void setMaskX(int maskx) {
+		this.maskx = maskx;
+	}
+
+	public int getMaskY() {
+		return masky;
+	}
+
+	public void setMaskY(int masky) {
+		this.masky = masky;
+	}
+
+	public int getMaskWidth() {
+		return mwidth;
+	}
+
+	public void setMaskWidth(int mwidth) {
+		this.mwidth = mwidth;
+	}
+
+	public int getMaskHeight() {
+		return mheight;
+	}
+
+	public void setMaskHeight(int mheight) {
+		this.mheight = mheight;
+	}
+
 
 	public void tick() {
 

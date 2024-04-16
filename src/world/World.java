@@ -32,7 +32,7 @@ public class World {
 	public static int xDoor = 0;
 	public static int yDoor = 0;
 
-	public static final int TILE_SIZE = 112;
+	public final static int TILE_SIZE = 112;
 	public static final int TILE_SIZE_64 = 64;
 
 	public World(String path) {
@@ -110,13 +110,13 @@ public class World {
 					} else if (pixelAtual == 0xFFD4195E) {
 						// Maca
 						Maca maca = new Maca(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Fruta.MACA_FR);
-						maca.setMask(8, 8, 48, 48);
+						maca.setMask(9, 8, 48, 48);
 						Game.itens.add(maca);
 
 					} else if (pixelAtual == 0xFF953FFF) {
 						// Uva
 						Uva uva = new Uva(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Fruta.UVA_FR);
-						uva.setMask(8, 8, 48, 48);
+						uva.setMask(11, 8, 48, 48);
 						Game.itens.add(uva);
 
 					} else if (pixelAtual == 0xFFFF00A5) {

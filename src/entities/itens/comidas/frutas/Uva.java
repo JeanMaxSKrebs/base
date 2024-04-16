@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 
 import base.Game;
 import entities.Player;
+import entities.itens.Item;
 import world.Camera;
 
 @SuppressWarnings("unused")
@@ -29,6 +30,17 @@ public class Uva extends Fruta {
 
 	}
 
+	public Uva(Uva outraUva) {
+		super(outraUva);
+		
+		spritesUva = new BufferedImage[4];
+
+		for (int i = 0; i < qtdDirecoes; i++) {
+			spritesUva[i] = Game.spritesheet_Fruits.getSprite(64 * i, 64 * 2, 64, 64);
+		}
+	}
+	
+
 	public void tick() {
 
 		girar();
@@ -43,16 +55,17 @@ public class Uva extends Fruta {
 //		g.setColor(Color.red);
 //		g.fillRect(this.getX() + maskx - Camera.x, this.getY() + masky - Camera.y, mwidth, mheight);
 	}
-
-    public void coletar(Player player) {
-        incrementQuantity(); // Incrementa a quantidade do item
-        player.obtainItem(this); // Adiciona o item à lista de itens do jogador
-    }
 	
 	@Override
 	public void coletarEspecifico() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public Item clone() {
+		// Crie uma nova instância do subtipo de item usando o construtor de cópia
+		return new Uva(this);
 	}
 
 }

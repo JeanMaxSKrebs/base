@@ -3,6 +3,7 @@ package entities;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import base.Game;
@@ -15,6 +16,7 @@ import entities.itens.comidas.frutas.Maca;
 import entities.itens.comidas.frutas.Uva;
 import entities.itens.utensilios.BagPack;
 import graficos.UI;
+import menu.Inventory;
 import world.Camera;
 import world.Normaldoor;
 import world.Tiledoor;
@@ -66,11 +68,13 @@ public class Player extends Entity {
 
 	public boolean coletando = false;
 	public int tempoColeta = 0; // 3 segundos
-	public int tempoColetaMax = 180; // 3 segundos
+//	public int tempoColetaMax = 180; // 3 segundos
+	public int tempoColetaMax = 1; // 3 segundos
 	public boolean possoColetar = true;
 	public boolean coletar = false;
 	public int tempoEspera = 0; // 3 segundos
-	public int tempoEsperaMax = 180; // 3 segundos
+//	public int tempoEsperaMax = 180; // 3 segundos
+	public int tempoEsperaMax = 1; // 3 segundos
 
 	public Player(int x, int y, int width, int height, BufferedImage sprite) {
 		super(x, y, width, height, sprite);
@@ -137,7 +141,52 @@ public class Player extends Entity {
 		return false;
 	}
 
-	public void obtainItem(Item newItem) {
+	public void use(Item newItem) {
+
+		Iterator<Item> iterator = itens.iterator();
+		while (iterator.hasNext()) {
+			Item item = iterator.next();
+			if (item.getClass().equals(newItem.getClass())) {
+				// Remove o item existente se ele for o ultimo
+				if (item.getQuantidade() == 1) {
+					iterator.remove();
+				} else {
+					// Decrementa a quantidade do item existente
+					item.decrementQuantity();
+				}
+				break;
+			}
+		}
+
+	}
+
+	public void dropar(Item newItem) {
+		Item newItemCopy = newItem.clone(); // Supondo que a classe Item implemente o método clone()
+		Iterator<Item> iterator = itens.iterator();
+		while (iterator.hasNext()) {
+			Item item = iterator.next();
+			if (item.getClass().equals(newItem.getClass())) {
+
+				if (item.getQuantidade() >= 1) {
+					newItemCopy.setX(Game.player.getX());
+					newItemCopy.setY(Game.player.getY());
+					newItemCopy.setMask(item.getMaskX(), item.getMaskY(), item.getMaskWidth(), item.getMaskHeight());
+
+					item.decrementQuantity();
+
+					Game.itens.add(newItemCopy);
+				}
+				// Remove o item existente se ele for o ultimo
+				if (item.getQuantidade() == 0) {
+					iterator.remove();
+				}
+				break;
+			}
+
+		}
+	}
+
+	public void coletar(Item newItem) {
 		boolean itemExists = false;
 
 		// Verifica se o item já existe na lista
@@ -159,8 +208,9 @@ public class Player extends Entity {
 			System.out.println("add");
 			System.out.println(newItem);
 
+			newItem.incrementQuantity(); // Incrementa a quantidade do item existente
+			System.out.println(newItem);
 			itens.add(newItem); // Se não for uma subclasse, adiciona diretamente
-
 		}
 	}
 
@@ -195,7 +245,6 @@ public class Player extends Entity {
 					if (coletar) {
 						coletar = false;
 						possoColetar = false;
-						
 
 						if (i instanceof BagPack) {
 							hasBagpack = true;
@@ -207,7 +256,6 @@ public class Player extends Entity {
 							return;
 						}
 
-
 						// Itens que são guardados
 						if (hasBagpack) {
 
@@ -215,7 +263,7 @@ public class Player extends Entity {
 
 								Item newItem = (Item) i;
 
-								obtainItem(newItem);
+								coletar(newItem);
 
 								Game.itens.remove(j);
 								tempoEspera = tempoEsperaMax;
@@ -223,7 +271,8 @@ public class Player extends Entity {
 							}
 						} else {
 							Game.openInventory = true;
-							Game.messageDisplayStartTime = System.currentTimeMillis(); // Inicia a contagem do tempo de exibição da
+							Game.messageDisplayStartTime = System.currentTimeMillis(); // Inicia a contagem do tempo de
+																						// exibição da
 						}
 
 					}

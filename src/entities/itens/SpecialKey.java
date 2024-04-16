@@ -14,6 +14,16 @@ public class SpecialKey extends Item {
 	public SpecialKey(int x, int y, int width, int height, BufferedImage sprite) {
 		super(x, y, width, height, sprite, nome);
 	}
+	
+	public SpecialKey(SpecialKey outraSpecialKey) {
+		super(outraSpecialKey);
+		this.sprite = outraSpecialKey.sprite;
+	}
+	@Override
+	public Item clone() {
+		// Crie uma nova instância do subtipo de item usando o construtor de cópia
+		return new SpecialKey(this);
+	}
 
 	public void render(Graphics g) {
 

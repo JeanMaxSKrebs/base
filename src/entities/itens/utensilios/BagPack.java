@@ -4,6 +4,7 @@ import java.awt.image.BufferedImage;
 
 import base.Game;
 import entities.Entity;
+import entities.itens.Item;
 
 public class BagPack extends Utensilio {
 
@@ -25,6 +26,17 @@ public class BagPack extends Utensilio {
         spritesBackpack[2] = BAGPACK_LEFT;
         spritesBackpack[3] = BAGPACK_UP;
 	}
+	
+	public BagPack(BagPack outraBagPack) {
+		super(outraBagPack);
+		
+		spritesBackpack = new BufferedImage[4];
+
+		for (int i = 0; i < qtdDirecoes; i++) {
+			spritesBackpack[i] = Game.spritesheet_UsableItems.getSprite(112 * i, 112 * 1, 112, 112);
+		}
+	}
+
 
 
 	public static BufferedImage getSpritesBackpack(int index) {
@@ -34,6 +46,13 @@ public class BagPack extends Utensilio {
 
 	public void setSpritesBackpack(BufferedImage[] spritesBackpack) {
 		BagPack.spritesBackpack = spritesBackpack;
+	}
+
+
+	@Override
+	public Item clone() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

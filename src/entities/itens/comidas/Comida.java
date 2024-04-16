@@ -48,11 +48,6 @@ public abstract class Comida extends Item {
 			System.out.println("This food needs to be cooked first!");
 		}
 	}
-    public void coletar(Player player) {
-        incrementQuantity(); // Incrementa a quantidade do item
-        player.obtainItem(this); // Adiciona o item à lista de itens do jogador
-    }
-	
 
 	public void cook() { // Simulates cooking process (replace with actual logic)
 		isCooked = true;
