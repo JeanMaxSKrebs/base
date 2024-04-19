@@ -69,12 +69,12 @@ public class Player extends Entity {
 	public boolean coletando = false;
 	public int tempoColeta = 0; // 3 segundos
 //	public int tempoColetaMax = 180; // 3 segundos
-	public int tempoColetaMax = 1; // 3 segundos
+	public int tempoColetaMax = 30; // 3 segundos
 	public boolean possoColetar = true;
 	public boolean coletar = false;
 	public int tempoEspera = 0; // 3 segundos
 //	public int tempoEsperaMax = 180; // 3 segundos
-	public int tempoEsperaMax = 1; // 3 segundos
+	public int tempoEsperaMax = 30; // 3 segundos
 
 	public Player(int x, int y, int width, int height, BufferedImage sprite) {
 		super(x, y, width, height, sprite);
@@ -147,17 +147,25 @@ public class Player extends Entity {
 		while (iterator.hasNext()) {
 			Item item = iterator.next();
 			if (item.getClass().equals(newItem.getClass())) {
-				// Remove o item existente se ele for o ultimo
-				if (item.getQuantidade() == 1) {
-					iterator.remove();
-				} else {
-					// Decrementa a quantidade do item existente
+				if (item.getQuantidade() >= 1) {
 					item.decrementQuantity();
+				      if (item instanceof Comida) { // Verifica se o item é uma instância de Comida
+			                Comida comida = (Comida) item; // Faz o cast para Comida
+			                this.comer(comida); // Executa a ação de comer
+			            }
+				}
+				// Remove o item existente se ele for o ultimo
+				if (item.getQuantidade() == 0) {
+					iterator.remove();
 				}
 				break;
 			}
 		}
 
+	}
+
+	private void comer(Item item) {
+		
 	}
 
 	public void dropar(Item newItem) {

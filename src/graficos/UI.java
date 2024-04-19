@@ -57,16 +57,16 @@ public class UI {
 //		System.out.println(Game.hours);
 //		System.out.println(Game.minutes);
 
-		if (Game.player.stamine == Player.getMaxStamine()) {
-			if (frame >= 10) {
-				g.setColor(Color.yellow);
-				g.fillRect(84, 8, 16, 32);
-				g.setColor(Color.black);
-				g.fillRect(88, 12, 8, (int) ((Game.player.stamine / Player.maxStamine) * 24));
-				frame = 0;
-			}
-			frame++;
-		}
+//		if (Game.player.stamine == Player.getMaxStamine()) {
+//			if (frame >= 10) {
+//				g.setColor(Color.yellow);
+//				g.fillRect(84, 8, 16, 32);
+//				g.setColor(Color.black);
+//				g.fillRect(88, 12, 8, (int) ((Game.player.stamine / Player.maxStamine) * 24));
+//				frame = 0;
+//			}
+//			frame++;
+//		}
 
 		g.setColor(Color.gray);
 		g.fillRect(0, Game.getHEIGHT() - 96, 96, 96);

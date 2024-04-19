@@ -57,16 +57,8 @@ public abstract class Fruta extends Comida implements Comparable<Fruta> {
 		super(outraFruta); // Chama o construtor da superclasse para copiar atributos de Item
 	}
 
-	// Decrementa a quantidade quando uma fruta é comida
-	public void comer() {
-		if (quantidade > 0) {
-			quantidade--;
-		}
+    public abstract void comer(Item item);
 
-		if (quantidade < 0) {
-			quantidade = 0; // Garante que a quantidade não seja negativa
-		}
-	}
 
 	public int compareTo(Fruta outraFruta) {
 		return this.nome.compareTo(outraFruta.getNome());

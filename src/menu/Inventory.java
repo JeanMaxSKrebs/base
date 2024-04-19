@@ -124,7 +124,7 @@ public class Inventory {
 					if (selectedItem != null) {
 						if (showItemDetails) {
 							if (usarItem) {
-								selectedItem.serUsado(Game.player);
+								Game.player.use(selectedItem);
 								entrouInventario = false;
 								showItemDetails = false;
 							}

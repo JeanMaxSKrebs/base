@@ -78,7 +78,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	public static World world;
 	public static String previousGameState = "MENUPRINCIPAL";
 	public static String gameState = "MENUPRINCIPAL";
-	public static String ILHA = "INICIAL";
+	public static String ILHA = "INICIAL2";
 
 	public static UI ui;
 
@@ -89,6 +89,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	public MenuPause menuPause;
 	public Inventory inventory;
 	public static boolean openInventory = false;
+	public static boolean movimentarEnemys = false;
 
 	public static long messageDisplayStartTime = 0;
 	public static long MESSAGE_DISPLAY_DURATION = 3000; // 3 segundos em milissegundos
@@ -99,6 +100,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	private int framesGameOver = 0;
 
 	// mudar linguagem
+//	public static String linguagem = "Inglês";
 	public static String linguagem = "Português";
 
 	public Game() {
@@ -218,7 +220,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 				Entity e = entities.get(i);
 				e.tick();
 			}
-			// movimentar entidades
+			// movimentar enemies
 			for (int i = 0; i < enemies.size(); i++) {
 				Enemy e = enemies.get(i);
 				e.tick();
@@ -266,15 +268,6 @@ public class Game extends Canvas implements Runnable, KeyListener {
 				World.restartGame(newWorld);
 
 			}
-		} else if (ILHA != "INICIAL") {
-
-			String newWorld = "/" + ILHA + ".png";
-			World.restartGame(newWorld);
-			Game.player.setLife((int) Game.player.getLife());
-			Game.player.setStamine((int) Player.getMaxStamine());
-			Game.player.setArmor(0);
-			previousGameState = gameState;
-			gameState = "NORMAL";
 		} else if (gameState == "MENUPRINCIPAL") {
 			menuPrincipal.tick();
 		} else if (gameState == "MENUPAUSE") {
@@ -302,11 +295,6 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		// render mundo
 		world.render(g);
 
-//		//render enemies
-		for (int i = 0; i < enemies.size(); i++) {
-			Enemy e = enemies.get(i);
-			e.render(g);
-		}
 //		//render itens
 		for (int i = 0; i < itens.size(); i++) {
 			Item f = itens.get(i);
@@ -332,6 +320,13 @@ public class Game extends Canvas implements Runnable, KeyListener {
 			Tiledoor t = tiledoors.get(i);
 			t.render(g);
 		}
+		
+//		//render enemies
+		for (int i = 0; i < enemies.size(); i++) {
+			Enemy e = enemies.get(i);
+			e.render(g);
+		}
+		
 		// render balas
 		for (int i = 0; i < balas.size(); i++) {
 			balas.get(i).render(g);
@@ -531,6 +526,14 @@ public class Game extends Canvas implements Runnable, KeyListener {
 				messageDisplayStartTime = System.currentTimeMillis(); // Inicia a contagem do tempo de exibição da
 
 			}
+			if (e.getKeyCode() == KeyEvent.VK_K) {
+				movimentarEnemys = true;
+			}
+			
+			if (e.getKeyCode() == KeyEvent.VK_R) {
+				String newWorld = "/" + ILHA + ".png";
+				World.restartGame(newWorld);
+			}
 		}
 
 	}
@@ -548,6 +551,10 @@ public class Game extends Canvas implements Runnable, KeyListener {
 			player.left = false;
 		}
 
+		if (e.getKeyCode() == KeyEvent.VK_K) {
+			movimentarEnemys = false;
+		}
+		
 		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 			player.coletando = false;
 		}

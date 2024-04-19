@@ -48,6 +48,9 @@ public abstract class Comida extends Item {
 			System.out.println("This food needs to be cooked first!");
 		}
 	}
+	
+    public abstract void comer(Item item);
+
 
 	public void cook() { // Simulates cooking process (replace with actual logic)
 		isCooked = true;

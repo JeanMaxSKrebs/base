@@ -40,6 +40,14 @@ public class Uva extends Fruta {
 		}
 	}
 	
+	@Override
+	public void comer(Item item) {
+	    if (item instanceof Uva) {
+	        Uva uva = (Uva) item;
+
+	         
+	    }
+	}
 
 	public void tick() {
 

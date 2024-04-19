@@ -26,4 +26,10 @@ public class Banana extends Fruta {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public void comer(Item item) {
+		// TODO Auto-generated method stub
+		
+	}
 }

@@ -1,5 +1,6 @@
 package entities;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
@@ -33,8 +34,10 @@ public class EnemyStrong extends Enemy {
 		
 		preparadoAtacar();
 		
-		movimentar();
-		verificaMovimento();
+		if (Game.movimentarEnemys) {
+			movimentar();
+			verificaMovimento();
+		}
 	}
 	
 	public void preparadoAtacar() {
@@ -70,6 +73,8 @@ public class EnemyStrong extends Enemy {
 		} else if(dir == down_dir) {
 			g.drawImage(STRONGENEMY[3], this.getX() - Camera.x, this.getY() - Camera.y, null);			
 		}
+		g.setColor(Color.red);
+		g.fillRect(this.getX() + maskx - Camera.x, this.getY() + masky - Camera.y, mwidth, mheight);
 	}
 	
 	public static boolean isPreparedAttack() {

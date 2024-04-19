@@ -11,9 +11,9 @@ import entities.Bala;
 import entities.Enemy;
 import entities.EnemyNormal;
 import entities.EnemyStrong;
-import entities.Entity;
 import entities.Player;
 import entities.itens.Item;
+import entities.doors.*;
 import entities.itens.Key;
 import entities.itens.SpecialKey;
 import entities.itens.comidas.frutas.Fruta;
@@ -26,7 +26,8 @@ import base.Spritesheet;
 public class World {
 
 	public static Tile[] tiles;
-	public static int WIDTH, HEIGHT;
+	public static int WIDTH = Game.getWIDTH() * Game.getSCALE();
+	public static int HEIGHT = Game.getHEIGHT() * Game.getSCALE();
 
 	public static boolean isDoor = false;
 	public static int xDoor = 0;
@@ -35,15 +36,89 @@ public class World {
 	public final static int TILE_SIZE = 112;
 	public static final int TILE_SIZE_64 = 64;
 
+	private static final int NUMERO_DE_MACAS = 25;
+	private static final int NUMERO_DE_UVAS = 25;
+
+	private int contadorHordas = 0; // Variável para controlar o contador de hordas
+	private int FREQUENCIA_HORDE = 10; // Definindo a frequência de horda para 10, o que representa 50% de chance
+	private int MAX_HORDE = 10; // Definindo a EM 20 para 10, o que representa 50% de chance
+
+	private static final int NUMERO_DE_INIMIGOS = 50;
+	private int NUMERO_DE_INIMIGOS_POR_HORDE = 5;
+
+	int totalZumbisGerados = 0; // Variável para armazenar o total de zumbis gerados
+
 	public World(String path) {
+		try {
+			loadMap(path);
+		} catch (Exception e) {
+			System.out.println("Erro ao carregar mapa.");
+			e.printStackTrace();
+		}
+		try {
+			spawnEntities();
+		} catch (Exception e) {
+			System.out.println("Erro ao gerar entidades aleatórias.");
+			e.printStackTrace();
+		}
+	}
+
+	private void spawnEntities() {
+		System.out.println("WIDTH");
+		System.out.println(WIDTH);
+		// Gera aleatoriamente uvas
+		for (int i = 0; i < NUMERO_DE_UVAS; i++) {
+//			int x = Game.random(WIDTH);
+//			int y = Game.random(HEIGHT);
+			int x, y;
+			do {
+				x = Game.random(WIDTH);
+				y = Game.random(HEIGHT);
+			} while (!isFree(x * TILE_SIZE, y * TILE_SIZE));
+			if (isFree(x * TILE_SIZE, y * TILE_SIZE)) {
+				Uva uva = new Uva(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE, Fruta.UVA_FR);
+				uva.setMask(11, 8, 48, 48);
+				Game.itens.add(uva);
+			}
+		}
+
+		// Gera aleatoriamente maçãs
+		for (int i = 0; i < NUMERO_DE_MACAS; i++) {
+//			int x = Game.random(WIDTH);
+//			int y = Game.random(HEIGHT);
+			int x, y;
+			do {
+				x = Game.random(WIDTH);
+				y = Game.random(HEIGHT);
+			} while (!isFree(x * TILE_SIZE, y * TILE_SIZE));
+			if (isFree(x * TILE_SIZE, y * TILE_SIZE)) {
+				Maca maca = new Maca(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE, Fruta.MACA_FR);
+				maca.setMask(9, 8, 48, 48);
+				Game.itens.add(maca);
+			}
+		}
+
+		// Gera aleatoriamente inimigos
+		while (totalZumbisGerados < NUMERO_DE_INIMIGOS) {
+			verificarNovaHorda();
+//			System.out.println("totalZumbisGerados");
+//			System.out.println(totalZumbisGerados);
+		}
+		System.out.println("contadorHordas");
+		System.out.println(contadorHordas);
+		System.out.println("totalZumbisGerados");
+		System.out.println(totalZumbisGerados);
+	}
+
+	private void loadMap(String path) {
 		try {
 			BufferedImage map = ImageIO.read(getClass().getResource(path));
 			WIDTH = map.getWidth();
 			HEIGHT = map.getHeight();
-			System.out.println("WIDTH");
-			System.out.println(WIDTH);
-			System.out.println("HEIGHT");
-			System.out.println(HEIGHT);
+//			System.out.println("WIDTH");
+//			System.out.println(WIDTH);
+//			System.out.println("HEIGHT");
+//			System.out.println(HEIGHT);
 			int[] pixels = new int[WIDTH * HEIGHT];
 			tiles = new Tile[WIDTH * HEIGHT];
 
@@ -59,6 +134,12 @@ public class World {
 						tiles[xx + (yy * WIDTH)] = new Tilewall(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE,
 								Tile.TILE_WALL);
 					} else if (pixelAtual == 0xFF7F0037) {
+			            // door
+			            int adjacentPixel = (xx + 1 < WIDTH) ? pixels[(xx + 1) + (yy * WIDTH)] : -1;
+			            if (adjacentPixel == pixelAtual) { // Check right
+			                tiles[xx + (yy * WIDTH)] = new DoubleDoor(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Tile.TILE_WALL, pixelAtual, adjacentPixel);
+			                // Assuming DoubleDoor is a subclass of Door that handles double doors
+			            } else if (pixelAtual == 0xFF7F0037) {
 						// door
 						tiles[xx + (yy * WIDTH)] = new Normaldoor(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE,
 								Tiledoor.TILE_NORMALDOOR);
@@ -80,20 +161,6 @@ public class World {
 						Game.player.setHeight(96);
 						Game.player.setMask(20, 10, 64, 96);
 
-					} else if (pixelAtual == 0xFFFF1500) {
-						// normal enemy
-						Enemy en = new EnemyNormal(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE,
-								Entity.ENEMY_EN);
-						en.setMask(7, 0, 18, 32);
-//						Game.entities.add(en);
-						Game.enemies.add(en);
-					} else if (pixelAtual == 0xFFF75D16) {
-						// strong enemy
-						Enemy en = new EnemyStrong(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE * 2, TILE_SIZE * 2,
-								Entity.ENEMY_EN);
-						en.setMask(4, 10, 24, 16);
-//						Game.entities.add(en);
-						Game.enemies.add(en);
 					} else if (pixelAtual == 0xFF4E3333) {
 						// bagpack
 						BagPack bagpack = new BagPack(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE,
@@ -102,22 +169,10 @@ public class World {
 						Game.itens.add(bagpack);
 					} else if (pixelAtual == 0xFFD1951F) {
 						// Fogueira
-						Fogueira fogueira = new Fogueira(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Entity.FOGUEIRA_IT);
+						Fogueira fogueira = new Fogueira(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE,
+								Entity.FOGUEIRA_IT);
 						fogueira.setMask(0, 0, 112, 112);
 						Game.itens.add(fogueira);
-		
-
-					} else if (pixelAtual == 0xFFD4195E) {
-						// Maca
-						Maca maca = new Maca(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Fruta.MACA_FR);
-						maca.setMask(9, 8, 48, 48);
-						Game.itens.add(maca);
-
-					} else if (pixelAtual == 0xFF953FFF) {
-						// Uva
-						Uva uva = new Uva(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Fruta.UVA_FR);
-						uva.setMask(11, 8, 48, 48);
-						Game.itens.add(uva);
 
 					} else if (pixelAtual == 0xFFFF00A5) {
 						// key
@@ -131,18 +186,73 @@ public class World {
 								Entity.SPECIALKEY_EN);
 						specialkey.setMask(10, 20, 84, 56);
 						Game.itens.add(specialkey);
-						
+
 					} else {
 						// Piso
 						tiles[xx + (yy * WIDTH)] = new Tilefloor(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE,
 								Tile.TILE_FLOOR);
 					}
-
 				}
 			}
 		} catch (Exception e) {
+			System.out.println("Erro ao carregar mapa.");
 			e.printStackTrace();
 		}
+	}
+
+	// Método para verificar e iniciar a geração de uma nova horda de zumbis
+	private void verificarNovaHorda() {
+
+		if (Game.random(MAX_HORDE) <= MAX_HORDE) {
+			int x, y;
+			do {
+				x = Game.random(WIDTH);
+				y = Game.random(HEIGHT);
+			} while (!isFree(x * TILE_SIZE, y * TILE_SIZE));
+
+			// Gera aleatoriamente inimigos para uma nova horda
+			for (int i = 0; i < NUMERO_DE_INIMIGOS_POR_HORDE; i++) {
+
+				// Decide aleatoriamente entre inimigo normal e forte
+				Enemy enemy;
+				if (Game.random(10) == 0) { // Chance de 1 em 10
+					enemy = new EnemyStrong(x * TILE_SIZE + i * 32, y * TILE_SIZE, 32, 32, Entity.ENEMY_EN);
+					enemy.setMask(7, 0, 18, 32);
+				} else {
+					enemy = new EnemyNormal(x * TILE_SIZE + i * 32, y * TILE_SIZE, 32, 32, Entity.ENEMY_EN);
+					enemy.setMask(4, 10, 24, 16);
+				}
+				Game.enemies.add(enemy);
+				totalZumbisGerados++; // Incrementa o contador de zumbis gerados
+			}
+			System.out.println("x");
+			System.out.println(x * TILE_SIZE);
+			atualizarContadorHordas();
+		} else {
+			// Gera apenas um zumbi
+			int x, y;
+			do {
+				x = Game.random(WIDTH);
+				y = Game.random(HEIGHT);
+			} while (!isFree(x * TILE_SIZE, y * TILE_SIZE));
+
+			// Decide aleatoriamente entre inimigo normal e forte
+			Enemy enemy;
+			if (Game.random(10) == 0) { // Chance de 1 em 10
+				enemy = new EnemyStrong(x * TILE_SIZE, y * TILE_SIZE, 32, 32, Entity.ENEMY_EN);
+				enemy.setMask(7, 0, 18, 32);
+			} else {
+				enemy = new EnemyNormal(x * TILE_SIZE, y * TILE_SIZE, 32, 32, Entity.ENEMY_EN);
+				enemy.setMask(4, 10, 24, 16);
+			}
+			Game.enemies.add(enemy);
+			totalZumbisGerados++; // Incrementa o contador de zumbis gerados
+		}
+	}
+
+	// Método para atualizar o contador de hordas
+	public void atualizarContadorHordas() {
+		contadorHordas++;
 	}
 
 	public static boolean isDoor() {
@@ -156,6 +266,27 @@ public class World {
 	public static void troca() {
 		tiles[xDoor + (yDoor * WIDTH)] = new Tilefloor(xDoor * TILE_SIZE, yDoor * TILE_SIZE, TILE_SIZE, TILE_SIZE,
 				Tile.TILE_FLOOR);
+	}
+
+	public static boolean isFree(int xNext, int yNext) {
+		int x1 = 0, y1 = 0;
+
+		// Verifica se x1 e y1 estão dentro dos limites da matriz tiles
+		if (x1 < 0 || x1 >= WIDTH || y1 < 0 || y1 >= HEIGHT) {
+			return false; // Fora dos limites, não livre
+		}
+
+//		System.out.println(tiles[x1 + (y1*World.WIDTH)]);
+		if (tiles[x1 + (y1 * World.WIDTH)] instanceof Tilewall) {
+			return false; // É uma parede
+		} else if (tiles[x1 + (y1 * World.WIDTH)] instanceof Tiledoor) {
+			xDoor = x1;
+			yDoor = y1;
+			isDoor = true;
+			return false;
+		} else {
+			return true; // Livre
+		}
 	}
 
 	public static boolean isFree(int xNext, int yNext, String dir) {
@@ -174,17 +305,21 @@ public class World {
 			x1 = xNext / TILE_SIZE;
 			y1 = (yNext) / TILE_SIZE;
 		}
+		// Verifica se x1 e y1 estão dentro dos limites da matriz tiles
+		if (x1 < 0 || x1 >= WIDTH || y1 < 0 || y1 >= HEIGHT) {
+			return false; // Fora dos limites, não livre
+		}
+
 //		System.out.println(tiles[x1 + (y1*World.WIDTH)]);
 		if (tiles[x1 + (y1 * World.WIDTH)] instanceof Tilewall) {
-//			System.out.println("é parede");
-			return false;
+			return false; // É uma parede
 		} else if (tiles[x1 + (y1 * World.WIDTH)] instanceof Tiledoor) {
 			xDoor = x1;
 			yDoor = y1;
 			isDoor = true;
 			return false;
 		} else {
-			return true;
+			return true; // Livre
 		}
 	}
 
@@ -192,20 +327,20 @@ public class World {
 		Game.entities.clear();
 		Game.balas.clear();
 		Game.tiledoors.clear();
-		Game.enemies.clear();
 		Game.itens.clear();
 		Game.frutas.clear();
+		Game.enemies.clear();
 		Game.tiledoors = new ArrayList<Tiledoor>();
 		Game.entities = new ArrayList<Entity>();
 		Game.balas = new ArrayList<Bala>();
-		Game.enemies = new ArrayList<Enemy>();
 		Game.itens = new ArrayList<Item>();
 		Game.frutas = new ArrayList<Fruta>();
+		Game.enemies = new ArrayList<Enemy>();
 		Game.spritesheet = new Spritesheet("/spritesheet.png");
 		Game.spritesheet_Walls = new Spritesheet("/spritesheet_Walls.png");
 		Game.spritesheet_Player = new Spritesheet("/spritesheet_Player.png");
 		Game.player = new Player(336, 336, 112, 112, Game.spritesheet_Player.getSprite(0, 112, 112, 112));
-		Game.world = new World("/" + fase);
+		Game.world = new World(fase);
 		Game.entities.add(Game.player);
 		return;
 	}

@@ -66,4 +66,10 @@ public class Maca extends Fruta {
 		// Crie uma nova instância do subtipo de item usando o construtor de cópia
 		return new Maca(this);
 	}
+
+	@Override
+	public void comer(Item item) {
+		// TODO Auto-generated method stub
+		
+	}
 }
