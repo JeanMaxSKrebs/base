@@ -8,6 +8,8 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -61,6 +63,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	public static Spritesheet spritesheet_Doors;
 	public static Spritesheet spritesheet_Foods;
 	public static Spritesheet spritesheet_Fruits;
+	public static Spritesheet spritesheet_Trees;
 	public static Spritesheet spritesheet_Player;
 
 	public static Player player;
@@ -108,6 +111,13 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		this.setPreferredSize(new Dimension(getWIDTH() * getSCALE(), getHEIGHT() * getSCALE()));
 
 		initFrame();
+		this.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				ui.mouseClicked(e);
+				System.out.println("teste clique");
+			}
+		});
+		this.requestFocusInWindow();
 		ui = new UI();
 		image = new BufferedImage(getWIDTH(), getHEIGHT(), BufferedImage.TYPE_INT_RGB);
 
@@ -128,6 +138,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		spritesheet_Doors = new Spritesheet("/spritesheet_Doors.png");
 		spritesheet_Foods = new Spritesheet("/spritesheet_Foods.png");
 		spritesheet_Fruits = new Spritesheet("/spritesheet_Fruits.png");
+		spritesheet_Trees = new Spritesheet("/spritesheet_Trees.png");
 		spritesheet_Player = new Spritesheet("/spritesheet_Player.png");
 
 		player = new Player(0, 0, 112, 112, spritesheet_Player.getSprite(0, 112, 112, 112));
@@ -264,7 +275,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 				restartGame = false;
 				previousGameState = gameState;
 				gameState = "NORMAL";
-				String newWorld = "INICIAL" + ".png";
+				String newWorld = ("/" + ILHA + ".png");
 				World.restartGame(newWorld);
 
 			}
@@ -320,13 +331,13 @@ public class Game extends Canvas implements Runnable, KeyListener {
 			Tiledoor t = tiledoors.get(i);
 			t.render(g);
 		}
-		
+
 //		//render enemies
 		for (int i = 0; i < enemies.size(); i++) {
 			Enemy e = enemies.get(i);
 			e.render(g);
 		}
-		
+
 		// render balas
 		for (int i = 0; i < balas.size(); i++) {
 			balas.get(i).render(g);
@@ -420,6 +431,12 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	@Override
 	public void keyTyped(KeyEvent e) {
 
+	}
+
+	// Método para lidar com os eventos de mouse
+	public void mouseClicked(MouseEvent e) {
+		ui.mouseClicked(e);
+		System.out.println("teste clque");
 	}
 
 	public void keyPressed(KeyEvent e) {
@@ -527,12 +544,16 @@ public class Game extends Canvas implements Runnable, KeyListener {
 
 			}
 			if (e.getKeyCode() == KeyEvent.VK_K) {
-				movimentarEnemys = true;
+				movimentarEnemys = !movimentarEnemys;
 			}
-			
+
 			if (e.getKeyCode() == KeyEvent.VK_R) {
 				String newWorld = "/" + ILHA + ".png";
 				World.restartGame(newWorld);
+			}
+
+			if (e.getKeyCode() == KeyEvent.VK_CAPS_LOCK) {
+				player.run = true;
 			}
 		}
 
@@ -551,10 +572,10 @@ public class Game extends Canvas implements Runnable, KeyListener {
 			player.left = false;
 		}
 
-		if (e.getKeyCode() == KeyEvent.VK_K) {
-			movimentarEnemys = false;
+		if (e.getKeyCode() == KeyEvent.VK_CAPS_LOCK) {
+			player.run = false;
 		}
-		
+
 		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 			player.coletando = false;
 		}

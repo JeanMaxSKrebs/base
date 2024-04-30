@@ -1,5 +1,6 @@
 package entities;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -24,10 +25,16 @@ import world.World;
 
 public class Player extends Entity {
 
+	public boolean run = false;
 	public boolean left, right, up, down;
-	public int down_dir = 1, left_dir = 2, right_dir = 3, up_dir = 4;
+	public int down_dir = 1, left_dir = 2, right_dir = 3, up_dir = 4, dirNone = 5;
 	public int dir = 1;
-	public static double speed = 12;
+	public static double velocidadeMinima = 3;
+	public static double velocidadeMaxima = 15;
+	public static double normalSpeed = 8;
+	public static double speed = normalSpeed;
+	private static double diagonalSpeed = speed / Math.sqrt(2);
+	private static double speedAceleracao = 0.05;
 	private static int keys = 0;
 	private static int specialKeys = 0;
 
@@ -44,17 +51,30 @@ public class Player extends Entity {
 
 	private int qtdSprites = 4;
 	private int frames = 0, maxFrames = 20, index = 0, maxIndex = (qtdSprites - 1);
+	private int qtdSpritesOcioso = 4;
+	private int framesOcioso = 0, maxFramesOcioso = 20, indexOcioso = 0, maxIndexOcioso = (qtdSpritesOcioso - 1);
 	private boolean moved;
 
+	private BufferedImage[] ocioso;
 	private BufferedImage[] rightPlayer;
 	private BufferedImage[] leftPlayer;
 	private BufferedImage[] downPlayer;
 	private BufferedImage[] upPlayer;
 
 	public double life = 100;
+	public static double minLife = 0;
 	public static double maxLife = 100;
-	public double stamine = 0;
+	public double stamine = 100;
+	public static double minStamine = 0;
 	public static double maxStamine = 100;
+	public static double gastoStamine = 0.065;
+	public static double regeneracaoStamine = 0.01;
+	public double hunger = 100;
+	public static double minHunger = 0;
+	public static double maxHunger = 100;
+	public double thirsth = 100;
+	public static double minThirsth = 0;
+	public static double maxThirsth = 100;
 	public static int inventario = 32;
 
 	public boolean usingPower = false;
@@ -86,8 +106,7 @@ public class Player extends Entity {
 		leftPlayer = new BufferedImage[qtdSprites];
 		upPlayer = new BufferedImage[qtdSprites];
 		downPlayer = new BufferedImage[qtdSprites];
-
-//		public int down_dir = 1, left_dir = 2, right_dir = 3, up_dir = 4;
+		ocioso = new BufferedImage[qtdSpritesOcioso];
 
 		for (int i = 0; i < qtdSprites; i++) {
 			leftPlayer[i] = Game.spritesheet_Player.getSprite((i * 112), 112 * left_dir, 112, 112);
@@ -102,6 +121,10 @@ public class Player extends Entity {
 
 		for (int i = 0; i < qtdSprites; i++) {
 			downPlayer[i] = Game.spritesheet_Player.getSprite((i * 112), 112 * down_dir, 112, 112);
+		}
+
+		for (int i = 0; i < qtdSpritesOcioso; i++) {
+			ocioso[i] = Game.spritesheet_Player.getSprite((i * 112), 112 * dirNone, 112, 112);
 		}
 
 	}
@@ -133,8 +156,8 @@ public class Player extends Entity {
 	}
 
 	public boolean iamDead() {
-		if (life <= 0) {
-			life = 0;
+		if (life <= minLife) {
+			life = minLife;
 			return true;
 		}
 
@@ -149,10 +172,10 @@ public class Player extends Entity {
 			if (item.getClass().equals(newItem.getClass())) {
 				if (item.getQuantidade() >= 1) {
 					item.decrementQuantity();
-				      if (item instanceof Comida) { // Verifica se o item é uma instância de Comida
-			                Comida comida = (Comida) item; // Faz o cast para Comida
-			                this.comer(comida); // Executa a ação de comer
-			            }
+					if (item instanceof Comida) { // Verifica se o item é uma instância de Comida
+						Comida comida = (Comida) item; // Faz o cast para Comida
+						this.comer(comida); // Executa a ação de comer
+					}
 				}
 				// Remove o item existente se ele for o ultimo
 				if (item.getQuantidade() == 0) {
@@ -165,7 +188,7 @@ public class Player extends Entity {
 	}
 
 	private void comer(Item item) {
-		
+
 	}
 
 	public void dropar(Item newItem) {
@@ -256,7 +279,7 @@ public class Player extends Entity {
 
 						if (i instanceof BagPack) {
 							hasBagpack = true;
-							speed = 10;
+							normalSpeed = normalSpeed - 1;
 							inventario = ((BagPack) i).getQuantidade();
 
 							Game.itens.remove(j);
@@ -347,7 +370,17 @@ public class Player extends Entity {
 		return itemCount;
 	}
 
+	int teste = 0;
+
 	public void tick() {
+		if (teste == 0) {
+			teste++;
+//			System.out.println(speed);
+//			System.out.println(diagonalSpeed);
+		} else {
+//			System.out.println(speed);
+//			System.out.println(diagonalSpeed);
+		}
 		if (atirar) {
 			atirar = false;
 			if (balas > 0) {
@@ -372,68 +405,9 @@ public class Player extends Entity {
 			}
 		}
 
-		setMoved(false);
+		correndo();
 
-		int midy = (int) (y + masky + mheight / 2);
-		int plusy = (int) (y + masky + mheight);
-		int minusy = (int) (y + masky);
-
-		int midx = (int) (x + maskx + mwidth / 2);
-		int plusx = (int) (x + maskx + mwidth);
-		int minusx = (int) (x + maskx);
-
-		if (right) {
-			dir = right_dir;
-			if (World.isFree(plusx + (int) speed, minusy, "right") && World.isFree(plusx + (int) speed, midy, "right")
-					&& World.isFree(plusx + (int) speed, plusy, "right")) {
-				x += speed;
-				setMoved(true);
-			} else if (World.isDoor()) {
-				checkDoor();
-			}
-		}
-
-		if (left) {
-			dir = left_dir;
-			if (World.isFree(minusx - (int) speed, minusy, "left") && World.isFree(minusx - (int) speed, midy, "left")
-					&& World.isFree(minusx - (int) speed, plusy, "left")) {
-				x -= speed;
-				setMoved(true);
-			} else if (World.isDoor()) {
-				checkDoor();
-			}
-		}
-
-		if (down) {
-			dir = down_dir;
-			if (World.isFree(midx, plusy + (int) speed, "down") && World.isFree(minusx, plusy + (int) speed, "down")
-					&& World.isFree(plusx, plusy + (int) speed, "down")) {
-				y += speed;
-				setMoved(true);
-			} else if (World.isDoor()) {
-				checkDoor();
-			}
-		}
-
-		if (up) {
-			dir = up_dir;
-			if (World.isFree(midx, minusy, "up") && World.isFree(minusx, minusy - (int) speed, "up")
-					&& World.isFree(plusx, minusy - (int) speed, "up")) {
-				y -= speed;
-				setMoved(true);
-			} else if (World.isDoor()) {
-				checkDoor();
-			}
-		}
-		if (moved) {
-			frames++;
-			if (frames == maxFrames) {
-				frames = 0;
-				index++;
-				if (index > maxIndex)
-					index = 0;
-			}
-		}
+		mover();
 
 		checkItems();
 
@@ -447,6 +421,165 @@ public class Player extends Entity {
 
 		Camera.x = Camera.clamp(this.getX() - (Game.getWIDTH() / 2), 0, World.WIDTH * 112 - Game.getWIDTH());
 		Camera.y = Camera.clamp(this.getY() - (Game.getHEIGHT() / 2), 0, World.HEIGHT * 112 - Game.getHEIGHT());
+	}
+
+	private void correndo() {
+		if (up || down || left || right) {
+			if (run) {
+				if (stamine >= minStamine) {
+					stamine = stamine - gastoStamine;
+				}
+
+				if (stamine >= 5) {
+					if (speed < velocidadeMaxima) {
+						speed = speed + speedAceleracao;
+					}
+					if (speed >= velocidadeMaxima) {
+						speed = velocidadeMaxima;
+					}
+				} else {
+					speed = speed - speedAceleracao;
+					if (speed < normalSpeed) {
+						speed = normalSpeed;
+					}
+				}
+
+			} else {
+				if (stamine < maxStamine) {
+					stamine = stamine + regeneracaoStamine;
+				}
+				speed = speed - speedAceleracao;
+				if (speed < normalSpeed) {
+					speed = normalSpeed;
+				}
+			}
+
+			diagonalSpeed = speed / Math.sqrt(2);
+		} else {
+			if (stamine < maxStamine) {
+				stamine = stamine + regeneracaoStamine;
+			}
+		}
+	}
+
+	private void mover() {
+
+		setMoved(false);
+
+		int plusy = (int) (y + masky + mheight);
+		int midy = (int) (y + masky + mheight / 2);
+		int minusy = (int) (y + masky);
+
+		int midx = (int) (x + maskx + mwidth / 2);
+		int plusx = (int) (x + maskx + mwidth);
+		int minusx = (int) (x + maskx);
+
+		// Define as variáveis para as direções diagonais
+		boolean upLeft = up && left;
+		boolean upRight = up && right;
+		boolean downLeft = down && left;
+		boolean downRight = down && right;
+
+//		if (upLeft || upRight || downLeft || downRight) {
+//			System.out.println(upLeft);
+//			System.out.println(upRight);
+//			System.out.println(downLeft);
+//			System.out.println(downRight);
+//		}
+
+		// Move o jogador nas direções diagonais
+		if (upLeft) {
+			dir = up_dir;
+			if (World.isFree(minusx, minusy - diagonalSpeed, "up")
+					&& World.isFree(minusx - diagonalSpeed, minusy, "left")) {
+				x -= diagonalSpeed;
+				y -= diagonalSpeed;
+				setMoved(true);
+			}
+		} else if (upRight) {
+			dir = up_dir;
+			if (World.isFree(plusx, minusy - diagonalSpeed, "up")
+					&& World.isFree(plusx + diagonalSpeed, minusy, "right")) {
+				x += diagonalSpeed;
+				y -= diagonalSpeed;
+				setMoved(true);
+			}
+		} else if (downLeft) {
+			dir = down_dir;
+			if (World.isFree(minusx, plusy + diagonalSpeed, "down")
+					&& World.isFree(minusx - diagonalSpeed, plusy, "left")) {
+				x -= diagonalSpeed;
+				y += diagonalSpeed;
+				setMoved(true);
+			}
+		} else if (downRight) {
+			dir = down_dir;
+			if (World.isFree(plusx, plusy + diagonalSpeed, "down")
+					&& World.isFree(plusx + diagonalSpeed, plusy, "right")) {
+				x += diagonalSpeed;
+				y += diagonalSpeed;
+				setMoved(true);
+			}
+		} else {
+			if (right) {
+				dir = right_dir;
+				if (World.isFree(plusx + (int) speed, minusy, "right")
+						&& World.isFree(plusx + (int) speed, midy, "right")
+						&& World.isFree(plusx + (int) speed, plusy, "right")) {
+					x += speed;
+					setMoved(true);
+				} else if (World.isDoor()) {
+					checkDoor();
+				}
+			} else if (left) {
+				dir = left_dir;
+				if (World.isFree(minusx - (int) speed, minusy, "left")
+						&& World.isFree(minusx - (int) speed, midy, "left")
+						&& World.isFree(minusx - (int) speed, plusy, "left")) {
+					x -= speed;
+					setMoved(true);
+				} else if (World.isDoor()) {
+					checkDoor();
+				}
+			}
+
+			if (down) {
+				dir = down_dir;
+				if (World.isFree(midx, plusy + (int) speed, "down") && World.isFree(minusx, plusy + (int) speed, "down")
+						&& World.isFree(plusx, plusy + (int) speed, "down")) {
+					y += speed;
+					setMoved(true);
+				} else if (World.isDoor()) {
+					checkDoor();
+				}
+			} else if (up) {
+				dir = up_dir;
+				if (World.isFree(midx, minusy, "up") && World.isFree(minusx, minusy - (int) speed, "up")
+						&& World.isFree(plusx, minusy - (int) speed, "up")) {
+					y -= speed;
+					setMoved(true);
+				} else if (World.isDoor()) {
+					checkDoor();
+				}
+			}
+			if (moved) {
+				frames++;
+				if (frames == maxFrames) {
+					frames = 0;
+					index++;
+					if (index > maxIndex)
+						index = 0;
+				}
+			} else {
+				framesOcioso++;
+				if (framesOcioso == maxFramesOcioso) {
+					framesOcioso = 0;
+					indexOcioso++;
+					if (indexOcioso > maxIndexOcioso)
+						indexOcioso = 0;
+				}
+			}
+		}
 	}
 
 	public void render(Graphics g) {
@@ -469,11 +602,14 @@ public class Player extends Entity {
 			g.drawImage(downPlayer[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
 		}
 
-//		// Desenha a caixa delimitadora
+		if (dir == dirNone) {
+			g.drawImage(ocioso[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
+		}
+////		// Desenha a caixa delimitadora
 //		g.setColor(Color.pink);
 //		g.fillRect(this.getX() + maskx - Camera.x, this.getY() + masky - Camera.y, mwidth, mheight);
-//
-//		// Desenha a borda da caixa delimitadora
+////
+////		// Desenha a borda da caixa delimitadora
 //		g.setColor(Color.orange);
 //		g.drawRect(this.getX() + maskx - Camera.x, this.getY() + masky - Camera.y, mwidth, mheight);
 	}
@@ -482,8 +618,8 @@ public class Player extends Entity {
 		this.life += amount;
 
 		// Ensure health doesn't exceed maximum
-		if (this.life > 100) {
-			this.life = 100;
+		if (this.life > maxLife) {
+			this.life = maxLife;
 		}
 	}
 

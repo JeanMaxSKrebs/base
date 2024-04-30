@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.text.SimpleDateFormat;
 import java.util.Iterator;
@@ -21,28 +23,19 @@ public class UI {
 	int frame;
 	private final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm"); // Time format (hours:minutes)
 	public boolean mensagem;
+	public boolean renderBars = true;
 
 	public void render(Graphics g) {
-		int height = (Game.getHEIGHT() * Game.getSCALE());
-		int width = (Game.getWIDTH() * Game.getSCALE());
 
-		// Health bar
-		int xHealthBar = 15;
-		int yHealthBar = 15;
-		int widthHealthBar = 100 * 2;
-		int heightHealthBar = 30;
-		g.setColor(Color.black);
-		g.fillRect(xHealthBar - 5, yHealthBar - 5, (widthHealthBar + 10), heightHealthBar + 10);
-		g.setColor(Color.green);
-		g.fillRect(xHealthBar, yHealthBar, (int) ((Game.player.life / Player.maxLife) * widthHealthBar),
-				heightHealthBar);
-		g.setColor(Color.white);
-		int tamFont = 24;
-		g.setFont(new Font("roboto", Font.BOLD, tamFont));
-		String stringHealthBar = (int) (Game.player.life) + " / " + (int) (Player.maxLife);
-		int tamString = stringHealthBar.length();
-		g.drawString((int) (Game.player.life) + " / " + (int) (Player.maxLife), widthHealthBar / 2 - tamString * 3,
-				heightHealthBar + tamFont / 3);
+		renderHealthBar(g);
+		if (renderBars) {
+			renderStaminehBar(g);
+			renderHungerhBar(g);
+			renderThirsthBar(g);
+			renderShowBar(g);
+		} else {
+			renderShowBar(g);
+		}
 
 		// Formatação do tempo
 		String formattedTime = String.format("%02d:%02d", Tempo.hours, Tempo.minutes);
@@ -77,12 +70,7 @@ public class UI {
 //		quadroDireito();
 
 //		System.out.println("FPS: " + Game.FPS);
-
-		// frutas da UI
 		g.setColor(Color.black);
-		g.drawString("UVA:  " + Game.player.countFrutaEspecifica("UVA"), 0, Game.getHEIGHT() - 65);
-		g.drawString("MAÇÃS:  " + Game.player.countFrutaEspecifica("MACA"), 0, Game.getHEIGHT() - 55);
-		g.drawString("Frutas:  " + Player.getFrutasColetadas().size(), 0, Game.getHEIGHT() - 45);
 		g.drawString("Comidas:  " + Player.getComidasColetadas().size(), 0, Game.getHEIGHT() - 35);
 		g.drawString("Itens:  " + Player.getItens().size(), 0, Game.getHEIGHT() - 25);
 		g.drawString("Inventário:  Press I", 0, Game.getHEIGHT() - 15);
@@ -134,7 +122,7 @@ public class UI {
 			g.setColor(new Color(155, 155, 155));
 			g.fillRect(rectX, rectY, rectWidth, rectHeight); // Desenhar o retângulo
 
-			int progressoBarraWidth =  Game.player.tempoEspera;
+			int progressoBarraWidth = Game.player.tempoEspera;
 
 			g.setColor(new Color(0, 0, 0)); // preto
 			g.drawRect(rectX, rectY, rectWidth, rectHeight); // Desenhar a borda
@@ -240,6 +228,164 @@ public class UI {
 			}
 		}
 
+	}
+
+	private void renderBarrinha(Graphics g, int xBar, int yBar, int widthBar, int heightBar) {
+		g.setColor(Color.yellow);
+		g.fillRect(xBar, yBar, (int) ((Game.player.stamine / Player.maxStamine) * widthBar),
+				heightBar/3);
+		g.setColor(new Color(204, 86, 22));
+		g.fillRect(xBar, yBar+heightBar/3, (int) ((Game.player.hunger / Player.maxHunger) * widthBar),
+				heightBar/3);
+		g.setColor(Color.blue);
+		g.fillRect(xBar, yBar+heightBar/3*2, (int) ((Game.player.thirsth / Player.maxThirsth) * widthBar),
+				heightBar/3);
+	}
+	private void renderShowBar(Graphics g) {
+		// Desenhar a barrinha
+
+		String stringBar = "vazio";
+		int xBar = 33;
+		int yBar = 140;
+		int widthBar = 80 * 2;
+		int heightBar = 20;
+		g.setColor(Color.black);
+		if (renderBars) {
+			yBar = 140;
+			stringBar = "↑";
+			g.fillRect(xBar - 3, yBar - 3, (widthBar + 6), heightBar + 6);
+			g.setColor(Color.GRAY);
+			g.fillRect(xBar, yBar, widthBar, heightBar);
+		} else {
+			yBar = 50;
+			stringBar = "";
+			g.fillRect(xBar - 3, yBar - 3, (widthBar + 6), heightBar + 5);
+			renderBarrinha(g, xBar, yBar, widthBar, heightBar);
+		}
+
+		
+
+		g.setColor(Color.black); // Black
+		int tamFont = 16;
+		g.setFont(new Font("Calibri", Font.BOLD, tamFont));
+
+		g.drawString(stringBar, xBar + widthBar / 2 - 5, yBar + heightBar - 5);
+	}
+
+	private void renderThirsthBar(Graphics g) {
+		int height = (Game.getHEIGHT() * Game.getSCALE());
+		int width = (Game.getWIDTH() * Game.getSCALE());
+
+		// Health bar
+		int xThirsthBar = 33;
+		int yThirsthBar = 111;
+		int widthThirsthBar = 80 * 2;
+		int heightThirsthBar = 20;
+		g.setColor(Color.black);
+		g.fillRect(xThirsthBar - 3, yThirsthBar - 3, (widthThirsthBar + 6), heightThirsthBar + 6);
+		g.setColor(Color.blue);
+		g.fillRect(xThirsthBar, yThirsthBar, (int) ((Game.player.thirsth / Player.maxThirsth) * widthThirsthBar),
+				heightThirsthBar);
+		g.setColor(new Color(0, 0, 128)); // Black-Blue
+		int tamFont = 16;
+		g.setFont(new Font("roboto", Font.BOLD, tamFont));
+		String stringThirsthBar = (int) (Game.player.thirsth) + " / " + (int) (Player.maxThirsth);
+		int tamString = stringThirsthBar.length();
+		g.drawString((int) (Game.player.thirsth) + " / " + (int) (Player.maxThirsth),
+				xThirsthBar + widthThirsthBar / 3 - tamString / 2, yThirsthBar + heightThirsthBar - tamString / 2);
+
+	}
+
+	private void renderHungerhBar(Graphics g) {
+		int height = (Game.getHEIGHT() * Game.getSCALE());
+		int width = (Game.getWIDTH() * Game.getSCALE());
+
+		// Hunger bar
+		int xHungerhBar = 33;
+		int yHungerhBar = 83;
+		int widthHungerhBar = 80 * 2;
+		int heightHungerhBar = 20;
+		g.setColor(Color.black);
+		g.fillRect(xHungerhBar - 3, yHungerhBar - 3, (widthHungerhBar + 6), heightHungerhBar + 6);
+		g.setColor(new Color(204, 86, 22));
+		g.fillRect(xHungerhBar, yHungerhBar, (int) ((Game.player.hunger / Player.maxHunger) * widthHungerhBar),
+				heightHungerhBar);
+		g.setColor(new Color(201, 154, 66));
+		int tamFont = 16;
+		g.setFont(new Font("roboto", Font.BOLD, tamFont));
+		String stringHungerBar = (int) (Game.player.hunger) + " / " + (int) (Player.maxHunger);
+		int tamString = stringHungerBar.length();
+		g.drawString((int) (Game.player.hunger) + " / " + (int) (Player.maxHunger),
+				xHungerhBar + widthHungerhBar / 3 - tamString / 2, yHungerhBar + heightHungerhBar - tamString / 2);
+
+	}
+
+	private void renderStaminehBar(Graphics g) {
+		int height = (Game.getHEIGHT() * Game.getSCALE());
+		int width = (Game.getWIDTH() * Game.getSCALE());
+
+		// Stamine bar
+		int xStaminehBar = 33;
+		int yStaminehBar = 55;
+		int widthStaminehBar = 80 * 2;
+		int heightStaminehBar = 20;
+		g.setColor(Color.black);
+		g.fillRect(xStaminehBar - 3, yStaminehBar - 3, (widthStaminehBar + 6), heightStaminehBar + 6);
+		g.setColor(Color.yellow);
+		g.fillRect(xStaminehBar, yStaminehBar, (int) ((Game.player.stamine / Player.maxStamine) * widthStaminehBar),
+				heightStaminehBar);
+		g.setColor(new Color(168, 153, 12)); // Black-Yellow
+		int tamFont = 16;
+		g.setFont(new Font("roboto", Font.BOLD, tamFont));
+		String stringStamineBar = (int) (Game.player.stamine) + " / " + (int) (Player.maxStamine);
+		int tamString = stringStamineBar.length();
+		g.drawString((int) (Game.player.stamine) + " / " + (int) (Player.maxStamine),
+				xStaminehBar + widthStaminehBar / 3 - tamString / 2, yStaminehBar + heightStaminehBar - tamString / 2);
+
+	}
+
+	private void renderHealthBar(Graphics g) {
+		int height = (Game.getHEIGHT() * Game.getSCALE());
+		int width = (Game.getWIDTH() * Game.getSCALE());
+
+		// Health bar
+		int xHealthBar = 15;
+		int yHealthBar = 15;
+		int widthHealthBar = 100 * 2;
+		int heightHealthBar = 30;
+		g.setColor(Color.black);
+		g.fillRect(xHealthBar - 5, yHealthBar - 5, (widthHealthBar + 10), heightHealthBar + 10);
+		g.setColor(Color.green);
+		g.fillRect(xHealthBar, yHealthBar, (int) ((Game.player.life / Player.maxLife) * widthHealthBar),
+				heightHealthBar);
+		g.setColor(new Color(0, 128, 0)); // Black-Green
+		int tamFont = 24;
+		g.setFont(new Font("roboto", Font.BOLD, tamFont));
+		String stringHealthBar = (int) (Game.player.life) + " / " + (int) (Player.maxLife);
+		int tamString = stringHealthBar.length();
+		g.drawString((int) (Game.player.life) + " / " + (int) (Player.maxLife), widthHealthBar / 2 - tamString * 4,
+				heightHealthBar + tamFont / 3);
+
+	}
+
+	// Método para lidar com os eventos de mouse
+	public void mouseClicked(MouseEvent e) {
+		// Verificar se o clique ocorreu dentro da área da barrinha
+		int mouseX = e.getX();
+		int mouseY = e.getY();
+		System.out.println(mouseX);
+		System.out.println(mouseY);
+		if (renderBars) {
+			if (mouseX >= 10 && mouseX <= 200 && mouseY >= 10 && mouseY <= 200) {
+				// Se sim, alterar renderBars para true
+				renderBars = !renderBars;
+			}
+		} else {
+			if (mouseX >= 10 && mouseX <= 200 && mouseY >= 10 && mouseY <= 80) {
+				// Se sim, alterar renderBars para true
+				renderBars = !renderBars;
+			}
+		}
 	}
 
 }
