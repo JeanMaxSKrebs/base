@@ -57,7 +57,7 @@ public abstract class Fruta extends Comida implements Comparable<Fruta> {
 		super(outraFruta); // Chama o construtor da superclasse para copiar atributos de Item
 	}
 
-    public abstract void comer(Item item);
+	public abstract void comer(Item item);
 
 
 	public int compareTo(Fruta outraFruta) {

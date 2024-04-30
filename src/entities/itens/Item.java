@@ -20,10 +20,6 @@ public abstract class Item extends Entity {
 	public static BufferedImage KEY_EN = Game.spritesheet_Doors.getSprite(112, 0, 112, 112);
 	public static BufferedImage SPECIALKEY_EN = Game.spritesheet_Doors.getSprite(336, 0, 112, 112);
 
-	protected boolean girando;
-
-	protected int frames = 0, maxFrames = 60;
-	protected int index = 1;
 	protected int qtdDirecoes = 3;
 
 	//
@@ -69,20 +65,6 @@ public abstract class Item extends Entity {
 	// Método abstrato para fornecer uma implementação específica nas subclasses, se
 	// necessário
 	public abstract void coletarEspecifico();
-
-	public void girar() {
-		girando = true;
-	}
-
-	public void verificaGiro() {
-		if (girando) {
-			frames++;
-			if (frames == maxFrames) {
-				frames = 0;
-				index = Game.random(qtdDirecoes);
-			}
-		}
-	}
 
 	public BufferedImage getSprite() {
 		return sprite;

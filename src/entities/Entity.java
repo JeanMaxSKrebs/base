@@ -35,6 +35,11 @@ public abstract class Entity {
 	
 	protected int maskx, masky, mwidth, mheight;
 
+	protected boolean girando;
+	protected int frames = 0, maxFrames = 60;
+	protected int index = 1;
+	protected int qtdDirecoes = 3;
+
 	public Entity() {
 		// Lógica de inicialização, se necessário //fruta
 	}
@@ -64,6 +69,20 @@ public abstract class Entity {
 		this.masky = masky;
 		this.mwidth = mwidth;
 		this.mheight = mheight;
+	}
+	
+	public void girar() {
+		girando = true;
+	}
+
+	public void verificaGiro() {
+		if (girando) {
+			frames++;
+			if (frames == maxFrames) {
+				frames = 0;
+				index = Game.random(qtdDirecoes);
+			}
+		}
 	}
 
 	public static boolean isColliding(Entity e1, Entity e2) {

@@ -11,7 +11,10 @@ import entities.Bala;
 import entities.Enemy;
 import entities.EnemyNormal;
 import entities.EnemyStrong;
+import entities.Entity;
 import entities.Player;
+import entities.arvores.Arvore;
+import entities.arvores.RandomArvoreFactory;
 import entities.itens.Item;
 import entities.doors.*;
 import entities.itens.Key;
@@ -39,6 +42,9 @@ public class World {
 	private static final int NUMERO_DE_MACAS = 25;
 	private static final int NUMERO_DE_UVAS = 25;
 
+	private static final int NUMERO_DE_ARVORES = 50;
+
+	private int contadorArvores = 0; // Variável para controlar o contador de hordas
 	private int contadorHordas = 0; // Variável para controlar o contador de hordas
 	private int FREQUENCIA_HORDE = 10; // Definindo a frequência de horda para 10, o que representa 50% de chance
 	private int MAX_HORDE = 10; // Definindo a EM 20 para 10, o que representa 50% de chance
@@ -48,7 +54,10 @@ public class World {
 
 	int totalZumbisGerados = 0; // Variável para armazenar o total de zumbis gerados
 
+	private RandomArvoreFactory arvoreFactory; // Fábrica de árvores
+
 	public World(String path) {
+
 		try {
 			loadMap(path);
 		} catch (Exception e) {
@@ -56,6 +65,7 @@ public class World {
 			e.printStackTrace();
 		}
 		try {
+			arvoreFactory = new RandomArvoreFactory(); // Inicializa a fábrica de árvores
 			spawnEntities();
 		} catch (Exception e) {
 			System.out.println("Erro ao gerar entidades aleatórias.");
@@ -64,10 +74,11 @@ public class World {
 	}
 
 	private void spawnEntities() {
+
 		System.out.println("WIDTH");
 		System.out.println(WIDTH);
-		// Gera aleatoriamente uvas
-		for (int i = 0; i < NUMERO_DE_UVAS; i++) {
+		// Gera aleatoriamente arvores de varios tipos e classes diferentes
+		for (int i = 0; i < NUMERO_DE_ARVORES; i++) {
 //			int x = Game.random(WIDTH);
 //			int y = Game.random(HEIGHT);
 			int x, y;
@@ -76,16 +87,22 @@ public class World {
 				y = Game.random(HEIGHT);
 			} while (!isFree(x * TILE_SIZE, y * TILE_SIZE));
 			if (isFree(x * TILE_SIZE, y * TILE_SIZE)) {
-				Uva uva = new Uva(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE, Fruta.UVA_FR);
-				uva.setMask(11, 8, 48, 48);
-				Game.itens.add(uva);
+
+				// Cria uma árvore aleatória usando a fábrica
+				Arvore arvore = arvoreFactory.createArvore(x * TILE_SIZE, y * TILE_SIZE, 112, 112, null);
+
+				if (arvore != null) {
+					arvore.setMask(11, 8, 48, 48);
+					Game.entities.add(arvore);
+					atualizarContadorArvores();
+				}
 			}
 		}
 
 		// Gera aleatoriamente maçãs
 		for (int i = 0; i < NUMERO_DE_MACAS; i++) {
-//			int x = Game.random(WIDTH);
-//			int y = Game.random(HEIGHT);
+//					int x = Game.random(WIDTH);
+//					int y = Game.random(HEIGHT);
 			int x, y;
 			do {
 				x = Game.random(WIDTH);
@@ -104,6 +121,8 @@ public class World {
 //			System.out.println("totalZumbisGerados");
 //			System.out.println(totalZumbisGerados);
 		}
+		System.out.println("contadorArvores");
+		System.out.println(contadorArvores);
 		System.out.println("contadorHordas");
 		System.out.println(contadorHordas);
 		System.out.println("totalZumbisGerados");
@@ -134,12 +153,14 @@ public class World {
 						tiles[xx + (yy * WIDTH)] = new Tilewall(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE,
 								Tile.TILE_WALL);
 					} else if (pixelAtual == 0xFF7F0037) {
-			            // door
-			            int adjacentPixel = (xx + 1 < WIDTH) ? pixels[(xx + 1) + (yy * WIDTH)] : -1;
-			            if (adjacentPixel == pixelAtual) { // Check right
-			                tiles[xx + (yy * WIDTH)] = new DoubleDoor(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Tile.TILE_WALL, pixelAtual, adjacentPixel);
-			                // Assuming DoubleDoor is a subclass of Door that handles double doors
-			            } else if (pixelAtual == 0xFF7F0037) {
+						// door
+						int adjacentPixel = (xx + 1 < WIDTH) ? pixels[(xx + 1) + (yy * WIDTH)] : -1;
+						if (adjacentPixel == pixelAtual) { // Check right
+							tiles[xx + (yy * WIDTH)] = new DoubleDoor(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE,
+									TILE_SIZE, Tile.TILE_WALL, pixelAtual, adjacentPixel);
+							// Assuming DoubleDoor is a subclass of Door that handles double doors
+						}
+					} else if (pixelAtual == 0xFF7F0037) {
 						// door
 						tiles[xx + (yy * WIDTH)] = new Normaldoor(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE,
 								Tiledoor.TILE_NORMALDOOR);
@@ -159,7 +180,7 @@ public class World {
 						Game.player.setY(yy * TILE_SIZE);
 						Game.player.setWidth(64);
 						Game.player.setHeight(96);
-						Game.player.setMask(20, 10, 64, 96);
+						Game.player.setMask(5, 10, 54, 84);
 
 					} else if (pixelAtual == 0xFF4E3333) {
 						// bagpack
@@ -204,11 +225,15 @@ public class World {
 	private void verificarNovaHorda() {
 
 		if (Game.random(MAX_HORDE) <= MAX_HORDE) {
+			int spacingWidth = 40;
 			int x, y;
+
 			do {
 				x = Game.random(WIDTH);
 				y = Game.random(HEIGHT);
-			} while (!isFree(x * TILE_SIZE, y * TILE_SIZE));
+			} while (!isFree(x * TILE_SIZE, y * TILE_SIZE)
+					|| !isFree(x * TILE_SIZE + (NUMERO_DE_INIMIGOS_POR_HORDE - 1) * spacingWidth,
+							y * TILE_SIZE + (NUMERO_DE_INIMIGOS_POR_HORDE - 1) * spacingWidth));
 
 			// Gera aleatoriamente inimigos para uma nova horda
 			for (int i = 0; i < NUMERO_DE_INIMIGOS_POR_HORDE; i++) {
@@ -216,17 +241,15 @@ public class World {
 				// Decide aleatoriamente entre inimigo normal e forte
 				Enemy enemy;
 				if (Game.random(10) == 0) { // Chance de 1 em 10
-					enemy = new EnemyStrong(x * TILE_SIZE + i * 32, y * TILE_SIZE, 32, 32, Entity.ENEMY_EN);
+					enemy = new EnemyStrong(x * TILE_SIZE + i * spacingWidth, y * TILE_SIZE, 32, 32, Entity.ENEMY_EN);
 					enemy.setMask(7, 0, 18, 32);
 				} else {
-					enemy = new EnemyNormal(x * TILE_SIZE + i * 32, y * TILE_SIZE, 32, 32, Entity.ENEMY_EN);
+					enemy = new EnemyNormal(x * TILE_SIZE + i * spacingWidth, y * TILE_SIZE, 32, 32, Entity.ENEMY_EN);
 					enemy.setMask(4, 10, 24, 16);
 				}
 				Game.enemies.add(enemy);
 				totalZumbisGerados++; // Incrementa o contador de zumbis gerados
 			}
-			System.out.println("x");
-			System.out.println(x * TILE_SIZE);
 			atualizarContadorHordas();
 		} else {
 			// Gera apenas um zumbi
@@ -251,6 +274,11 @@ public class World {
 	}
 
 	// Método para atualizar o contador de hordas
+	public void atualizarContadorArvores() {
+		contadorArvores++;
+	}
+
+	// Método para atualizar o contador de hordas
 	public void atualizarContadorHordas() {
 		contadorHordas++;
 	}
@@ -269,7 +297,8 @@ public class World {
 	}
 
 	public static boolean isFree(int xNext, int yNext) {
-		int x1 = 0, y1 = 0;
+		int x1 = (xNext) / TILE_SIZE;
+		int y1 = yNext / TILE_SIZE;
 
 		// Verifica se x1 e y1 estão dentro dos limites da matriz tiles
 		if (x1 < 0 || x1 >= WIDTH || y1 < 0 || y1 >= HEIGHT) {
@@ -278,6 +307,7 @@ public class World {
 
 //		System.out.println(tiles[x1 + (y1*World.WIDTH)]);
 		if (tiles[x1 + (y1 * World.WIDTH)] instanceof Tilewall) {
+			System.out.println("é uma parede");
 			return false; // É uma parede
 		} else if (tiles[x1 + (y1 * World.WIDTH)] instanceof Tiledoor) {
 			xDoor = x1;
@@ -289,21 +319,21 @@ public class World {
 		}
 	}
 
-	public static boolean isFree(int xNext, int yNext, String dir) {
-		int x1 = 0, y1 = 0;
+	public static boolean isFree(double xNext, double yNext, String dir) {
+		double x1 = 0, y1 = 0;
 
 		if (dir == "right") {
-			x1 = (xNext) / TILE_SIZE;
-			y1 = yNext / TILE_SIZE;
+			x1 = (int) ((xNext) / TILE_SIZE);
+			y1 = (int) (yNext / TILE_SIZE);
 		} else if (dir == "left") {
-			x1 = (xNext) / TILE_SIZE;
-			y1 = yNext / TILE_SIZE;
+			x1 = (int) ((xNext) / TILE_SIZE);
+			y1 = (int) (yNext / TILE_SIZE);
 		} else if (dir == "up") {
-			x1 = xNext / TILE_SIZE;
-			y1 = (yNext) / TILE_SIZE;
+			x1 = (int) (xNext / TILE_SIZE);
+			y1 = (int) ((yNext) / TILE_SIZE);
 		} else if (dir == "down") {
-			x1 = xNext / TILE_SIZE;
-			y1 = (yNext) / TILE_SIZE;
+			x1 = (int) (xNext / TILE_SIZE);
+			y1 = (int) ((yNext) / TILE_SIZE);
 		}
 		// Verifica se x1 e y1 estão dentro dos limites da matriz tiles
 		if (x1 < 0 || x1 >= WIDTH || y1 < 0 || y1 >= HEIGHT) {
@@ -311,11 +341,11 @@ public class World {
 		}
 
 //		System.out.println(tiles[x1 + (y1*World.WIDTH)]);
-		if (tiles[x1 + (y1 * World.WIDTH)] instanceof Tilewall) {
+		if (tiles[(int) x1 + (int) y1 * World.WIDTH] instanceof Tilewall) {
 			return false; // É uma parede
-		} else if (tiles[x1 + (y1 * World.WIDTH)] instanceof Tiledoor) {
-			xDoor = x1;
-			yDoor = y1;
+		} else if (tiles[(int) x1 + (int) y1 * World.WIDTH] instanceof Tiledoor) {
+			xDoor = (int) x1;
+			yDoor = (int) y1;
 			isDoor = true;
 			return false;
 		} else {
