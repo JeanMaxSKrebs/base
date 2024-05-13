@@ -598,5 +598,11 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		int r = random.nextInt(value);
 		return r;
 	}
+	
+	  // Método random que aceita um intervalo de inteiros
+    public static int random(int min, int max) {
+        Random random = new Random();
+        return random.nextInt(max - min + 1) + min;
+    }
 
 }
