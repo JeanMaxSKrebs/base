@@ -17,8 +17,8 @@ public abstract class Item extends Entity {
 	protected String nome = "Item";
 	protected int quantidade = 0;
 
-	public static BufferedImage KEY_EN = Game.spritesheet_Doors.getSprite(112, 0, 112, 112);
-	public static BufferedImage SPECIALKEY_EN = Game.spritesheet_Doors.getSprite(336, 0, 112, 112);
+	public static BufferedImage SPECIALKEY_EN = Game.spritesheet_Doors.getSprite(112, 0, 112, 112);
+	public static BufferedImage KEY_EN = Game.spritesheet_Doors.getSprite(336, 0, 112, 112);
 
 	protected int qtdDirecoes = 3;
 

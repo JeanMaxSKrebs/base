@@ -12,9 +12,6 @@ public abstract class Entity {
 
 	public static BufferedImage ENEMY_EN = Game.spritesheet.getSprite(0, 224, 32, 32);
 
-	public static BufferedImage KEY_EN = Game.spritesheet_Doors.getSprite(112, 0, 112, 112);
-	public static BufferedImage SPECIALKEY_EN = Game.spritesheet_Doors.getSprite(336, 0, 112, 112);
-
 	public static BufferedImage HPBAG_EN = Game.spritesheet.getSprite(128, 32, 32, 32);
 	public static BufferedImage STAMINEBAG_EN = Game.spritesheet.getSprite(160, 32, 32, 32);
 

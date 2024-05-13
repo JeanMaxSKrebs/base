@@ -24,6 +24,8 @@ public class UI {
 	private final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm"); // Time format (hours:minutes)
 	public boolean mensagem;
 	public boolean renderBars = true;
+	public static boolean usarKey = true;
+	public static String tipoKey = "Vazio";
 
 	public void render(Graphics g) {
 
@@ -44,22 +46,6 @@ public class UI {
 		g.setColor(Color.white);
 		g.setFont(new Font("roboto", Font.BOLD, 40));
 		g.drawString(formattedTime, Game.getWIDTH() / 2 - 50, 40);
-
-//		System.out.println("Game.hours");
-//		System.out.println("Game.minutes");
-//		System.out.println(Game.hours);
-//		System.out.println(Game.minutes);
-
-//		if (Game.player.stamine == Player.getMaxStamine()) {
-//			if (frame >= 10) {
-//				g.setColor(Color.yellow);
-//				g.fillRect(84, 8, 16, 32);
-//				g.setColor(Color.black);
-//				g.fillRect(88, 12, 8, (int) ((Game.player.stamine / Player.maxStamine) * 24));
-//				frame = 0;
-//			}
-//			frame++;
-//		}
 
 		g.setColor(Color.gray);
 		g.fillRect(0, Game.getHEIGHT() - 96, 96, 96);
@@ -228,19 +214,47 @@ public class UI {
 			}
 		}
 
+		if (usarKey) {
+			int rectWidth = (Game.getWIDTH() / 5 * Game.getSCALE()); // Largura do retângulo
+			int rectHeight = (Game.getHEIGHT() / 2 * Game.getSCALE()) / 6; // Altura do retângulo
+			int rectX = (Game.getWIDTH() * Game.getSCALE() - rectWidth) / 2; // Posição X centralizada
+			int rectY = (Game.getHEIGHT() * Game.getSCALE() - rectHeight - 10); // Posição Y centralizada
+
+			g.setColor(new Color(0, 0, 0)); // black
+			int borderWidth = 5; // Espessura da borda
+			for (int i = 0; i < borderWidth; i++) {
+				g.drawRect(rectX - i, rectY - i, rectWidth + (2 * i), rectHeight + (2 * i));
+			}
+			g.setColor(new Color(155, 155, 155));
+			g.fillRect(rectX, rectY, rectWidth, rectHeight); // Desenhar o retângulo
+
+			g.setColor(new Color(0, 0, 0)); // black
+			g.setFont(new Font("roboto", Font.BOLD, 28));
+			
+			int stringWidth = g.getFontMetrics().stringWidth("Usar " + tipoKey);
+
+			if (tipoKey != "Vazio") {
+				g.setFont(new Font("roboto", Font.BOLD, 23));
+				stringWidth -= 40;
+			}
+			int xPos = (Game.getWIDTH() - stringWidth) / 2;
+
+			g.drawString("Usar " + tipoKey, xPos, Game.getHEIGHT() - 25);
+		}
+
 	}
 
 	private void renderBarrinha(Graphics g, int xBar, int yBar, int widthBar, int heightBar) {
 		g.setColor(Color.yellow);
-		g.fillRect(xBar, yBar, (int) ((Game.player.stamine / Player.maxStamine) * widthBar),
-				heightBar/3);
+		g.fillRect(xBar, yBar, (int) ((Game.player.stamine / Player.maxStamine) * widthBar), heightBar / 3);
 		g.setColor(new Color(204, 86, 22));
-		g.fillRect(xBar, yBar+heightBar/3, (int) ((Game.player.hunger / Player.maxHunger) * widthBar),
-				heightBar/3);
+		g.fillRect(xBar, yBar + heightBar / 3, (int) ((Game.player.hunger / Player.maxHunger) * widthBar),
+				heightBar / 3);
 		g.setColor(Color.blue);
-		g.fillRect(xBar, yBar+heightBar/3*2, (int) ((Game.player.thirsth / Player.maxThirsth) * widthBar),
-				heightBar/3);
+		g.fillRect(xBar, yBar + heightBar / 3 * 2, (int) ((Game.player.thirsth / Player.maxThirsth) * widthBar),
+				heightBar / 3);
 	}
+
 	private void renderShowBar(Graphics g) {
 		// Desenhar a barrinha
 
@@ -262,8 +276,6 @@ public class UI {
 			g.fillRect(xBar - 3, yBar - 3, (widthBar + 6), heightBar + 5);
 			renderBarrinha(g, xBar, yBar, widthBar, heightBar);
 		}
-
-		
 
 		g.setColor(Color.black); // Black
 		int tamFont = 16;

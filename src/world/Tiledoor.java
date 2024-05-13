@@ -10,8 +10,8 @@ import entities.Entity;
 
 public abstract class Tiledoor extends Tile implements Door {
 
-	public static BufferedImage TILE_NORMALDOOR = Game.spritesheet_Doors.getSprite(0, 0, 112, 112);
-	public static BufferedImage TILE_SPECIALDOOR = Game.spritesheet_Doors.getSprite(224, 0, 112, 112);
+	public static BufferedImage TILE_NORMALDOOR = Game.spritesheet_Doors.getSprite(224, 0, 112, 112);
+	public static BufferedImage TILE_SPECIALDOOR = Game.spritesheet_Doors.getSprite(0, 0, 112, 112);
 
 	public Tiledoor(int x, int y, int width, int height, BufferedImage sprite) {
 		super(x, y, width, height, sprite);

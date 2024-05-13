@@ -8,6 +8,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import base.Game;
+import entities.arvores.Arvore;
+import entities.doors.Door;
 import entities.itens.Item;
 import entities.itens.Key;
 import entities.itens.SpecialKey;
@@ -18,8 +20,11 @@ import entities.itens.comidas.frutas.Uva;
 import entities.itens.utensilios.BagPack;
 import graficos.UI;
 import menu.Inventory;
+import tempo.Tempo;
+import tempo.Tempo.UnidadeTempo;
 import world.Camera;
 import world.Normaldoor;
+import world.Specialdoor;
 import world.Tiledoor;
 import world.World;
 
@@ -35,8 +40,6 @@ public class Player extends Entity {
 	public static double speed = normalSpeed;
 	private static double diagonalSpeed = speed / Math.sqrt(2);
 	private static double speedAceleracao = 0.05;
-	private static int keys = 0;
-	private static int specialKeys = 0;
 
 	public int premium = 0;
 
@@ -75,6 +78,23 @@ public class Player extends Entity {
 	public double thirsth = 100;
 	public static double minThirsth = 0;
 	public static double maxThirsth = 100;
+
+	// Constantes para o gasto de estamina e fome/sede
+	public double gastoFomeNormal = 0.001;
+	public double gastoFomeCorrendo = 0.005;
+	public double gastoSedeNormal = 0.001;
+	public double gastoSedeCorrendo = 0.005;
+
+	// Constantes para a contagem de tempo de fome/sede
+	public boolean contandoFome = false;
+	public boolean contandoSede = false;
+	// Constantes para o tempoMax de fome/sede
+	public double tempoSemFomeMax = 3;
+	public double tempoSemSedeMax = 3;
+	// Constantes para o dano de fome/sede
+	public double danoFome = 0.1;
+	public double danoSede = 0.01;
+
 	public static int inventario = 32;
 
 	public boolean usingPower = false;
@@ -149,8 +169,7 @@ public class Player extends Entity {
 
 //		System.out.println(danoReal);
 //		System.out.println(life);
-		if (iamDead())
-			Game.gameState = "GAME_OVER";
+		iamDead();
 
 		return true;
 	}
@@ -158,6 +177,7 @@ public class Player extends Entity {
 	public boolean iamDead() {
 		if (life <= minLife) {
 			life = minLife;
+			Game.gameState = "GAME_OVER";
 			return true;
 		}
 
@@ -222,10 +242,10 @@ public class Player extends Entity {
 
 		// Verifica se o item já existe na lista
 		for (Item item : itens) {
-			System.out.println(item.getClass());
-			System.out.println(newItem.getClass());
-			System.out.println(item.getNome());
-			System.out.println(newItem.getNome());
+//			System.out.println(item.getClass());
+//			System.out.println(newItem.getClass());
+//			System.out.println(item.getNome());
+//			System.out.println(newItem.getNome());
 			if (item.getClass().equals(newItem.getClass())) {
 				item.incrementQuantity(); // Incrementa a quantidade do item existente
 				itemExists = true;
@@ -313,25 +333,41 @@ public class Player extends Entity {
 	}
 
 	public void checkDoor() {
+		
 		for (int i = 0; i < Game.tiledoors.size(); i++) {
 			Tiledoor t = Game.tiledoors.get(i);
 
 //			System.out.println(Game.tiledoors.size());
 			if (Tiledoor.willCollide(this, t, (int) speed)) {
-//				System.out.println("teste");
-				if (t instanceof Normaldoor) {
-					if (keys > 0) {
-						keys--;
-						Game.tiledoors.remove(i);
-						World.troca();
 
-					}
+				if (t instanceof Normaldoor) {
+					escolhaDoor("Normal Key");
+//					if (keys > 0) {
+//						keys--;
+//						Game.tiledoors.remove(i);
+//						World.troca();
+//
+//					}
+				}
+				if (t instanceof Specialdoor) {
+					escolhaDoor("Special Key");
+//					if (specialKeys > 0) {
+//						specialKeys--;
+//						Game.tiledoors.remove(i);
+//						World.troca();
+//
+//					}
 				}
 				return;
 
 			}
 
 		}
+	}
+
+	private void escolhaDoor(String tipo) {
+		UI.usarKey = true;
+		UI.tipoKey = tipo;
 	}
 
 	public int countFrutaEspecifica(String nome) {
@@ -405,10 +441,12 @@ public class Player extends Entity {
 			}
 		}
 
+		fome();
+		sede();
 		correndo();
-
 		mover();
-
+		checkCollisions();
+		checkStatus();
 		checkItems();
 
 		if (tempoEspera <= 0) {
@@ -421,6 +459,122 @@ public class Player extends Entity {
 
 		Camera.x = Camera.clamp(this.getX() - (Game.getWIDTH() / 2), 0, World.WIDTH * 112 - Game.getWIDTH());
 		Camera.y = Camera.clamp(this.getY() - (Game.getHEIGHT() / 2), 0, World.HEIGHT * 112 - Game.getHEIGHT());
+		iamDead();
+	}
+	
+	public void checkCollisions() {
+	    checkTreeCollision();
+	    checkEnemyCollision();
+	    checkItemCollision();
+	    checkBulletCollision();
+	}
+
+	private void checkTreeCollision() {
+	    for (Arvore arvore : Game.arvores) {
+	        if (Entity.isColliding(this, arvore)) {
+	            // Lógica de colisão com a árvore
+	        }
+	    }
+	}
+
+	private void checkEnemyCollision() {
+	    for (Enemy enemy : Game.enemies) {
+	        if (Entity.isColliding(this, enemy)) {
+	            // Lógica de colisão com o inimigo
+	        }
+	    }
+	}
+
+	private void checkItemCollision() {
+	    for (Item item : Game.itens) {
+	        if (Entity.isColliding(this, item)) {
+	            // Lógica de colisão com o item
+	        }
+	    }
+	}
+
+	private void checkBulletCollision() {
+	    for (Bala bala : Game.balas) {
+	        if (Entity.isColliding(this, bala)) {
+	            // Lógica de colisão com a bala
+	        }
+	    }
+	}
+
+	private void checkStatus() {
+
+	}
+
+	void fome() {
+		if (run) {
+			if (hunger > 0) {
+				hunger -= gastoFomeCorrendo * 2;
+			} else {
+				hunger = 0;
+			}
+
+		} else {
+			if (hunger > 0) {
+				hunger -= gastoFomeNormal * 2;
+			} else {
+				hunger = 0;
+			}
+		}
+		if (hunger == 0) {
+			if (contandoFome == false) {
+				Tempo.iniciarContagem("hunger", hunger);
+				contandoFome = true;
+			}
+			if (Tempo.verificarTempo("hunger", 3, Tempo.UnidadeTempo.DIAS, hunger)) {
+				System.out.println("fome");
+				life = life - danoFome;
+			}
+		} else {
+			// Se a fome não estiver em 0, remove a contagem
+			if (contandoFome == true) {
+				Tempo.removerContagem("hunger");
+				contandoFome = false;
+			}
+		}
+	}
+
+	void sede() {
+		if (run) {
+			if (thirsth > 0) {
+				if (stamine < 30)
+					thirsth -= gastoSedeCorrendo * 2;
+				else
+					thirsth -= gastoSedeCorrendo;
+			} else {
+				thirsth = 0;
+			}
+		} else {
+			if (thirsth > 0) {
+				if (stamine < 30)
+					thirsth -= gastoSedeNormal * 2;
+				else
+					thirsth -= gastoSedeNormal;
+			} else {
+				thirsth = 0;
+			}
+		}
+		if (thirsth == 0) {
+			if (contandoSede == false) {
+				Tempo.iniciarContagem("thirsth", thirsth);
+				contandoSede = true;
+			}
+			if (Tempo.verificarTempo("thirsth", 3, Tempo.UnidadeTempo.HORAS, thirsth)) {
+				System.out.println("sede");
+				life = life - danoSede;
+			}
+		} else {
+			if (contandoSede == true) {
+				// Se a sede não estiver em 0, remove a contagem
+				Tempo.removerContagem("thirsth");
+				contandoSede = false;
+			}
+		}
+
 	}
 
 	private void correndo() {
@@ -653,22 +807,6 @@ public class Player extends Entity {
 
 	public void setArmor(int newArmor) {
 		Player.armor = newArmor;
-	}
-
-	public static int getKeys() {
-		return keys;
-	}
-
-	public static void setKeys(int keys) {
-		Player.keys = keys;
-	}
-
-	public static int getSpecialKeys() {
-		return specialKeys;
-	}
-
-	public static void setSpecialKeys(int specialKeys) {
-		Player.specialKeys = specialKeys;
 	}
 
 	public double getStamine() {
