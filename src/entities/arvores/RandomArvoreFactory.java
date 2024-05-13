@@ -8,7 +8,7 @@ import base.Game;
 //Implementação da fábrica que gera aleatoriamente subclasses de Arvore
 public class RandomArvoreFactory implements ArvoreFactory {
 	private static final Class<?>[] ARVORE_CLASSES = new Class<?>[] { Tomateiro.class, Parreira.class,
-			Morangueiro.class, Macieira.class, Meloeiro.class, Batateira.class, Bananeira.class, Melancieira.class
+			Morangueiro.class, Macieira.class, Meloeiro.class, Batateira.class, Bananeira.class, Melancieira.class, Nogueira.class
 			// Adicione mais subclasses aqui, se necessário
 	};
 
@@ -22,7 +22,14 @@ public class RandomArvoreFactory implements ArvoreFactory {
 	        Constructor<?> constructor = arvoreClass.getConstructor(int.class, int.class, int.class, int.class, BufferedImage.class);
 	        
 	        // Cria uma nova instância da classe escolhida com os parâmetros fornecidos
-	        return (Arvore) constructor.newInstance(x, y, width, height, sprite);
+            Arvore arvore = (Arvore) constructor.newInstance(x, y, width, height, sprite);
+            
+	        // Adiciona frutos aleatoriamente (30% de chance de ter frutos)
+            if (Game.random(10) < 3) {
+                arvore.adicionarFrutosAleatoriamente();
+            }
+            return arvore;
+
 	    } catch (Exception e) {
 	        e.printStackTrace();
 	    }

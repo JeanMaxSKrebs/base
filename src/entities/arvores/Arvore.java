@@ -19,17 +19,24 @@ public abstract class Arvore extends Entity {
 	public static BufferedImage BATATEIRA_AR = Game.spritesheet_Trees.getSprite(0, 64 * 6, 64, 64);
 	public static BufferedImage BANANEIRA_AR = Game.spritesheet_Trees.getSprite(0, 64 * 7, 64, 64);
 	public static BufferedImage MELANCIEIRA_AR = Game.spritesheet_Trees.getSprite(0, 64 * 8, 64, 64);
+	public static BufferedImage NOGUEIRA_AR = Game.spritesheet_Trees.getSprite(0, 64 * 8, 64, 64);
 	protected int tamanhoBase = 112;
 
 	// Nomes das frutas
 	private static final String[] NOMES_ARVORES = { "TOMATEIRO", "PARREIRA", "MORANGUEIRO", "MACIEIRA", "MELOEIRO",
-			"BATATEIRA", "BANANEIRA", "MELANCIEIRA" };
+			"BATATEIRA", "BANANEIRA", "MELANCIEIRA", "NOGUEIRA" };
 
 	protected static final String nome = "ÁRVORE";
+	protected int qtdFrutos; // Exemplo: 10 frutos por árvore
 
 	public Arvore(int x, int y, int width, int height, BufferedImage sprite) {
 		super(x, y, width, height, sprite);
+		gerarFrutos();
 	}
+    // Gerar frutos aleatoriamente à bananeira
+	protected abstract void gerarFrutos();
+    // Adiciona frutos aleatoriamente à bananeira
+    public abstract void adicionarFrutosAleatoriamente();
 
 	// Método abstrato que deve ser implementado nas subclasses
 	public abstract void metodoAbstrato();
@@ -53,6 +60,8 @@ public abstract class Arvore extends Entity {
 			return new Bananeira(x, y, width, height, sprite);
 		case 7:
 			return new Melancieira(x, y, width, height, sprite);
+		case 8:
+			return new Nogueira(x, y, width, height, sprite);
 		default:
 			return null;
 

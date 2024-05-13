@@ -4,42 +4,50 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
 import base.Game;
+import entities.itens.comidas.frutas.Melancia;
 import world.Camera;
 
 public class Melancieira extends Arvore {
-	
-	protected static final String nome = "Melancieira";
 
-	private BufferedImage[] spritesMelancieira;
-	
-	public Melancieira(int x, int y, int width, int height, BufferedImage sprite) {
-		super(x, y, width, height, sprite);
-		spritesMelancieira = new BufferedImage[qtdDirecoes];
-		for (int i = 0; i < qtdDirecoes; i++) {
+    protected static final String nome = "Melancieira";
+    protected int qtdFrutos = 1;
 
-			spritesMelancieira[i] = Game.spritesheet_Trees.getSprite(tamanhoBase * i, tamanhoBase*8, tamanhoBase, tamanhoBase);
+    private BufferedImage[] spritesMelancieira;
 
-		}
-	}
-	
-	public void tick() {
+    public Melancieira(int x, int y, int width, int height, BufferedImage sprite) {
+        super(x, y, width, height, sprite);
+        spritesMelancieira = new BufferedImage[qtdDirecoes];
+        for (int i = 0; i < qtdDirecoes; i++) {
+            spritesMelancieira[i] = Game.spritesheet_Trees.getSprite(tamanhoBase * i, tamanhoBase * 8, tamanhoBase, tamanhoBase);
+        }
+    }
 
-		girar();
-		verificaGiro();
+    public void tick() {
+        girar();
+        verificaGiro();
+    }
 
-	}
+    public void render(Graphics g) {
+        g.drawImage(spritesMelancieira[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
+    }
 
-	public void render(Graphics g) {
+    @Override
+    protected void gerarFrutos() {
+        for (int i = 0; i < qtdFrutos; i++) {
+            int melanciaX = this.getX() + Game.random(-this.getWidth() / 2, this.getWidth() / 2);
+            int melanciaY = this.getY() + Game.random(-this.getHeight() / 2, this.getHeight() / 2);
+            Melancia melancia = new Melancia(melanciaX, melanciaY, 16, 16, null);
+            Game.frutas.add(melancia);
+        }
+    }
 
-			g.drawImage(spritesMelancieira[index], this.getX() - Camera.x, this.getY() - Camera.y, null);		
+    @Override
+    public void metodoAbstrato() {
+        // Implementação específica
+    }
 
-//		g.setColor(Color.red);
-//		g.fillRect(this.getX() + maskx - Camera.x, this.getY() + masky - Camera.y, mwidth, mheight);
-	}
-
-	@Override
-	public void metodoAbstrato() {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    public void adicionarFrutosAleatoriamente() {
+        gerarFrutos();
+    }
 }

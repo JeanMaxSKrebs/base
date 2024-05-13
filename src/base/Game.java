@@ -24,6 +24,8 @@ import entities.Bala;
 import entities.Enemy;
 import entities.Entity;
 import entities.Player;
+import entities.arvores.Arvore;
+import entities.doors.Door;
 import entities.itens.Item;
 import entities.itens.comidas.Comida;
 import entities.itens.comidas.frutas.Fruta;
@@ -68,6 +70,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 
 	public static Player player;
 	public static List<Entity> entities;
+	public static List<Arvore> arvores;
 	public static List<Enemy> enemies;
 	public static List<Item> itens;
 	public static List<Comida> comidas;
@@ -128,6 +131,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		enemies = new ArrayList<Enemy>();
 		itens = new ArrayList<Item>();
 		comidas = new ArrayList<Comida>();
+		arvores = new ArrayList<Arvore>();
 		frutas = new ArrayList<Fruta>();
 
 		spritesheet = new Spritesheet("/spritesheet.png");
@@ -251,6 +255,11 @@ public class Game extends Canvas implements Runnable, KeyListener {
 				Fruta e = frutas.get(i);
 				e.tick();
 			}
+			// mecher arvores
+			for (int i = 0; i < arvores.size(); i++) {
+				Arvore e = arvores.get(i);
+				e.tick();
+			}
 			// mudar tiles
 			for (int i = 0; i < tiles.size(); i++) {
 				Tile e = tiles.get(i);
@@ -320,6 +329,11 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		for (int i = 0; i < frutas.size(); i++) {
 			Fruta f = frutas.get(i);
 			f.render(g);
+		}
+//		//render arvores
+		for (int i = 0; i < arvores.size(); i++) {
+			Arvore a = arvores.get(i);
+			a.render(g);
 		}
 		// render tiles
 		for (int i = 0; i < tiles.size(); i++) {
@@ -554,6 +568,15 @@ public class Game extends Canvas implements Runnable, KeyListener {
 
 			if (e.getKeyCode() == KeyEvent.VK_CAPS_LOCK) {
 				player.run = true;
+				player.stamine = 0;
+				player.hunger = 0;
+				player.thirsth = 0;
+			}
+			if (e.getKeyCode() == KeyEvent.VK_3) {
+				Tempo.add(3, Tempo.UnidadeTempo.HORAS);
+			}
+			if (e.getKeyCode() == KeyEvent.VK_1) {
+				Tempo.add(1, Tempo.UnidadeTempo.HORAS);
 			}
 		}
 
