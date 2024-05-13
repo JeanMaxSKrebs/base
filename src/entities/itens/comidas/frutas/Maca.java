@@ -1,21 +1,16 @@
 package entities.itens.comidas.frutas;
 
-import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
 import base.Game;
-import entities.Player;
 import entities.itens.Item;
-import entities.itens.utensilios.Fogueira;
-import world.Camera;
-import world.World;
 
 public class Maca extends Fruta {
 
-	public double regen = 5;
-	public int tickRegen = 3;
-	public double curaTotal = 15;
-	protected static final String nome = "Maçã";
+    public static final double regen = 2.0; // Exemplo: regeneração de 2.0
+    public static final int tickRegen = 5; // Exemplo: a cada 5 ticks
+    public static final double curaTotal = 10; // Exemplo: cura total de 10
+    public static final String nome = "Maçã";
 
 	private BufferedImage[] spritesMaca;
 
@@ -24,7 +19,7 @@ public class Maca extends Fruta {
 		spritesMaca = new BufferedImage[qtdDirecoes];
 		for (int i = 0; i < qtdDirecoes; i++) {
 
-			spritesMaca[i] = Game.spritesheet_Fruits.getSprite(64 * i, 64, 64, 64);
+			spritesMaca[i] = Game.spritesheet_Fruits.getSprite(64 * i, 64 *5, 64, 64);
 
 		}
 
@@ -36,7 +31,7 @@ public class Maca extends Fruta {
 		spritesMaca = new BufferedImage[4];
 
 		for (int i = 0; i < qtdDirecoes; i++) {
-			spritesMaca[i] = Game.spritesheet_Fruits.getSprite(64 * i, 64 * 1, 64, 64);
+			spritesMaca[i] = Game.spritesheet_Fruits.getSprite(64 * i, 64 * 5, 64, 64);
 		}
 	}
 	
@@ -47,29 +42,19 @@ public class Maca extends Fruta {
 
 	}
 
-	public void render(Graphics g) {
+    @Override
+    public void coletarEspecifico() {
+        // Implementação específica
+    }
 
-			g.drawImage(spritesMaca[index], this.getX() - Camera.x, this.getY() - Camera.y, null);		
+    @Override
+    public Item clone() {
+        // Implementação específica
+        return null;
+    }
 
-//		g.setColor(Color.red);
-//		g.fillRect(this.getX() + maskx - Camera.x, this.getY() + masky - Camera.y, mwidth, mheight);
-	}
-
-	@Override
-	public void coletarEspecifico() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public Item clone() {
-		// Crie uma nova instância do subtipo de item usando o construtor de cópia
-		return new Maca(this);
-	}
-
-	@Override
-	public void comer(Item item) {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    public void comer(Item item) {
+        // Implementação específica
+    }
 }

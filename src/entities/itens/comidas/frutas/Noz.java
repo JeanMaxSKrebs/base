@@ -5,30 +5,30 @@ import java.awt.image.BufferedImage;
 import base.Game;
 import entities.itens.Item;
 
-public class Uva extends Fruta {
+public class Noz extends Fruta {
 
-    public static final double regen = 1.2;
-    public static final int tickRegen = 7;
-    public static final double curaTotal = 6;
-    public static final String nome = "Uva";
+    public static final double regen = 1.8;
+    public static final int tickRegen = 5;
+    public static final double curaTotal = 9;
+    public static final String nome = "Noz";
 
-    private BufferedImage[] spritesUva;
+    private BufferedImage[] spritesNoz;
 
-    public Uva(int x, int y, int width, int height, BufferedImage sprite) {
+    public Noz(int x, int y, int width, int height, BufferedImage sprite) {
         super(x, y, width, height, sprite, nome);
-        spritesUva = new BufferedImage[qtdDirecoes];
+        spritesNoz = new BufferedImage[qtdDirecoes];
         for (int i = 0; i < qtdDirecoes; i++) {
-            spritesUva[i] = Game.spritesheet_Fruits.getSprite(64 * i, 64 * 3, 64, 64);
+            spritesNoz[i] = Game.spritesheet_Fruits.getSprite(64 * i, 64 * 8, 64, 64);
         }
     }
 
-    public Uva(Uva outraUva) {
-        super(outraUva);
+    public Noz(Noz outraNoz) {
+        super(outraNoz);
 
-        spritesUva = new BufferedImage[qtdDirecoes];
+        spritesNoz = new BufferedImage[qtdDirecoes];
 
         for (int i = 0; i < qtdDirecoes; i++) {
-            spritesUva[i] = Game.spritesheet_Fruits.getSprite(64 * i, 64 * 3, 64, 64);
+            spritesNoz[i] = Game.spritesheet_Fruits.getSprite(64 * i, 64 * 8, 64, 64);
         }
     }
 

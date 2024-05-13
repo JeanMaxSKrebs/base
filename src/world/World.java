@@ -88,30 +88,18 @@ public class World {
 			} while (!isFree(x * TILE_SIZE, y * TILE_SIZE));
 			if (isFree(x * TILE_SIZE, y * TILE_SIZE)) {
 
+				int posX = x * TILE_SIZE;
+				int posY = y * TILE_SIZE;
+				
 				// Cria uma árvore aleatória usando a fábrica
-				Arvore arvore = arvoreFactory.createArvore(x * TILE_SIZE, y * TILE_SIZE, 112, 112, null);
+				Arvore arvore = arvoreFactory.createArvore(posX, posY, 112, 112, null);
 
 				if (arvore != null) {
 					arvore.setMask(11, 8, 48, 48);
-					Game.entities.add(arvore);
+					Game.arvores.add(arvore);
 					atualizarContadorArvores();
 				}
-			}
-		}
-
-		// Gera aleatoriamente maçãs
-		for (int i = 0; i < NUMERO_DE_MACAS; i++) {
-//					int x = Game.random(WIDTH);
-//					int y = Game.random(HEIGHT);
-			int x, y;
-			do {
-				x = Game.random(WIDTH);
-				y = Game.random(HEIGHT);
-			} while (!isFree(x * TILE_SIZE, y * TILE_SIZE));
-			if (isFree(x * TILE_SIZE, y * TILE_SIZE)) {
-				Maca maca = new Maca(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE, Fruta.MACA_FR);
-				maca.setMask(9, 8, 48, 48);
-				Game.itens.add(maca);
+				
 			}
 		}
 
@@ -152,7 +140,7 @@ public class World {
 						// wall
 						tiles[xx + (yy * WIDTH)] = new Tilewall(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE,
 								Tile.TILE_WALL);
-					} else if (pixelAtual == 0xFF7F0037) {
+					} else if (pixelAtual == 0xFF7F0040) {
 						// door
 						int adjacentPixel = (xx + 1 < WIDTH) ? pixels[(xx + 1) + (yy * WIDTH)] : -1;
 						if (adjacentPixel == pixelAtual) { // Check right
@@ -197,14 +185,14 @@ public class World {
 
 					} else if (pixelAtual == 0xFFFF00A5) {
 						// key
-						Key key = new Key(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Entity.KEY_EN);
+						Key key = new Key(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Item.KEY_EN);
 						key.setMask(10, 20, 84, 56);
 						Game.itens.add(key);
 
 					} else if (pixelAtual == 0xFFF0BAFF) {
 						// specialkey
 						SpecialKey specialkey = new SpecialKey(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE,
-								Entity.SPECIALKEY_EN);
+								Item.SPECIALKEY_EN);
 						specialkey.setMask(10, 20, 84, 56);
 						Game.itens.add(specialkey);
 

@@ -5,30 +5,30 @@ import java.awt.image.BufferedImage;
 import base.Game;
 import entities.itens.Item;
 
-public class Uva extends Fruta {
+public class Melancia extends Fruta {
 
-    public static final double regen = 1.2;
+    public static final double regen = 2.5;
     public static final int tickRegen = 7;
-    public static final double curaTotal = 6;
-    public static final String nome = "Uva";
+    public static final double curaTotal = 12;
+    public static final String nome = "Melancia";
 
-    private BufferedImage[] spritesUva;
+    private BufferedImage[] spritesMelancia;
 
-    public Uva(int x, int y, int width, int height, BufferedImage sprite) {
+    public Melancia(int x, int y, int width, int height, BufferedImage sprite) {
         super(x, y, width, height, sprite, nome);
-        spritesUva = new BufferedImage[qtdDirecoes];
+        spritesMelancia = new BufferedImage[qtdDirecoes];
         for (int i = 0; i < qtdDirecoes; i++) {
-            spritesUva[i] = Game.spritesheet_Fruits.getSprite(64 * i, 64 * 3, 64, 64);
+            spritesMelancia[i] = Game.spritesheet_Fruits.getSprite(64 * i, 64 * 9, 64, 64);
         }
     }
 
-    public Uva(Uva outraUva) {
-        super(outraUva);
+    public Melancia(Melancia outraMelancia) {
+        super(outraMelancia);
 
-        spritesUva = new BufferedImage[qtdDirecoes];
+        spritesMelancia = new BufferedImage[qtdDirecoes];
 
         for (int i = 0; i < qtdDirecoes; i++) {
-            spritesUva[i] = Game.spritesheet_Fruits.getSprite(64 * i, 64 * 3, 64, 64);
+            spritesMelancia[i] = Game.spritesheet_Fruits.getSprite(64 * i, 64 * 5, 64, 64);
         }
     }
 

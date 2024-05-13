@@ -17,11 +17,12 @@ public abstract class Fruta extends Comida implements Comparable<Fruta> {
 	public static BufferedImage MELÃO_FR = Game.spritesheet_Fruits.getSprite(0, 64 * 5, 64, 64);
 	public static BufferedImage BATATA_FR = Game.spritesheet_Fruits.getSprite(0, 64 * 6, 64, 64);
 	public static BufferedImage BANANA_FR = Game.spritesheet_Fruits.getSprite(0, 64 * 7, 64, 64);
-//	public static BufferedImage MELANCIA_FR = Game.spritesheet_Fruits.getSprite(0, 64*8, 64, 64);
+	public static BufferedImage MELANCIA_FR = Game.spritesheet_Fruits.getSprite(0, 64*8, 64, 64);
+	public static BufferedImage NOZ_FR = Game.spritesheet_Fruits.getSprite(0, 64*9, 64, 64);
 
 	// Nomes das frutas
 	private static final String[] NOMES_FRUTAS = { "TOMATE", "UVA", "MORANGO", "MACA", "MELAO", "BATATA", "BANANA",
-			"MELANCIA" };
+			"MELANCIA", "NOZ" };
 
 	// Array para armazenar as imagens das frutas
 	public static BufferedImage[] FRUTAS_SPRITES = new BufferedImage[getNomesFrutas().length];
