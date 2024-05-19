@@ -117,7 +117,6 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		this.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
 				ui.mouseClicked(e);
-				System.out.println("teste clique");
 			}
 		});
 		this.requestFocusInWindow();

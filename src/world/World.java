@@ -32,7 +32,6 @@ public class World {
 	public static int WIDTH = Game.getWIDTH() * Game.getSCALE();
 	public static int HEIGHT = Game.getHEIGHT() * Game.getSCALE();
 
-	public static boolean isDoor = false;
 	public static int xDoor = 0;
 	public static int yDoor = 0;
 
@@ -271,14 +270,6 @@ public class World {
 		contadorHordas++;
 	}
 
-	public static boolean isDoor() {
-		if (isDoor) {
-			isDoor = false;
-			return true;
-		} else
-			return isDoor;
-	}
-
 	public static void troca() {
 		tiles[xDoor + (yDoor * WIDTH)] = new Tilefloor(xDoor * TILE_SIZE, yDoor * TILE_SIZE, TILE_SIZE, TILE_SIZE,
 				Tile.TILE_FLOOR);
@@ -300,7 +291,6 @@ public class World {
 		} else if (tiles[x1 + (y1 * World.WIDTH)] instanceof Tiledoor) {
 			xDoor = x1;
 			yDoor = y1;
-			isDoor = true;
 			return false;
 		} else {
 			return true; // Livre
@@ -334,7 +324,6 @@ public class World {
 		} else if (tiles[(int) x1 + (int) y1 * World.WIDTH] instanceof Tiledoor) {
 			xDoor = (int) x1;
 			yDoor = (int) y1;
-			isDoor = true;
 			return false;
 		} else {
 			return true; // Livre

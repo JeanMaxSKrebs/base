@@ -24,7 +24,7 @@ public class UI {
 	private final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm"); // Time format (hours:minutes)
 	public boolean mensagem;
 	public boolean renderBars = true;
-	public static boolean usarKey = true;
+	public static boolean usarKey = false;
 	public static String tipoKey = "Vazio";
 
 	public void render(Graphics g) {

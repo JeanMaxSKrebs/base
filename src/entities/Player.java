@@ -333,7 +333,8 @@ public class Player extends Entity {
 	}
 
 	public void checkDoor() {
-		
+		escolhaDoor("Vazio");
+
 		for (int i = 0; i < Game.tiledoors.size(); i++) {
 			Tiledoor t = Game.tiledoors.get(i);
 
@@ -358,16 +359,21 @@ public class Player extends Entity {
 //
 //					}
 				}
+
 				return;
 
 			}
-
 		}
 	}
 
 	private void escolhaDoor(String tipo) {
-		UI.usarKey = true;
-		UI.tipoKey = tipo;
+		if (tipo != "Vazio") {
+			UI.usarKey = true;
+			UI.tipoKey = tipo;
+		} else {
+			UI.usarKey = false;
+			UI.tipoKey = tipo;
+		}
 	}
 
 	public int countFrutaEspecifica(String nome) {
@@ -445,10 +451,11 @@ public class Player extends Entity {
 		sede();
 		correndo();
 		mover();
-		checkCollisions();
 		checkStatus();
 		checkItems();
-
+		if (moved) {
+			checkCollisions();
+		}
 		if (tempoEspera <= 0) {
 			possoColetar = true;
 
@@ -461,44 +468,46 @@ public class Player extends Entity {
 		Camera.y = Camera.clamp(this.getY() - (Game.getHEIGHT() / 2), 0, World.HEIGHT * 112 - Game.getHEIGHT());
 		iamDead();
 	}
-	
+
 	public void checkCollisions() {
-	    checkTreeCollision();
-	    checkEnemyCollision();
-	    checkItemCollision();
-	    checkBulletCollision();
+		checkTreeCollision();
+		checkEnemyCollision();
+		checkItemCollision();
+		checkBulletCollision();
+		checkDoor();
+
 	}
 
 	private void checkTreeCollision() {
-	    for (Arvore arvore : Game.arvores) {
-	        if (Entity.isColliding(this, arvore)) {
-	            // Lógica de colisão com a árvore
-	        }
-	    }
+		for (Arvore arvore : Game.arvores) {
+			if (Entity.isColliding(this, arvore)) {
+				// Lógica de colisão com a árvore
+			}
+		}
 	}
 
 	private void checkEnemyCollision() {
-	    for (Enemy enemy : Game.enemies) {
-	        if (Entity.isColliding(this, enemy)) {
-	            // Lógica de colisão com o inimigo
-	        }
-	    }
+		for (Enemy enemy : Game.enemies) {
+			if (Entity.isColliding(this, enemy)) {
+				// Lógica de colisão com o inimigo
+			}
+		}
 	}
 
 	private void checkItemCollision() {
-	    for (Item item : Game.itens) {
-	        if (Entity.isColliding(this, item)) {
-	            // Lógica de colisão com o item
-	        }
-	    }
+		for (Item item : Game.itens) {
+			if (Entity.isColliding(this, item)) {
+				// Lógica de colisão com o item
+			}
+		}
 	}
 
 	private void checkBulletCollision() {
-	    for (Bala bala : Game.balas) {
-	        if (Entity.isColliding(this, bala)) {
-	            // Lógica de colisão com a bala
-	        }
-	    }
+		for (Bala bala : Game.balas) {
+			if (Entity.isColliding(this, bala)) {
+				// Lógica de colisão com a bala
+			}
+		}
 	}
 
 	private void checkStatus() {
@@ -506,20 +515,17 @@ public class Player extends Entity {
 	}
 
 	void fome() {
-		if (run) {
-			if (hunger > 0) {
-				hunger -= gastoFomeCorrendo * 2;
+		if (hunger > 0) {
+			if (run) {
+				hunger -= gastoFomeCorrendo;
 			} else {
-				hunger = 0;
+				hunger -= gastoFomeNormal;
 			}
 
-		} else {
-			if (hunger > 0) {
-				hunger -= gastoFomeNormal * 2;
-			} else {
-				hunger = 0;
-			}
+		} else if (hunger < 0) {
+			hunger = 0;
 		}
+
 		if (hunger == 0) {
 			if (contandoFome == false) {
 				Tempo.iniciarContagem("hunger", hunger);
@@ -539,25 +545,21 @@ public class Player extends Entity {
 	}
 
 	void sede() {
-		if (run) {
-			if (thirsth > 0) {
+		if (thirsth > 0) {
+			if (run) {
 				if (stamine < 30)
-					thirsth -= gastoSedeCorrendo * 2;
+					thirsth -= gastoSedeCorrendo*2;
 				else
 					thirsth -= gastoSedeCorrendo;
+
 			} else {
-				thirsth = 0;
+				thirsth -= gastoSedeNormal;
 			}
-		} else {
-			if (thirsth > 0) {
-				if (stamine < 30)
-					thirsth -= gastoSedeNormal * 2;
-				else
-					thirsth -= gastoSedeNormal;
-			} else {
-				thirsth = 0;
-			}
+
+		} else if (thirsth < 0) {
+			thirsth = 0;
 		}
+
 		if (thirsth == 0) {
 			if (contandoSede == false) {
 				Tempo.iniciarContagem("thirsth", thirsth);
@@ -682,8 +684,6 @@ public class Player extends Entity {
 						&& World.isFree(plusx + (int) speed, plusy, "right")) {
 					x += speed;
 					setMoved(true);
-				} else if (World.isDoor()) {
-					checkDoor();
 				}
 			} else if (left) {
 				dir = left_dir;
@@ -692,8 +692,6 @@ public class Player extends Entity {
 						&& World.isFree(minusx - (int) speed, plusy, "left")) {
 					x -= speed;
 					setMoved(true);
-				} else if (World.isDoor()) {
-					checkDoor();
 				}
 			}
 
@@ -703,8 +701,6 @@ public class Player extends Entity {
 						&& World.isFree(plusx, plusy + (int) speed, "down")) {
 					y += speed;
 					setMoved(true);
-				} else if (World.isDoor()) {
-					checkDoor();
 				}
 			} else if (up) {
 				dir = up_dir;
@@ -712,8 +708,6 @@ public class Player extends Entity {
 						&& World.isFree(plusx, minusy - (int) speed, "up")) {
 					y -= speed;
 					setMoved(true);
-				} else if (World.isDoor()) {
-					checkDoor();
 				}
 			}
 			if (moved) {
