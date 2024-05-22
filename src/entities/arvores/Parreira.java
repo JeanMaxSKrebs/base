@@ -10,7 +10,7 @@ import world.Camera;
 public class Parreira extends Arvore {
 	
 	protected static final String nome = "Parreira";
-	protected int qtdFrutos = 1; // Exemplo: 12 uvas por parreira
+	protected int qtdFrutos = 3; // Exemplo: 12 uvas por parreira
 
 	private BufferedImage[] spritesParreira;
 	

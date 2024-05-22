@@ -58,7 +58,7 @@ public class UI {
 //		System.out.println("FPS: " + Game.FPS);
 		g.setColor(Color.black);
 		g.drawString("Comidas:  " + Player.getComidasColetadas().size(), 0, Game.getHEIGHT() - 35);
-		g.drawString("Itens:  " + Player.getItens().size(), 0, Game.getHEIGHT() - 25);
+		g.drawString("Itens:  " + Player.getItensColetados().size(), 0, Game.getHEIGHT() - 25);
 		g.drawString("Inventário:  Press I", 0, Game.getHEIGHT() - 15);
 		g.drawString("Pause:  Press P", 0, Game.getHEIGHT() - 5);
 
@@ -107,8 +107,8 @@ public class UI {
 			}
 			g.setColor(new Color(155, 155, 155));
 			g.fillRect(rectX, rectY, rectWidth, rectHeight); // Desenhar o retângulo
-
-			int progressoBarraWidth = Game.player.tempoEspera;
+			
+			int progressoBarraWidth = (rectWidth * Game.player.tempoEspera) / Game.player.tempoEsperaMax;
 
 			g.setColor(new Color(0, 0, 0)); // preto
 			g.drawRect(rectX, rectY, rectWidth, rectHeight); // Desenhar a borda

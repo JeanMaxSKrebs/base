@@ -54,7 +54,6 @@ public abstract class Menu {
 				World.restartGame("fase" + spl2inteiro + ".png");
 				Game.player.setArmor(0);
 				Game.player.setDodgeChance(20);
-				Player.setKeys(0);
 				Game.gameState = "NORMAL";
 				break;
 			}

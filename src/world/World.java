@@ -22,8 +22,8 @@ import entities.itens.SpecialKey;
 import entities.itens.comidas.frutas.Fruta;
 import entities.itens.comidas.frutas.Maca;
 import entities.itens.comidas.frutas.Uva;
-import entities.itens.utensilios.BagPack;
 import entities.itens.utensilios.Fogueira;
+import entities.itens.utensilios.BagPacks.BagPack;
 import base.Spritesheet;
 
 public class World {

@@ -10,7 +10,7 @@ import world.Camera;
 public class Tomateiro extends Arvore {
 	
 	protected static final String nome = "Tomateiro";
-	protected int qtdFrutos = 8; // Exemplo: 8 tomates por tomateiro
+	protected int qtdFrutos = 4; // Exemplo: 8 tomates por tomateiro
 
 	private BufferedImage[] spritesTomateiro;
 	

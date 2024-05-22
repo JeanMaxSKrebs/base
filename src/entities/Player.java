@@ -17,7 +17,7 @@ import entities.itens.comidas.Comida;
 import entities.itens.comidas.frutas.Fruta;
 import entities.itens.comidas.frutas.Maca;
 import entities.itens.comidas.frutas.Uva;
-import entities.itens.utensilios.BagPack;
+import entities.itens.utensilios.BagPacks.BagPack;
 import graficos.UI;
 import menu.Inventory;
 import tempo.Tempo;
@@ -48,7 +48,7 @@ public class Player extends Entity {
 
 	public boolean hasBagpack = false;
 
-	private static List<Item> itens = new ArrayList<>();
+	private static List<Item> itensColetados = new ArrayList<>();
 	private static List<Fruta> frutasColetadas = new ArrayList<>();
 	private static List<Comida> comidasColetadas = new ArrayList<>();
 
@@ -95,7 +95,7 @@ public class Player extends Entity {
 	public double danoFome = 0.1;
 	public double danoSede = 0.01;
 
-	public static int inventario = 32;
+	public static int inventario = 16;
 
 	public boolean usingPower = false;
 	public boolean atirar = false;
@@ -118,7 +118,7 @@ public class Player extends Entity {
 
 	public Player(int x, int y, int width, int height, BufferedImage sprite) {
 		super(x, y, width, height, sprite);
-		itens = new ArrayList<>();
+		itensColetados = new ArrayList<>();
 		frutasColetadas = new ArrayList<>();
 		comidasColetadas = new ArrayList<>();
 
@@ -186,7 +186,7 @@ public class Player extends Entity {
 
 	public void use(Item newItem) {
 
-		Iterator<Item> iterator = itens.iterator();
+		Iterator<Item> iterator = itensColetados.iterator();
 		while (iterator.hasNext()) {
 			Item item = iterator.next();
 			if (item.getClass().equals(newItem.getClass())) {
@@ -213,7 +213,7 @@ public class Player extends Entity {
 
 	public void dropar(Item newItem) {
 		Item newItemCopy = newItem.clone(); // Supondo que a classe Item implemente o método clone()
-		Iterator<Item> iterator = itens.iterator();
+		Iterator<Item> iterator = itensColetados.iterator();
 		while (iterator.hasNext()) {
 			Item item = iterator.next();
 			if (item.getClass().equals(newItem.getClass())) {
@@ -241,7 +241,7 @@ public class Player extends Entity {
 		boolean itemExists = false;
 
 		// Verifica se o item já existe na lista
-		for (Item item : itens) {
+		for (Item item : itensColetados) {
 //			System.out.println(item.getClass());
 //			System.out.println(newItem.getClass());
 //			System.out.println(item.getNome());
@@ -256,16 +256,101 @@ public class Player extends Entity {
 
 		// Se o item não foi encontrado na lista, adiciona-o
 		if (!itemExists) {
-			System.out.println("add");
-			System.out.println(newItem);
+//			System.out.println("add");
+//			System.out.println(newItem);
 
 			newItem.incrementQuantity(); // Incrementa a quantidade do item existente
-			System.out.println(newItem);
-			itens.add(newItem); // Se não for uma subclasse, adiciona diretamente
+//			System.out.println(newItem);
+			itensColetados.add(newItem); // Se não for uma subclasse, adiciona diretamente
+		}
+	}
+	
+	public void coletar(Fruta newFruta) {
+		boolean frutaExists = false;
+
+		// Verifica se o item já existe na lista
+		for (Fruta fruta : frutasColetadas) {
+//			System.out.println(item.getClass());
+//			System.out.println(newItem.getClass());
+//			System.out.println(item.getNome());
+//			System.out.println(newItem.getNome());
+			if (fruta.getClass().equals(newFruta.getClass())) {
+				fruta.incrementQuantity(); // Incrementa a quantidade do item existente
+				frutaExists = true;
+				break;
+			}
+
+		}
+
+		// Se o item não foi encontrado na lista, adiciona-o
+		if (!frutaExists) {
+//			System.out.println("add");
+//			System.out.println(newFruta.getSprite());
+
+			newFruta.incrementQuantity(); // Incrementa a quantidade do item existente
+//			System.out.println(newItem);
+			frutasColetadas.add(newFruta); // Se não for uma subclasse, adiciona diretamente
 		}
 	}
 
-	public void checkItems() {
+	public void checkFruits() {
+		for (int j = 0; j < Game.frutas.size(); j++) {
+//			System.out.println("Game.entities.size()");
+//			System.out.println(Game.entities.size());
+			Item i = Game.frutas.get(j);
+//			System.out.println("e");
+//			System.out.println(e);
+			if (Item.isColliding(this, i)) {
+				isCollidingItem = true;
+				UI.showColetar = true;
+			}
+
+			if (isCollidingItem) {
+				isCollidingItem = false;
+
+				if (possoColetar) {
+
+					if (coletando) {
+						if (tempoColeta >= tempoColetaMax) {
+							coletar = true;
+							tempoColeta = 0;
+
+						} else {
+							tempoColeta += 1;
+						}
+					} else {
+						tempoColeta = 0;
+					}
+					if (coletar) {
+						coletar = false;
+						possoColetar = false;
+
+						// Itens que são guardados
+						if (hasBagpack) {
+
+							if (i instanceof Item) {
+
+								Fruta newFruta = (Fruta) i;
+
+								coletar(newFruta);
+
+								Game.frutas.remove(j);
+								tempoEspera = tempoEsperaMax;
+								return;
+							}
+						} else {
+							Game.openInventory = true;
+							Game.messageDisplayStartTime = System.currentTimeMillis(); // Inicia a contagem do tempo de
+																						// exibição da
+						}
+
+					}
+				}
+			}
+		}
+	}
+	
+	public void checkItens() {
 		for (int j = 0; j < Game.itens.size(); j++) {
 //			System.out.println("Game.entities.size()");
 //			System.out.println(Game.entities.size());
@@ -296,6 +381,7 @@ public class Player extends Entity {
 					if (coletar) {
 						coletar = false;
 						possoColetar = false;
+						tempoEspera = tempoEsperaMax;
 
 						if (i instanceof BagPack) {
 							hasBagpack = true;
@@ -303,7 +389,6 @@ public class Player extends Entity {
 							inventario = ((BagPack) i).getQuantidade();
 
 							Game.itens.remove(j);
-							tempoEspera = tempoEsperaMax;
 							return;
 						}
 
@@ -317,7 +402,6 @@ public class Player extends Entity {
 								coletar(newItem);
 
 								Game.itens.remove(j);
-								tempoEspera = tempoEsperaMax;
 								return;
 							}
 						} else {
@@ -402,7 +486,7 @@ public class Player extends Entity {
 
 	public int countItemEspecifico(String nome) {
 		int itemCount = 0;
-		List<Item> itens = Player.getItens();
+		List<Item> itens = Player.getItensColetados();
 		for (Item item : itens) {
 			if (nome.equals(item.getNome().toUpperCase())) {
 				itemCount++;
@@ -452,7 +536,8 @@ public class Player extends Entity {
 		correndo();
 		mover();
 		checkStatus();
-		checkItems();
+		checkItens();
+		checkFruits();
 		if (moved) {
 			checkCollisions();
 		}
@@ -852,12 +937,12 @@ public class Player extends Entity {
 		Player.speed = speed;
 	}
 
-	public static List<Item> getItens() {
-		return itens;
+	public static List<Item> getItensColetados() {
+		return itensColetados;
 	}
 
-	public static void setItens(List<Item> itens) {
-		Player.itens = itens;
+	public static void setItensColetados(List<Item> itens) {
+		Player.itensColetados = itens;
 	}
 
 }

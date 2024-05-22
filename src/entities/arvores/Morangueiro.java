@@ -10,7 +10,7 @@ import world.Camera;
 public class Morangueiro extends Arvore {
 	
 	protected static final String nome = "Morangueiro";
-	protected int qtdFrutos = 15; // Exemplo: 15 morangos por morangueiro
+	protected int qtdFrutos = 8; // Exemplo: 15 morangos por morangueiro
 
 	private BufferedImage[] spritesMorangueiro;
 	

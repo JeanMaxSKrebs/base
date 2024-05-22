@@ -60,7 +60,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	public static Spritesheet spritesheet;
 	public static Spritesheet spritesheet_Moons;
 	public static Spritesheet spritesheet_Items;
-	public static Spritesheet spritesheet_UsableItems;
+	public static Spritesheet spritesheet_UsableItens;
 	public static Spritesheet spritesheet_Walls;
 	public static Spritesheet spritesheet_Doors;
 	public static Spritesheet spritesheet_Foods;
@@ -136,7 +136,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		spritesheet = new Spritesheet("/spritesheet.png");
 		spritesheet_Moons = new Spritesheet("/spritesheet_Moons.png");
 		spritesheet_Items = new Spritesheet("/spritesheet_Items.png");
-		spritesheet_UsableItems = new Spritesheet("/spritesheet_UsableItems.png");
+		spritesheet_UsableItens = new Spritesheet("/spritesheet_UsableItens.png");
 		spritesheet_Walls = new Spritesheet("/spritesheet_Walls.png");
 		spritesheet_Doors = new Spritesheet("/spritesheet_Doors.png");
 		spritesheet_Foods = new Spritesheet("/spritesheet_Foods.png");
@@ -193,6 +193,8 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	}
 
 	public void tick() {
+//		System.out.println("Game.frutas");
+//		System.out.println(Game.frutas.size());
 
 //		System.out.println("gameState");
 //		System.out.println(gameState);
@@ -324,15 +326,16 @@ public class Game extends Canvas implements Runnable, KeyListener {
 			Comida f = comidas.get(i);
 			f.render(g);
 		}
-//		//render frutas
-		for (int i = 0; i < frutas.size(); i++) {
-			Fruta f = frutas.get(i);
-			f.render(g);
-		}
+
 //		//render arvores
 		for (int i = 0; i < arvores.size(); i++) {
 			Arvore a = arvores.get(i);
 			a.render(g);
+		}
+//		//render frutas
+		for (int i = 0; i < frutas.size(); i++) {
+			Fruta f = frutas.get(i);
+			f.render(g);
 		}
 		// render tiles
 		for (int i = 0; i < tiles.size(); i++) {
@@ -567,9 +570,9 @@ public class Game extends Canvas implements Runnable, KeyListener {
 
 			if (e.getKeyCode() == KeyEvent.VK_CAPS_LOCK) {
 				player.run = true;
-				player.stamine = 0;
-				player.hunger = 0;
-				player.thirsth = 0;
+//				player.stamine = 0;
+//				player.hunger = 0;
+//				player.thirsth = 0;
 			}
 			if (e.getKeyCode() == KeyEvent.VK_3) {
 				Tempo.add(3, Tempo.UnidadeTempo.HORAS);
@@ -577,6 +580,14 @@ public class Game extends Canvas implements Runnable, KeyListener {
 			if (e.getKeyCode() == KeyEvent.VK_1) {
 				Tempo.add(1, Tempo.UnidadeTempo.HORAS);
 			}
+		} else if (gameState.equals("INVENTORY")) {
+			if (e.getKeyCode() == KeyEvent.VK_I) {
+				previousGameState = gameState;
+				gameState = "NORMAL";
+				Game.openInventory = false;
+				Inventory.pause = false;
+			}
+
 		}
 
 	}
@@ -620,11 +631,11 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		int r = random.nextInt(value);
 		return r;
 	}
-	
-	  // Método random que aceita um intervalo de inteiros
-    public static int random(int min, int max) {
-        Random random = new Random();
-        return random.nextInt(max - min + 1) + min;
-    }
+
+	// Método random que aceita um intervalo de inteiros
+	public static int random(int min, int max) {
+		Random random = new Random();
+		return random.nextInt(max - min + 1) + min;
+	}
 
 }

@@ -10,7 +10,7 @@ import world.Camera;
 public class Nogueira extends Arvore {
 
     protected static final String nome = "Nogueira";
-	protected int qtdFrutos = 5; 
+	protected int qtdFrutos = 10; 
 
     private BufferedImage[] spritesNogueira;
 

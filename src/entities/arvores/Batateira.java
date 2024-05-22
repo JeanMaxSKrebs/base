@@ -33,15 +33,14 @@ public class Batateira extends Arvore {
 		g.drawImage(spritesBatateira[index], this.getX() - Camera.x, this.getY() - Camera.y, null);		
 	}
 
-	@Override
 	protected void gerarFrutos() {
-	      for (int i = 0; i < qtdFrutos; i++) {
-	            int batataX = this.getX() + Game.random(-this.getWidth() / 2, this.getWidth() / 2);
-	            int batataY = this.getY() + Game.random(-this.getHeight() / 2, this.getHeight() / 2);
-	            Batata batata = new Batata(batataX, batataY, 16, 16, null);
-	            Game.frutas.add(batata);
-	        }
-    }
+		spritesBatateira = new BufferedImage[qtdDirecoes];
+
+	    // Atualizar sprites
+	    for (int i = 0; i < qtdDirecoes; i++) {
+	        spritesBatateira[i] = Game.spritesheet_Trees.getSprite(tamanhoBase * 3 + tamanhoBase * i, tamanhoBase * 6, tamanhoBase, tamanhoBase);
+	    }
+	}
 
 	@Override
 	public void metodoAbstrato() {
@@ -50,6 +49,6 @@ public class Batateira extends Arvore {
 
 	@Override
 	public void adicionarFrutosAleatoriamente() {
-        gerarFrutos();		
+		gerarFrutos();
 	}
 }

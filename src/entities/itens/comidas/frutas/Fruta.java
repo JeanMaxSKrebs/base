@@ -33,6 +33,8 @@ public abstract class Fruta extends Comida implements Comparable<Fruta> {
 	protected int qtdDirecoes = 3;
 
 	public String nome = "Fruta";
+	
+
 	public double regen = 2; // Amount of health regenerated
 	public int tickRegen = 5; // Ticks between regeneration events
 	public double curaTotal = 10;
@@ -57,7 +59,7 @@ public abstract class Fruta extends Comida implements Comparable<Fruta> {
 	public Fruta(Fruta outraFruta) {
 		super(outraFruta); // Chama o construtor da superclasse para copiar atributos de Item
 	}
-
+	
 	public abstract void comer(Item item);
 
 
@@ -75,4 +77,28 @@ public abstract class Fruta extends Comida implements Comparable<Fruta> {
 	}
 
     public abstract Item clone();
+
+    public abstract String getNome();
+
+	public abstract void setNome(String nome);
+
+	public abstract int getTickRegen();
+
+	public abstract void setTickRegen(int tickRegen);
+
+	public abstract double getCuraTotal();
+
+	public abstract void setCuraTotal(double curaTotal);
+	
+	public abstract double getRegen();
+
+	public abstract void setRegen(double regen);
+	
+	public BufferedImage getSprite() {
+		return sprite;
+	}
+
+	public void setSprite(BufferedImage sprite) {
+		this.sprite = sprite;
+	}
 }

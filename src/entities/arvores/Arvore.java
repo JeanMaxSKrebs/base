@@ -26,7 +26,7 @@ public abstract class Arvore extends Entity {
 	private static final String[] NOMES_ARVORES = { "TOMATEIRO", "PARREIRA", "MORANGUEIRO", "MACIEIRA", "MELOEIRO",
 			"BATATEIRA", "BANANEIRA", "MELANCIEIRA", "NOGUEIRA" };
 
-	protected static final String nome = "ÁRVORE";
+	protected final String nome = "ÁRVORE";
 	protected int qtdFrutos; // Exemplo: 10 frutos por árvore
 
 	public Arvore(int x, int y, int width, int height, BufferedImage sprite) {
