@@ -547,9 +547,10 @@ public class Game extends Canvas implements Runnable, KeyListener {
 					messageDisplayStartTime = System.currentTimeMillis(); // Inicia a contagem do tempo de exibição da
 																			// mensagem
 				} else {
+					Inventory.entrouInventario = true;
+					Inventory.pause = true;
 					previousGameState = gameState;
 					gameState = "INVENTORY";
-					Inventory.pause = true;
 				}
 
 			}
