@@ -3,16 +3,22 @@ package graficos;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
+import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 import base.Game;
 import entities.Player;
+import entities.itens.Item;
+import entities.itens.utensilios.BagPacks.BagPack;
 import tempo.FaseDaLua;
 import tempo.Tempo;
 import world.Camera;
@@ -27,7 +33,29 @@ public class UI {
 	public static boolean usarKey = false;
 	public static String tipoKey = "Vazio";
 
+	public static boolean verFPS = true;
+	public int widthBase = Game.getWIDTH() * Game.getSCALE();
+	public int heightBase = Game.getHEIGHT() * Game.getSCALE();
+	
 	public void render(Graphics g) {
+
+		if(verFPS) {
+			int x = 0; // Center horizontally based on string width
+			int y = heightBase  - 10;
+			
+			String FPS = "FPS";
+			
+			String combinedString = FPS + ":" + Game.FPS;
+			
+			g.setColor(new Color(155, 155, 155));
+			g.fillRect(x, y-25, 100, 100); // Desenhar a barra
+			g.setColor(Color.RED);
+			g.setFont(new Font("Arial", Font.BOLD, 25));
+			g.drawString(combinedString, x+5, y);
+		}
+		
+		quadroEsquerdo(g);
+		quadroDireito(g);
 
 		renderHealthBar(g);
 		if (renderBars) {
@@ -107,7 +135,7 @@ public class UI {
 			}
 			g.setColor(new Color(155, 155, 155));
 			g.fillRect(rectX, rectY, rectWidth, rectHeight); // Desenhar o retângulo
-			
+
 			int progressoBarraWidth = (rectWidth * Game.player.tempoEspera) / Game.player.tempoEsperaMax;
 
 			g.setColor(new Color(0, 0, 0)); // preto

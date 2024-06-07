@@ -5,20 +5,22 @@ import java.awt.Font;
 import java.awt.Graphics;
 
 import base.Game;
+import graficos.UI;
 import tempo.DiaDaSemana;
 import tempo.Tempo;
 
 public class Options extends Menu {
 	public static final Option[] options = { new Option("Configuração do FPS", "FPS Setting"),
 			new Option("Outras Configurações", "Other Settings"), new Option("Outros", "Others"),
-			new Option("Voltar", "go back") };
+			new Option("Voltar", "Go Back") };
+
+	public static final Option[] fpsOptions = { new Option("Ativo", "ON"), new Option("Inativo", "OFF") };
 
 	public Options() {
 		super(options);
 	}
 
 	private boolean verHorario = false;
-	private boolean verFPS = false;
 
 	public void tick() {
 
@@ -39,7 +41,7 @@ public class Options extends Menu {
 		if (enter) {
 			enter = false;
 			if (options[currentOption].getNomePortugues() == "Configuração do FPS") {
-				verFPS = true;
+				UI.verFPS = !UI.verFPS;
 			} else if (options[currentOption].getNomePortugues() == "Outras Configurações") {
 			} else if (options[currentOption].getNomePortugues() == "Outros") {
 			} else if (options[currentOption].getNomePortugues() == "Voltar") {
@@ -47,7 +49,7 @@ public class Options extends Menu {
 				String inverte = Game.gameState;
 
 				Game.gameState = Game.previousGameState;
-				// Y / Y 
+				// Y / Y
 				Game.previousGameState = inverte;
 			}
 		}
@@ -61,12 +63,12 @@ public class Options extends Menu {
 
 		g.fillRect(0, 0, widthBase, heightBase);
 		g.setColor(Color.WHITE);
-		
+
 //		desenhar quadro cinza e >
-		
+
 		if (options[currentOption].getNomePortugues() != "Voltar") {
 			g.setFont(new Font("Arial", Font.BOLD, 40));
-			g.drawString(" > ", (((widthBase / 10) - 50)), ((heightBase / 4) + (currentOption*100)+50));
+			g.drawString(" > ", (((widthBase / 10) - 50)), ((heightBase / 4) + (currentOption * 100) + 50));
 
 			g.setFont(new Font("Arial", Font.BOLD, 64));
 			g.setColor(Color.gray);
@@ -84,22 +86,43 @@ public class Options extends Menu {
 			g.drawString("Options", ((widthBase / 12)), (heightBase / 6));
 
 			g.setFont(new Font("Arial", Font.BOLD, 40));
-			for (int i = 0; i < options.length-1; i++) {
-				g.drawString(options[i].getNomeIngles(), ((widthBase / 10)), ((heightBase / 4) + ((i*100)+50)));//0 50 //1 100
+			for (int i = 0; i < options.length - 1; i++) {
+				g.drawString(options[i].getNomeIngles(), ((widthBase / 10)), ((heightBase / 4) + ((i * 100) + 50)));// 0
+																													// 50
+																													// //1
+																													// 100
 			}
-			g.drawString(options[options.length-1].getNomeIngles(), ((widthBase - 175)), ((heightBase) - 50));
-			
+			g.drawString(options[options.length - 1].getNomeIngles(), ((widthBase - 175)), ((heightBase) - 50));
+
 			if (options[currentOption].getNomePortugues() == "Configuração do FPS") {
-				int x = (widthBase / 2 + 100); // Center horizontally based on string width
+				int x = (widthBase / 2 + 25); // Center horizontally based on string width
 				int y = (heightBase / 3);
-				
+
 				String FPS = "FPS";
-				
+
 				String combinedString = FPS + ":" + Game.FPS;
-				
+
 				g.drawString(combinedString, x, y);
 
-			}  else if (options[currentOption].getNomePortugues() == "Outras Configurações") {
+				String show = "Show : ";
+				
+				if (UI.verFPS) {
+					g.drawString(show+fpsOptions[0].getNomeIngles(), x + 250, y);
+
+				} else {
+					g.drawString(show+fpsOptions[1].getNomeIngles(), x + 250, y);
+
+				}
+
+			} else if (options[currentOption].getNomePortugues() == "Outras Configurações") {
+				int x = (widthBase / 2 + 100); // Center horizontally based on string width
+				int y = (heightBase / 3);
+
+				String FPS = "FPS";
+
+				String combinedString = FPS + ":" + Game.FPS;
+
+				g.drawString(combinedString, x, y);
 
 			} else if (options[currentOption].getNomePortugues() == "Outros") {
 			} else if (options[currentOption].getNomePortugues() == "Voltar") {
@@ -111,22 +134,35 @@ public class Options extends Menu {
 			g.drawString("Opções", ((widthBase / 12)), (heightBase / 6));
 
 			g.setFont(new Font("Arial", Font.BOLD, 40));
-			for (int i = 0; i < options.length-1; i++) {
-				g.drawString(options[i].getNomePortugues(), ((widthBase / 10)), ((heightBase / 4) + ((i*100)+50)));//0 50 //1 100
+			for (int i = 0; i < options.length - 1; i++) {
+				g.drawString(options[i].getNomePortugues(), ((widthBase / 10)), ((heightBase / 4) + ((i * 100) + 50)));// 0
+																														// 50
+																														// //1
+																														// 100
 			}
-			g.drawString(options[options.length-1].getNomePortugues(), ((widthBase - 175)), ((heightBase) - 50));
+			g.drawString(options[options.length - 1].getNomePortugues(), ((widthBase - 175)), ((heightBase) - 50));
 
 			if (options[currentOption].getNomePortugues() == "Configuração do FPS") {
 				int x = (widthBase / 2 + 25); // Center horizontally based on string width
 				int y = (heightBase / 3);
-				
+
 				String FPS = "FPS";
-				
+
 				String combinedString = FPS + ":" + Game.FPS;
-				
+
 				g.drawString(combinedString, x, y);
 
-			}  else if (options[currentOption].getNomePortugues() == "Outras Configurações") {
+				String mostrar = "Mostrar : ";
+
+				if (UI.verFPS) {
+					g.drawString(mostrar+fpsOptions[0].getNomePortugues(), x + 215, y);
+
+				} else {
+					g.drawString(mostrar+fpsOptions[1].getNomePortugues(), x + 190, y);
+
+				}
+
+			} else if (options[currentOption].getNomePortugues() == "Outras Configurações") {
 
 			} else if (options[currentOption].getNomePortugues() == "Outros") {
 			} else if (options[currentOption].getNomePortugues() == "Voltar") {
@@ -136,8 +172,6 @@ public class Options extends Menu {
 		default:
 			break;
 		}
-
-		
 
 	}
 
