@@ -102,7 +102,7 @@ public class Fogueira extends Utensilio {
 		// Draw fogueira sprite (existing code)
 
 		// Light effect
-		int lightRadius = 2000; // Adjust radius based on desired effect
+		int lightRadius = 700; // Adjust radius based on desired effect
 		int lightAlpha = 50; // Adjust transparency (0-255)
 		Color lightColor = new Color(255, 200, 0, lightAlpha); // Orange light with transparency
 
