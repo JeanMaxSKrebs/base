@@ -29,6 +29,7 @@ import entities.doors.Door;
 import entities.itens.Item;
 import entities.itens.comidas.Comida;
 import entities.itens.comidas.frutas.Fruta;
+import graficos.ItemAnimation;
 import graficos.UI;
 import menu.Inventory;
 import menu.MenuPause;
@@ -78,6 +79,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	public static List<Tile> tiles;
 	public static List<Tiledoor> tiledoors;
 	public static List<Bala> balas;
+	public static List<ItemAnimation> itemAnimations;
 
 	public BufferedImage image;
 
@@ -104,6 +106,8 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	private boolean restartGame = false;
 	private boolean showMessageGameOver = true;
 	private int framesGameOver = 0;
+
+	
 
 	// mudar linguagem
 //	public static String linguagem = "Inglês";
@@ -132,6 +136,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		comidas = new ArrayList<Comida>();
 		arvores = new ArrayList<Arvore>();
 		frutas = new ArrayList<Fruta>();
+        itemAnimations = new ArrayList<ItemAnimation>();
 
 		spritesheet = new Spritesheet("/spritesheet.png");
 		spritesheet_Moons = new Spritesheet("/spritesheet_Moons.png");
@@ -148,7 +153,6 @@ public class Game extends Canvas implements Runnable, KeyListener {
 //		world = new World("/teste.png");	
 		world = new World("/" + ILHA + ".png");
 		entities.add(player);
-
 		status = new Status();
 		options = new Options();
 		menuPause = new MenuPause();
@@ -236,6 +240,12 @@ public class Game extends Canvas implements Runnable, KeyListener {
 				Entity e = entities.get(i);
 				e.tick();
 			}
+			// colocar itemAnimations na tela
+			for (int i = 0; i < itemAnimations.size(); i++) {
+				ItemAnimation e = itemAnimations.get(i);
+				e.tick();
+			}
+
 			// movimentar enemies
 			for (int i = 0; i < enemies.size(); i++) {
 				Enemy e = enemies.get(i);
@@ -270,6 +280,8 @@ public class Game extends Canvas implements Runnable, KeyListener {
 			for (int i = 0; i < balas.size(); i++) {
 				balas.get(i).tick();
 			}
+			
+
 
 		} else if (gameState == "GAME_OVER") {
 			framesGameOver++;
@@ -364,9 +376,15 @@ public class Game extends Canvas implements Runnable, KeyListener {
 			Entity e = entities.get(i);
 			e.render(g);
 		}
+		
+
 
 		ui.render(g);
-
+//		//render itemAnimations
+		for (int i = 0; i < itemAnimations.size(); i++) {
+			ItemAnimation f = itemAnimations.get(i);
+			f.render(g);
+		}
 		g.dispose();
 		g = bs.getDrawGraphics();
 		g.drawImage(image, 0, 0, WIDTH * getSCALE(), HEIGHT * getSCALE(), null);

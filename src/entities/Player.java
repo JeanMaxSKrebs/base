@@ -18,6 +18,7 @@ import entities.itens.comidas.frutas.Fruta;
 import entities.itens.comidas.frutas.Maca;
 import entities.itens.comidas.frutas.Uva;
 import entities.itens.utensilios.BagPacks.BagPack;
+import graficos.ItemAnimation;
 import graficos.UI;
 import menu.Inventory;
 import tempo.Tempo;
@@ -46,7 +47,7 @@ public class Player extends Entity {
 	private static int dodgeChance = 20;
 	private static int armor = 0;
 
-	public boolean hasBagpack = false;
+	public static boolean hasBagpack = false;
 
 	private static List<Item> itensColetados = new ArrayList<>();
 	private static List<Fruta> frutasColetadas = new ArrayList<>();
@@ -263,6 +264,7 @@ public class Player extends Entity {
 //			System.out.println(newItem);
 			itensColetados.add(newItem); // Se não for uma subclasse, adiciona diretamente
 		}
+		iniciarAnimacaoColeta(newItem);
 	}
 	
 	public void coletar(Fruta newFruta) {
@@ -291,7 +293,25 @@ public class Player extends Entity {
 //			System.out.println(newItem);
 			frutasColetadas.add(newFruta); // Se não for uma subclasse, adiciona diretamente
 		}
+		iniciarAnimacaoColeta(newFruta);
 	}
+
+	public void iniciarAnimacaoColeta(Item item) {
+        int startX = Game.getWIDTH() * Game.getSCALE() / 2;
+        int startY = Game.getHEIGHT() * Game.getSCALE() / 2;
+        
+        // Coordenadas finais na mochila
+        int mochilaX = Game.getWIDTH() * Game.getSCALE() - 112 - 5; // Ajuste o tamanho conforme necessário
+        int mochilaY = 5; // Ajuste o tamanho conforme necessário
+        
+        int targetX = mochilaX; // Defina a coordenada X no meio da mochila
+        int targetY = mochilaY; // Defina a coordenada Y no meio da mochila
+
+        ItemAnimation itemAnimation = new ItemAnimation(item.getSprite(), 6000); // Supondo que a duração da animação seja 2000ms
+        Game.itemAnimations.add(itemAnimation);
+        itemAnimation.startAnimation(startX, startY, targetX, targetY);
+	}
+	
 
 	public void checkFruits() {
 		for (int j = 0; j < Game.frutas.size(); j++) {
@@ -386,7 +406,9 @@ public class Player extends Entity {
 						if (i instanceof BagPack) {
 							hasBagpack = true;
 							normalSpeed = normalSpeed - 1;
+							velocidadeMaxima = velocidadeMaxima - 1;
 							inventario = ((BagPack) i).getQuantidade();
+							armor = BagPack.getArmorBase();
 
 							Game.itens.remove(j);
 							return;
@@ -551,6 +573,7 @@ public class Player extends Entity {
 
 		Camera.x = Camera.clamp(this.getX() - (Game.getWIDTH() / 2), 0, World.WIDTH * 112 - Game.getWIDTH());
 		Camera.y = Camera.clamp(this.getY() - (Game.getHEIGHT() / 2), 0, World.HEIGHT * 112 - Game.getHEIGHT());
+
 		iamDead();
 	}
 

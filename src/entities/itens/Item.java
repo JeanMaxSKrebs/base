@@ -9,6 +9,7 @@ import base.Game;
 import entities.Entity;
 import entities.Player;
 import entities.itens.utensilios.Fogueira;
+import graficos.ItemAnimation;
 import world.Camera;
 import world.World;
 
@@ -111,6 +112,4 @@ public abstract class Item extends Entity {
 	public String toString() {
 		return "Item{" + "nome='" + nome + '\'' + ", quantidade=" + quantidade + '}';
 	}
-
-
 }

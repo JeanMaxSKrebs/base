@@ -32,8 +32,14 @@ public class UI {
 	public boolean renderBars = true;
 	public static boolean usarKey = false;
 	public static String tipoKey = "Vazio";
-
+	
 	public static boolean verFPS = true;
+
+	public static boolean animacaoColeta = false;
+	public static int itemX, itemY;
+	public static int targetX, targetY;
+	public static Item itemSendoColetado;
+
 	public int widthBase = Game.getWIDTH() * Game.getSCALE();
 	public int heightBase = Game.getHEIGHT() * Game.getSCALE();
 	
@@ -67,36 +73,13 @@ public class UI {
 			renderShowBar(g);
 		}
 
-		// Formatação do tempo
-		String formattedTime = String.format("%02d:%02d", Tempo.hours, Tempo.minutes);
-
-		// Exibição do tempo na tela
-		g.setColor(Color.white);
-		g.setFont(new Font("roboto", Font.BOLD, 40));
-		g.drawString(formattedTime, Game.getWIDTH() / 2 - 50, 40);
-
-		g.setColor(Color.gray);
-		g.fillRect(0, Game.getHEIGHT() - 96, 96, 96);
-		g.setColor(Color.white);
-		g.setFont(new Font("roboto", Font.BOLD, 10));
-
-//		quadroEsquerdo();
-//		quadroDireito();
+		if(Player.hasBagpack) {			
+		// Render the backpack
+		renderMochila(g);
+		}
+		renderTime(g);
 
 //		System.out.println("FPS: " + Game.FPS);
-		g.setColor(Color.black);
-		g.drawString("Comidas:  " + Player.getComidasColetadas().size(), 0, Game.getHEIGHT() - 35);
-		g.drawString("Itens:  " + Player.getItensColetados().size(), 0, Game.getHEIGHT() - 25);
-		g.drawString("Inventário:  Press I", 0, Game.getHEIGHT() - 15);
-		g.drawString("Pause:  Press P", 0, Game.getHEIGHT() - 5);
-
-		g.setColor(Color.gray);
-		g.fillRect(Game.getWIDTH() - 80, Game.getHEIGHT() - 32, 80, 32);
-		g.setColor(Color.white);
-		g.setFont(new Font("roboto", Font.BOLD, 9));
-		g.drawString("ARMADURA: " + Player.getArmor(), Game.getWIDTH() - 72, Game.getHEIGHT() - 25);
-		g.drawString("ESQUIVA: " + Player.getDodgeChance(), Game.getWIDTH() - 72, Game.getHEIGHT() - 15);
-		g.drawString("VELOCIDADE: " + Player.getSpeed(), Game.getWIDTH() - 72, Game.getHEIGHT() - 5);
 
 		if (showColetar) {
 			showColetar = false;
@@ -163,7 +146,8 @@ public class UI {
 				int rectX = (Game.getWIDTH() * Game.getSCALE() - rectWidth) / 2; // Posição X centralizada
 				int rectY = (Game.getHEIGHT() * Game.getSCALE() - rectHeight) / 2; // Posição Y centralizada
 				g.fillRect(rectX, rectY, rectWidth, rectHeight); // Desenhar o retângulo
-
+				g.setColor(Color.white);
+				g.setFont(new Font("roboto", Font.BOLD, 10));
 				String faseDaLuaString = "Lua do Diabo";
 
 				if (Game.linguagem == "Inglês") {
@@ -227,7 +211,13 @@ public class UI {
 					// Desenhar o texto
 					g.setColor(Color.black);
 					g.setFont(new Font("calibri", Font.BOLD, 48));
-					String message = "Você precisa de uma mochila primeiro!";
+					String message = "Você não tem mochila!";
+					
+					if (Game.linguagem == "Inglês") {
+						message = "You need a backpack first!";
+					} else if (Game.linguagem == "Português") {
+						message = "Você precisa de uma mochila primeiro!";
+					}
 					int textWidth = g.getFontMetrics().stringWidth(message); // Largura do texto
 					int textX = rectX + (rectWidth - textWidth) / 2; // Posição X centralizada
 					int textY = rectY + rectHeight / 2 + g.getFontMetrics().getHeight() / 4; // Posição Y centralizada
@@ -258,7 +248,7 @@ public class UI {
 
 			g.setColor(new Color(0, 0, 0)); // black
 			g.setFont(new Font("roboto", Font.BOLD, 28));
-			
+
 			int stringWidth = g.getFontMetrics().stringWidth("Usar " + tipoKey);
 
 			if (tipoKey != "Vazio") {
@@ -268,6 +258,95 @@ public class UI {
 			int xPos = (Game.getWIDTH() - stringWidth) / 2;
 
 			g.drawString("Usar " + tipoKey, xPos, Game.getHEIGHT() - 25);
+		}
+
+	}
+
+	private void renderTime(Graphics g) {
+		// Formatação do tempo
+		String formattedTime = String.format("%02d:%02d", Tempo.hours, Tempo.minutes);
+
+		// Exibição do tempo na tela
+		g.setColor(Color.white);
+		g.setFont(new Font("roboto", Font.BOLD, 40));
+		g.drawString(formattedTime, Game.getWIDTH() / 2 - 50, 40);
+
+	}
+
+	private void quadroEsquerdo(Graphics g) {
+		// Set up the background rectangle and text color
+		g.setColor(Color.gray);
+		g.fillRect(5, Game.getHEIGHT() / 2 - 60, 145, 70); // Adjusted height and width
+		g.setColor(Color.white);
+
+		// Set the font
+		g.setFont(new Font("Roboto", Font.PLAIN, 12));
+		FontMetrics fm = g.getFontMetrics();
+
+		// Text to be displayed
+		String[] labels = { "Comidas:", "Itens:", "Inventário:", "Pause:" };
+		String[] values = { String.valueOf(Player.getComidasColetadas().size()),
+				String.valueOf(Player.getItensColetados().size()), "Pressione I", "Pressione P" };
+
+		// Calculate the maximum width of the labels
+		int maxWidth = 0;
+		for (String label : labels) {
+			int width = fm.stringWidth(label);
+			if (width > maxWidth) {
+				maxWidth = width;
+			}
+		}
+
+		// Display the labels and values
+		int startX = 15; // Adjusted X position for padding
+		int startY = Game.getHEIGHT() / 2 - 45;
+		int lineHeight = 15;
+
+		for (int i = 0; i < labels.length; i++) {
+			g.drawString(labels[i], startX, startY + (i * lineHeight));
+			g.drawString(values[i], startX + maxWidth + 5, startY + (i * lineHeight)); // Add some space between label
+																						// and value
+		}
+	}
+
+	private void quadroDireito(Graphics g) {
+		// Set up the background rectangle and text color
+		g.setColor(Color.gray);
+		g.fillRect(Game.getWIDTH() - 125, Game.getHEIGHT() / 2 - 60, 120, 60);
+		g.setColor(Color.white);
+
+		// Set the font
+		g.setFont(new Font("Roboto", Font.PLAIN, 12));
+		FontMetrics fm = g.getFontMetrics();
+
+		// Create a DecimalFormat instance for formatting the numbers
+		DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.US);
+		symbols.setDecimalSeparator('.');
+		DecimalFormat df = new DecimalFormat("00.0", symbols);
+
+		// Text to be displayed
+		String[] labels = { "ARMADURA:", "ESQUIVA:", "VELOCIDADE:" };
+		double[] values = { Player.getArmor(), Player.getDodgeChance(), Player.getSpeed() };
+
+		// Calculate the maximum width of the labels
+		int maxWidth = 0;
+		for (String label : labels) {
+			int width = fm.stringWidth(label);
+			if (width > maxWidth) {
+				maxWidth = width;
+			}
+		}
+
+		// Display the labels and values
+		int startX = Game.getWIDTH() - 120;
+		int startY = Game.getHEIGHT() / 2 - 40;
+		int lineHeight = 15;
+
+		for (int i = 0; i < labels.length; i++) {
+			g.drawString(labels[i], startX, startY + (i * lineHeight));
+			g.drawString(df.format(values[i]), startX + maxWidth + 5, startY + (i * lineHeight)); // Add some space
+																									// between label and
+																									// value
 		}
 
 	}
@@ -426,6 +505,28 @@ public class UI {
 				renderBars = !renderBars;
 			}
 		}
+	}
+
+	public void renderMochila(Graphics g) {
+	    Graphics2D g2d = (Graphics2D) g;
+
+		int mochilaX = Game.getWIDTH() * Game.getSCALE() - 112 - 5; // Adjust the size accordingly
+		int mochilaY = 5; // Adjust the size accordingly
+//		int mochilaY = Game.getHEIGHT() * Game.getSCALE() - 112; // Adjust the size accordingly
+	    int mochilaWidth = 100;
+	    int mochilaHeight = 100;
+	    
+	
+	    // Create a gradient background
+	    Color color1 = new Color(222, 184, 135); // Light brown
+	    Color color2 = new Color(34, 139, 34);   // Green
+	    
+	    // Draw the gradient background
+	    g2d.setPaint(new GradientPaint(mochilaX, mochilaY, color1, mochilaX + mochilaWidth, mochilaY + mochilaHeight, color2));
+	    g2d.fillOval(mochilaX - 12, mochilaY, mochilaWidth + 24, mochilaHeight + 24); // Extend background for padding
+
+	    // Draw the backpack image
+	    g.drawImage(BagPack.BAGPACK_EN, mochilaX, mochilaY + 10, mochilaWidth, mochilaHeight, null);
 	}
 
 }

@@ -19,6 +19,16 @@ public class BagPack extends Utensilio {
 
 	public static BufferedImage[] spritesBackpack;
 
+	public static int armorBase = 5;
+
+	public static int getArmorBase() {
+		return armorBase;
+	}
+
+	public static void setArmorBase(int armorBase) {
+		BagPack.armorBase = armorBase;
+	}
+
 	public BagPack(int x, int y, int width, int height, BufferedImage sprite) {
 		super(x, y, width, height, sprite);
 
