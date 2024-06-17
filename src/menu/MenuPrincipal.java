@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.util.Iterator;
 
 import base.Game;
+import base.GameSaveManager;
 import entities.Player;
 import world.World;
 
@@ -28,11 +29,6 @@ public class MenuPrincipal extends Menu {
 	public static boolean saveExists = false;
 
 	public void tick() {
-		File file = new File("save.txt");
-		if (file.exists())
-			saveExists = true;
-		else
-			saveExists = false;
 
 		if (up) {
 			up = false;
@@ -54,16 +50,10 @@ public class MenuPrincipal extends Menu {
 		if (enter) {
 			enter = false;
 			if (options[currentOption].getNomePortugues() == "Novo Jogo") {
-				Game.gameState = "NORMAL";
-				file = new File("save.txt");
-				file.delete();
+				Game.gameState = "SALVAR";
 
 			} else if (options[currentOption].getNomePortugues() == "Carregar") {
-				file = new File("save.txt");
-				if (file.exists()) {
-					String saver = loadGame(0);
-					applySave(saver);
-				}
+				Game.gameState = "CARREGAR";
 
 			} else if (options[currentOption].getNomePortugues() == "Opções") {
 				Game.gameState = "OPTIONS";

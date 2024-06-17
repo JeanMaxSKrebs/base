@@ -278,6 +278,10 @@ public class Tempo {
 		Tempo.years = years;
 	}
 
+	public static boolean isTimeToAutoSave() {
+	    return hours % 6 == 0 && minutes == 0; // Verifica se o número de minutos é um múltiplo de 6 e segundos é zero
+	}
+	
 	// Método para obter o tempo atual
 	public static Tempo getNow() {
 		return new Tempo(Tempo.minutes % 60, Tempo.hours % 24, Tempo.days, Tempo.months, Tempo.years);

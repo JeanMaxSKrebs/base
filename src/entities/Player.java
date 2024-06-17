@@ -42,7 +42,7 @@ public class Player extends Entity {
 	private static double diagonalSpeed = speed / Math.sqrt(2);
 	private static double speedAceleracao = 0.05;
 
-	public int premium = 0;
+	public static int premium = 0;
 
 	private static int dodgeChance = 20;
 	private static int armor = 0;
@@ -103,8 +103,8 @@ public class Player extends Entity {
 	public double balas = 0;
 	public double maxBalas = 600;
 
-	public double nivel;
-	public double qtdNivel;
+	private static int nivel = 1;
+	public static int qtdNivel = 100;
 	public static boolean isCollidingItem = false;
 
 	public boolean coletando = false;
@@ -966,6 +966,150 @@ public class Player extends Entity {
 
 	public static void setItensColetados(List<Item> itens) {
 		Player.itensColetados = itens;
+	}
+
+	public static int getNivel() {
+		return nivel;
+	}
+
+	public static void setNivel(int nivel) {
+		Player.nivel = nivel;
+	}
+
+	public static double getVelocidadeMinima() {
+		return velocidadeMinima;
+	}
+
+	public static void setVelocidadeMinima(double velocidadeMinima) {
+		Player.velocidadeMinima = velocidadeMinima;
+	}
+
+	public static double getVelocidadeMaxima() {
+		return velocidadeMaxima;
+	}
+
+	public static void setVelocidadeMaxima(double velocidadeMaxima) {
+		Player.velocidadeMaxima = velocidadeMaxima;
+	}
+
+	public static int getPremium() {
+		return premium;
+	}
+
+	public void setPremium(int premium) {
+		this.premium = premium;
+	}
+	
+	public boolean getHasBagpack() {
+		return hasBagpack;
+	}
+
+	public static void setHasBagpack(boolean hasBagpack) {
+		Player.hasBagpack = hasBagpack;
+	}
+
+	public static double getNormalSpeed() {
+		return normalSpeed;
+	}
+
+	public static void setNormalSpeed(double normalSpeed) {
+		Player.normalSpeed = normalSpeed;
+	}
+
+	public static double getMinLife() {
+		return minLife;
+	}
+
+	public static void setMinLife(double minLife) {
+		Player.minLife = minLife;
+	}
+
+	public static double getMinStamine() {
+		return minStamine;
+	}
+
+	public static void setMinStamine(double minStamine) {
+		Player.minStamine = minStamine;
+	}
+
+	public double getHunger() {
+		return hunger;
+	}
+
+	public void setHunger(double hunger) {
+		this.hunger = hunger;
+	}
+
+	public static double getMinHunger() {
+		return minHunger;
+	}
+
+	public static void setMinHunger(double minHunger) {
+		Player.minHunger = minHunger;
+	}
+
+	public static double getMaxHunger() {
+		return maxHunger;
+	}
+
+	public static void setMaxHunger(double maxHunger) {
+		Player.maxHunger = maxHunger;
+	}
+
+	public static double getMinThirsth() {
+		return minThirsth;
+	}
+
+	public static void setMinThirsth(double minThirsth) {
+		Player.minThirsth = minThirsth;
+	}
+
+	public static double getMaxThirsth() {
+		return maxThirsth;
+	}
+
+	public static void setMaxThirsth(double maxThirsth) {
+		Player.maxThirsth = maxThirsth;
+	}
+
+	public void setLife(double life) {
+		this.life = life;
+	}
+
+	public static void setMaxLife(double maxLife) {
+		Player.maxLife = maxLife;
+	}
+
+	public double getThirsth() {
+		return thirsth;
+	}
+
+	public void setThirsth(double thirsth) {
+		this.thirsth = thirsth;
+	}
+
+	public static int getInventario() {
+		return inventario;
+	}
+
+	public static void setInventario(int inventario) {
+		Player.inventario = inventario;
+	}
+
+	public boolean isAtirar() {
+		return atirar;
+	}
+
+	public void setAtirar(boolean atirar) {
+		this.atirar = atirar;
+	}
+
+	public static int getQtdNivel() {
+		return qtdNivel;
+	}
+
+	public void setQtdNivel(int qtdNivel) {
+		this.qtdNivel = qtdNivel;
 	}
 
 }

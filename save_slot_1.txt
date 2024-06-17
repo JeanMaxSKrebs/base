@@ -1,0 +1,6 @@
+nivel:6
+vida::5
+estamina::5
+premium:5
+gameState:STWRFQ
+previousGameState:RJSZUWNSHNUFQ

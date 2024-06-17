@@ -74,8 +74,8 @@ public class World {
 
 	private void spawnEntities() {
 
-		System.out.println("WIDTH");
-		System.out.println(WIDTH);
+//		System.out.println("WIDTH");
+//		System.out.println(WIDTH);
 		// Gera aleatoriamente arvores de varios tipos e classes diferentes
 		for (int i = 0; i < NUMERO_DE_ARVORES; i++) {
 //			int x = Game.random(WIDTH);
@@ -108,12 +108,12 @@ public class World {
 //			System.out.println("totalZumbisGerados");
 //			System.out.println(totalZumbisGerados);
 		}
-		System.out.println("contadorArvores");
-		System.out.println(contadorArvores);
-		System.out.println("contadorHordas");
-		System.out.println(contadorHordas);
-		System.out.println("totalZumbisGerados");
-		System.out.println(totalZumbisGerados);
+//		System.out.println("contadorArvores");
+//		System.out.println(contadorArvores);
+//		System.out.println("contadorHordas");
+//		System.out.println(contadorHordas);
+//		System.out.println("totalZumbisGerados");
+//		System.out.println(totalZumbisGerados);
 	}
 
 	private void loadMap(String path) {
@@ -286,7 +286,7 @@ public class World {
 
 //		System.out.println(tiles[x1 + (y1*World.WIDTH)]);
 		if (tiles[x1 + (y1 * World.WIDTH)] instanceof Tilewall) {
-			System.out.println("é uma parede");
+//			System.out.println("é uma parede");
 			return false; // É uma parede
 		} else if (tiles[x1 + (y1 * World.WIDTH)] instanceof Tiledoor) {
 			xDoor = x1;

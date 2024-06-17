@@ -193,8 +193,6 @@ public class UI {
 				g.drawImage(Tempo.FASES_DA_LUA[Tempo.restoLua].getSpritesheet()[spriteIndex], x, y, null);
 
 			}
-		} else {
-			Game.gameState = "NORMAL";
 		}
 
 		if (Game.openInventory) {

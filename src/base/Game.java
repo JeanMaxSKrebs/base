@@ -32,8 +32,10 @@ import entities.itens.comidas.frutas.Fruta;
 import graficos.ItemAnimation;
 import graficos.UI;
 import menu.Inventory;
+import menu.MenuCarregar;
 import menu.MenuPause;
 import menu.MenuPrincipal;
+import menu.MenuSalvar;
 import menu.Options;
 import menu.Status;
 import tempo.DiaDaSemana;
@@ -95,6 +97,9 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	public static Options options;
 	public MenuPrincipal menuPrincipal;
 	public MenuPause menuPause;
+	public MenuSalvar menuSalvar;
+	public MenuCarregar menuCarregar;
+
 	public Inventory inventory;
 	public static boolean openInventory = false;
 	public static boolean movimentarEnemys = false;
@@ -106,8 +111,6 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	private boolean restartGame = false;
 	private boolean showMessageGameOver = true;
 	private int framesGameOver = 0;
-
-	
 
 	// mudar linguagem
 //	public static String linguagem = "Inglês";
@@ -136,7 +139,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		comidas = new ArrayList<Comida>();
 		arvores = new ArrayList<Arvore>();
 		frutas = new ArrayList<Fruta>();
-        itemAnimations = new ArrayList<ItemAnimation>();
+		itemAnimations = new ArrayList<ItemAnimation>();
 
 		spritesheet = new Spritesheet("/spritesheet.png");
 		spritesheet_Moons = new Spritesheet("/spritesheet_Moons.png");
@@ -157,6 +160,8 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		options = new Options();
 		menuPause = new MenuPause();
 		menuPrincipal = new MenuPrincipal();
+		menuSalvar = new MenuSalvar();
+		menuCarregar = new MenuCarregar();
 		tempo = new Tempo();
 		inventory = new Inventory();
 
@@ -200,40 +205,12 @@ public class Game extends Canvas implements Runnable, KeyListener {
 //		System.out.println("Game.frutas");
 //		System.out.println(Game.frutas.size());
 
-//		System.out.println("gameState");
-//		System.out.println(gameState);
-		tempo.tick();
+		System.out.println("gameState123");
+		System.out.println(gameState);
+		
+
 		if (gameState == "NORMAL") {
-//			System.out.println("saveGame");
-//			System.out.println(saveGame);
-			if (saveGame) {
-				saveGame = false;
-				int loadGame = 0;
-				int nivel = (int) Game.player.nivel;
-				int qtdNivel = (int) Game.player.qtdNivel;
-				int vida = (int) Game.player.life;
-				int estamina = (int) Game.player.stamine;
-				int premium = (int) Game.player.premium;
-
-				String[] options = { "nivel", "qtdNivel", "vida", "estamina", "premium", "gameState",
-						"previousGameState" };
-				int[] values = { nivel, qtdNivel, vida, estamina, premium };
-
-				System.out.println("Salvando o jogo:");
-				System.out.println("Nível: " + nivel + ", XP: " + qtdNivel);
-				System.out.println("Vida: " + vida + ", Estamina: " + estamina + ", Premium: " + premium);
-				System.out.println("GameState: " + gameState);
-				System.out.println("previousGameState: " + previousGameState);
-
-				MenuPrincipal.saveGame(options, values, loadGame);
-
-			}
-
-			restartGame = false;
-//			if(tiledoors.size() == 0) {
-//					ILHA = "SEGUNDA";
-//					gameState = "NEXT";									
-//			}
+			tempo.tick();
 
 			// colocar entidades na tela
 			for (int i = 0; i < entities.size(); i++) {
@@ -280,8 +257,6 @@ public class Game extends Canvas implements Runnable, KeyListener {
 			for (int i = 0; i < balas.size(); i++) {
 				balas.get(i).tick();
 			}
-			
-
 
 		} else if (gameState == "GAME_OVER") {
 			framesGameOver++;
@@ -301,8 +276,14 @@ public class Game extends Canvas implements Runnable, KeyListener {
 				World.restartGame(newWorld);
 
 			}
+			GameSaveManager.tick();
+
 		} else if (gameState == "MENUPRINCIPAL") {
 			menuPrincipal.tick();
+		} else if (gameState == "CARREGAR") {
+			menuCarregar.tick();
+		} else if (gameState == "SALVAR") {
+			menuSalvar.tick();
 		} else if (gameState == "MENUPAUSE") {
 			menuPause.tick();
 		} else if (gameState == "STATUS") {
@@ -312,6 +293,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		} else if (gameState == "INVENTORY") {
 			inventory.tick();
 		}
+		
 	}
 
 	public void render() {
@@ -376,8 +358,6 @@ public class Game extends Canvas implements Runnable, KeyListener {
 			Entity e = entities.get(i);
 			e.render(g);
 		}
-		
-
 
 		ui.render(g);
 //		//render itemAnimations
@@ -417,6 +397,10 @@ public class Game extends Canvas implements Runnable, KeyListener {
 				g.drawString(">> PRESSIONE ENTER <<", WIDTH * getSCALE() / 5, (HEIGHT * getSCALE() / 2) + 96);
 		} else if (gameState == "MENUPRINCIPAL") {
 			menuPrincipal.render(g);
+		} else if (gameState == "CARREGAR") {
+			menuCarregar.render(g);
+		} else if (gameState == "SALVAR") {
+			menuSalvar.render(g);
 		} else if (gameState == "MENUPAUSE") {
 			menuPause.render(g);
 		} else if (gameState == "STATUS") {
@@ -483,6 +467,12 @@ public class Game extends Canvas implements Runnable, KeyListener {
 			if (gameState == "OPTIONS") {
 				options.up = true;
 			}
+			if (gameState == "CARREGAR") {
+				menuCarregar.up = true;
+			}
+			if (gameState == "SALVAR") {
+				menuSalvar.up = true;
+			}
 			if (gameState == "MENUPRINCIPAL") {
 				menuPrincipal.up = true;
 			}
@@ -499,6 +489,12 @@ public class Game extends Canvas implements Runnable, KeyListener {
 			}
 			if (gameState == "OPTIONS") {
 				options.down = true;
+			}
+			if (gameState == "CARREGAR") {
+				menuCarregar.down = true;
+			}
+			if (gameState == "SALVAR") {
+				menuSalvar.down = true;
 			}
 			if (gameState == "MENUPRINCIPAL") {
 				menuPrincipal.down = true;
@@ -536,6 +532,12 @@ public class Game extends Canvas implements Runnable, KeyListener {
 			if (gameState == "OPTIONS") {
 				options.enter = true;
 			}
+			if (gameState == "CARREGAR") {
+				menuCarregar.enter = true;
+			}
+			if (gameState == "SALVAR") {
+				menuSalvar.enter = true;
+			}
 
 			if (gameState == "MENUPRINCIPAL") {
 				menuPrincipal.enter = true;
@@ -560,7 +562,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 				gameState = "MENUPAUSE";
 			}
 			if (e.getKeyCode() == KeyEvent.VK_I) {
-				if (!Game.player.hasBagpack) {
+				if (!Game.player.getHasBagpack()) {
 					Game.openInventory = true;
 					messageDisplayStartTime = System.currentTimeMillis(); // Inicia a contagem do tempo de exibição da
 																			// mensagem

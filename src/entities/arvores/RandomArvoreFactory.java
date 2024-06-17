@@ -28,10 +28,10 @@ public class RandomArvoreFactory implements ArvoreFactory {
 
 			// Adiciona frutos aleatoriamente (30% de chance de ter frutos)
             if (Game.random(10) < 3) {
-                System.out.println("gerou frutos: " + arvore.getClass().getSimpleName());
+//                System.out.println("gerou frutos: " + arvore.getClass().getSimpleName());
                 arvore.adicionarFrutosAleatoriamente();
             } else {
-                System.out.println("não gerou frutos: " + arvore.getClass().getSimpleName());
+//                System.out.println("não gerou frutos: " + arvore.getClass().getSimpleName());
             }
 
 			return arvore;
