@@ -205,8 +205,8 @@ public class Game extends Canvas implements Runnable, KeyListener {
 //		System.out.println("Game.frutas");
 //		System.out.println(Game.frutas.size());
 
-		System.out.println("gameState123");
-		System.out.println(gameState);
+//		System.out.println("gameState123");
+//		System.out.println(gameState);
 		
 
 		if (gameState == "NORMAL") {
@@ -286,6 +286,8 @@ public class Game extends Canvas implements Runnable, KeyListener {
 			menuSalvar.tick();
 		} else if (gameState == "MENUPAUSE") {
 			menuPause.tick();
+			tempo.tick();
+
 		} else if (gameState == "STATUS") {
 			status.tick();
 		} else if (gameState == "OPTIONS") {
@@ -562,7 +564,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 				gameState = "MENUPAUSE";
 			}
 			if (e.getKeyCode() == KeyEvent.VK_I) {
-				if (!Game.player.getHasBagpack()) {
+				if (!Game.player.hasBagpack) {
 					Game.openInventory = true;
 					messageDisplayStartTime = System.currentTimeMillis(); // Inicia a contagem do tempo de exibição da
 																			// mensagem

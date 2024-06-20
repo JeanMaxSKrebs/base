@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 
 import base.Game;
+import base.GameSaveManager;
 import graficos.UI;
 import tempo.DiaDaSemana;
 import tempo.Tempo;
@@ -43,6 +44,8 @@ public class Options extends Menu {
 			if (options[currentOption].getNomePortugues() == "Configuração do FPS") {
 				UI.verFPS = !UI.verFPS;
 			} else if (options[currentOption].getNomePortugues() == "Outras Configurações") {
+				Game.player.hasBagpack = !Game.player.hasBagpack;
+
 			} else if (options[currentOption].getNomePortugues() == "Outros") {
 			} else if (options[currentOption].getNomePortugues() == "Voltar") {
 				currentOption = 0;
@@ -118,9 +121,9 @@ public class Options extends Menu {
 				int x = (widthBase / 2 + 100); // Center horizontally based on string width
 				int y = (heightBase / 3);
 
-				String FPS = "FPS";
+				String Nome = "HasBagpack";
 
-				String combinedString = FPS + ":" + Game.FPS;
+				String combinedString = Nome + " : " + capitalizeFirstLetter(Boolean.toString(Game.player.hasBagpack));
 
 				g.drawString(combinedString, x, y);
 
@@ -163,6 +166,14 @@ public class Options extends Menu {
 				}
 
 			} else if (options[currentOption].getNomePortugues() == "Outras Configurações") {
+				int x = (widthBase / 2 + 100); // Center horizontally based on string width
+				int y = (heightBase / 3);
+				
+				String Nome = "HasBagpack";
+
+				String combinedString = Nome + " : " + capitalizeFirstLetter(Boolean.toString(Game.player.hasBagpack));
+				
+				g.drawString(combinedString, x, y);
 
 			} else if (options[currentOption].getNomePortugues() == "Outros") {
 			} else if (options[currentOption].getNomePortugues() == "Voltar") {

@@ -73,7 +73,7 @@ public class UI {
 			renderShowBar(g);
 		}
 
-		if(Player.hasBagpack) {			
+		if(Game.player.hasBagpack) {			
 		// Render the backpack
 		renderMochila(g);
 		}

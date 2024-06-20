@@ -18,9 +18,9 @@ import entities.Player;
 import world.World;
 
 public class MenuPause extends Menu {
-
+//	new Option("Salvar", "Save Game"),
 	public static final Option[] options = { new Option("Continuar", "Continue"), new Option("Carregar", "Load Game"),
-			new Option("Salvar", "Save Game"), new Option("Opções", "Options"), new Option("Status", "Status"),
+		 new Option("Opções", "Options"), new Option("Status", "Status"),
 			new Option("Voltar", "Go Back") };
 
 	public MenuPause() {
@@ -63,14 +63,6 @@ public class MenuPause extends Menu {
 			} else if (options[currentOption].getNomePortugues() == "Carregar") {
 				Game.previousGameState = Game.gameState;
 				Game.gameState = "CARREGAR";
-				file = new File("save.txt");
-				if (file.exists()) {
-					String saver = GameSaveManager.loadGame();
-					GameSaveManager.applySave(saver);
-				}
-			} else if (options[currentOption].getNomePortugues() == "Salvar") {
-				Game.previousGameState = Game.gameState;
-				Game.gameState = "SALVAR";
 
 			} else if (options[currentOption].getNomePortugues() == "Opções") {
 				Game.previousGameState = Game.gameState;
@@ -107,21 +99,18 @@ public class MenuPause extends Menu {
 
 		g.drawString("Continuar", larguraDesejadaUMTERCO, alturaDesejadaUMTERCO + spacingRows * 1);
 		g.drawString("Carregar", larguraDesejadaUMTERCO, alturaDesejadaUMTERCO + spacingRows * 2);
-		g.drawString("Salvar", larguraDesejadaUMTERCO, alturaDesejadaUMTERCO + spacingRows * 3);
-		g.drawString("Opções", larguraDesejadaUMTERCO, alturaDesejadaUMTERCO + spacingRows * 4);
-		g.drawString("Status do Jogo", larguraDesejadaUMTERCO, alturaDesejadaUMTERCO + spacingRows * 5);
+		g.drawString("Opções", larguraDesejadaUMTERCO, alturaDesejadaUMTERCO + spacingRows * 3);
+		g.drawString("Status do Jogo", larguraDesejadaUMTERCO, alturaDesejadaUMTERCO + spacingRows * 4);
 		g.drawString("Voltar", larguraDesejada - 150, ((alturaDesejada) - 50));
 
 		if (options[currentOption].getNomePortugues() == "Continuar") {
 			g.drawString(" > ", larguraDesejadaUMTERCO - 50, alturaDesejadaUMTERCO + spacingRows * 1);
 		} else if (options[currentOption].getNomePortugues() == "Carregar") {
 			g.drawString(" > ", larguraDesejadaUMTERCO - 50, alturaDesejadaUMTERCO + spacingRows * 2);
-		} else if (options[currentOption].getNomePortugues() == "Salvar") {
-			g.drawString(" > ", larguraDesejadaUMTERCO - 50, alturaDesejadaUMTERCO + spacingRows * 3);
 		} else if (options[currentOption].getNomePortugues() == "Opções") {
-			g.drawString(" > ", larguraDesejadaUMTERCO - 50, alturaDesejadaUMTERCO + spacingRows * 4);
+			g.drawString(" > ", larguraDesejadaUMTERCO - 50, alturaDesejadaUMTERCO + spacingRows * 3);
 		} else if (options[currentOption].getNomePortugues() == "Status") {
-			g.drawString(" > ", larguraDesejadaUMTERCO - 50, alturaDesejadaUMTERCO + spacingRows * 5);
+			g.drawString(" > ", larguraDesejadaUMTERCO - 50, alturaDesejadaUMTERCO + spacingRows * 4);
 		} else if (options[currentOption].getNomePortugues() == "Voltar") {
 			g.drawString(" > ", larguraDesejada - 150 - 50, alturaDesejada - 50);
 		}

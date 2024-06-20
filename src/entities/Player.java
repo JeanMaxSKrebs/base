@@ -31,14 +31,21 @@ import world.World;
 
 public class Player extends Entity {
 
+	public boolean hasBagpack = false;
 	public boolean run = false;
 	public boolean left, right, up, down;
 	public int down_dir = 1, left_dir = 2, right_dir = 3, up_dir = 4, dirNone = 5;
 	public int dir = 1;
-	public static double velocidadeMinima = 3;
-	public static double velocidadeMaxima = 15;
+	public static double velocidadeMinimaPermitida = 2;
+	public static double velocidadeMaximaPermitida = 32;
+	public static double velocidadeMinima = 5;
+	public static double velocidadeMaxima = 16;
+
+	public static double bagPackSpeed = 7;
 	public static double normalSpeed = 8;
-	public static double speed = normalSpeed;
+	public static double temporarySpeed;
+
+	public static double speed = 8;
 	private static double diagonalSpeed = speed / Math.sqrt(2);
 	private static double speedAceleracao = 0.05;
 
@@ -46,8 +53,6 @@ public class Player extends Entity {
 
 	private static int dodgeChance = 20;
 	private static int armor = 0;
-
-	public static boolean hasBagpack = false;
 
 	private static List<Item> itensColetados = new ArrayList<>();
 	private static List<Fruta> frutasColetadas = new ArrayList<>();
@@ -148,6 +153,11 @@ public class Player extends Entity {
 			ocioso[i] = Game.spritesheet_Player.getSprite((i * 112), 112 * dirNone, 112, 112);
 		}
 
+	}
+
+	private void updateSpeed() {
+		boolean hasBagpack = Game.player.hasBagpack;
+		temporarySpeed = (hasBagpack ? bagPackSpeed : normalSpeed);
 	}
 
 	public int danoRecebido(int dano) {
@@ -266,7 +276,7 @@ public class Player extends Entity {
 		}
 		iniciarAnimacaoColeta(newItem);
 	}
-	
+
 	public void coletar(Fruta newFruta) {
 		boolean frutaExists = false;
 
@@ -297,21 +307,21 @@ public class Player extends Entity {
 	}
 
 	public void iniciarAnimacaoColeta(Item item) {
-        int startX = Game.getWIDTH() * Game.getSCALE() / 2;
-        int startY = Game.getHEIGHT() * Game.getSCALE() / 2;
-        
-        // Coordenadas finais na mochila
-        int mochilaX = Game.getWIDTH() * Game.getSCALE() - 112 - 5; // Ajuste o tamanho conforme necessário
-        int mochilaY = 5; // Ajuste o tamanho conforme necessário
-        
-        int targetX = mochilaX; // Defina a coordenada X no meio da mochila
-        int targetY = mochilaY; // Defina a coordenada Y no meio da mochila
+		int startX = Game.getWIDTH() * Game.getSCALE() / 2;
+		int startY = Game.getHEIGHT() * Game.getSCALE() / 2;
 
-        ItemAnimation itemAnimation = new ItemAnimation(item.getSprite(), 6000); // Supondo que a duração da animação seja 2000ms
-        Game.itemAnimations.add(itemAnimation);
-        itemAnimation.startAnimation(startX, startY, targetX, targetY);
+		// Coordenadas finais na mochila
+		int mochilaX = Game.getWIDTH() * Game.getSCALE() - 112 - 5; // Ajuste o tamanho conforme necessário
+		int mochilaY = 5; // Ajuste o tamanho conforme necessário
+
+		int targetX = mochilaX; // Defina a coordenada X no meio da mochila
+		int targetY = mochilaY; // Defina a coordenada Y no meio da mochila
+
+		ItemAnimation itemAnimation = new ItemAnimation(item.getSprite(), 6000); // Supondo que a duração da animação
+																					// seja 2000ms
+		Game.itemAnimations.add(itemAnimation);
+		itemAnimation.startAnimation(startX, startY, targetX, targetY);
 	}
-	
 
 	public void checkFruits() {
 		for (int j = 0; j < Game.frutas.size(); j++) {
@@ -369,7 +379,7 @@ public class Player extends Entity {
 			}
 		}
 	}
-	
+
 	public void checkItens() {
 		for (int j = 0; j < Game.itens.size(); j++) {
 //			System.out.println("Game.entities.size()");
@@ -405,10 +415,6 @@ public class Player extends Entity {
 
 						if (i instanceof BagPack) {
 							hasBagpack = true;
-							normalSpeed = normalSpeed - 1;
-							velocidadeMaxima = velocidadeMaxima - 1;
-							inventario = ((BagPack) i).getQuantidade();
-							armor = BagPack.getArmorBase();
 
 							Game.itens.remove(j);
 							return;
@@ -518,17 +524,25 @@ public class Player extends Entity {
 		return itemCount;
 	}
 
-	int teste = 0;
+	int umaVez = 0;
 
 	public void tick() {
-		if (teste == 0) {
-			teste++;
-//			System.out.println(speed);
-//			System.out.println(diagonalSpeed);
+
+		velocidadeMaxima = 16;
+		updateSpeed();
+
+		if (hasBagpack) {
+			if (umaVez == 0) {
+				umaVez++;
+				velocidadeMaxima = 15;
+				inventario = 40;
+				armor = armor + BagPack.getArmorBase();
+			}
+
 		} else {
-//			System.out.println(speed);
-//			System.out.println(diagonalSpeed);
+			umaVez = 0;
 		}
+
 		if (atirar) {
 			atirar = false;
 			if (balas > 0) {
@@ -656,7 +670,7 @@ public class Player extends Entity {
 		if (thirsth > 0) {
 			if (run) {
 				if (stamine < 30)
-					thirsth -= gastoSedeCorrendo*2;
+					thirsth -= gastoSedeCorrendo * 2;
 				else
 					thirsth -= gastoSedeCorrendo;
 
@@ -688,42 +702,37 @@ public class Player extends Entity {
 	}
 
 	private void correndo() {
-		if (up || down || left || right) {
-			if (run) {
-				if (stamine >= minStamine) {
-					stamine = stamine - gastoStamine;
-				}
+		if (run) {
+			if (stamine >= minStamine) {
+				stamine = stamine - gastoStamine;
+			}
 
-				if (stamine >= 5) {
-					if (speed < velocidadeMaxima) {
-						speed = speed + speedAceleracao;
-					}
-					if (speed >= velocidadeMaxima) {
-						speed = velocidadeMaxima;
-					}
-				} else {
-					speed = speed - speedAceleracao;
-					if (speed < normalSpeed) {
-						speed = normalSpeed;
-					}
+			if (stamine >= 5) {
+				if (speed < velocidadeMaxima) {
+					speed = speed + speedAceleracao;
 				}
-
+				if (speed >= velocidadeMaxima) {
+					speed = velocidadeMaxima;
+				}
 			} else {
-				if (stamine < maxStamine) {
-					stamine = stamine + regeneracaoStamine;
-				}
 				speed = speed - speedAceleracao;
-				if (speed < normalSpeed) {
-					speed = normalSpeed;
+				if (speed < temporarySpeed) {
+					speed = temporarySpeed;
 				}
 			}
 
-			diagonalSpeed = speed / Math.sqrt(2);
 		} else {
 			if (stamine < maxStamine) {
 				stamine = stamine + regeneracaoStamine;
 			}
+			speed = speed - speedAceleracao;
+			if (speed < temporarySpeed) {
+				speed = temporarySpeed;
+			}
 		}
+
+		diagonalSpeed = speed / Math.sqrt(2);
+
 	}
 
 	private void mover() {
@@ -996,16 +1005,8 @@ public class Player extends Entity {
 		return premium;
 	}
 
-	public void setPremium(int premium) {
-		this.premium = premium;
-	}
-	
-	public boolean getHasBagpack() {
-		return hasBagpack;
-	}
-
-	public static void setHasBagpack(boolean hasBagpack) {
-		Player.hasBagpack = hasBagpack;
+	public static void setPremium(int premium) {
+		Player.premium = premium;
 	}
 
 	public static double getNormalSpeed() {

@@ -73,13 +73,13 @@ public class MenuPrincipal extends Menu {
 		g.setFont(new Font("Arial", Font.BOLD, 64));
 		g.fillRect(0, 0, larguraDesejada, alturaDesejada);
 		g.setColor(Color.WHITE);
-		g.drawString("Sobrevivência Jogo", larguraDesejada / 4, alturaDesejada / 5);
+		g.drawString("Sobrevivência Jogo", larguraDesejada / 5 + 20, alturaDesejada / 5);
 
 		// menu
 		g.setFont(new Font("Arial", Font.BOLD, 48));
 
 		int alturaDesejadaUMTERCO = alturaDesejada / 2 - 30;
-		int larguraDesejadaUMTERCO = larguraDesejada / 3;
+		int larguraDesejadaUMTERCO = larguraDesejada / 3 + 70;
 
 		int spacingRows = 90;
 		switch (Game.linguagem) {
