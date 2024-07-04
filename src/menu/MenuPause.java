@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.util.Iterator;
 
 import base.Game;
-import base.GameSaveManager;
+import base.save.GameSaveManager;
 import entities.Player;
 import world.World;
 
@@ -21,11 +21,13 @@ public class MenuPause extends Menu {
 //	new Option("Salvar", "Save Game"),
 	public static final Option[] options = { new Option("Continuar", "Continue"), new Option("Carregar", "Load Game"),
 		 new Option("Opções", "Options"), new Option("Status", "Status"),
-			new Option("Voltar", "Go Back") };
+			new Option("Voltar ao Menu Principal", "Go Back to Main Menu") };
 
 	public MenuPause() {
 		super(options);
 	}
+
+	public static int currentOption = 0;
 
 	public static boolean saveExists = false;
 
@@ -57,13 +59,15 @@ public class MenuPause extends Menu {
 		}
 		if (enter) {
 			enter = false;
+
 			if (options[currentOption].getNomePortugues() == "Continuar") {
 				Game.previousGameState = Game.gameState;
 				Game.gameState = "NORMAL";
 			} else if (options[currentOption].getNomePortugues() == "Carregar") {
 				Game.previousGameState = Game.gameState;
 				Game.gameState = "CARREGAR";
-
+				GameSaveManager.checkAndInitializeSaveLoads();
+				
 			} else if (options[currentOption].getNomePortugues() == "Opções") {
 				Game.previousGameState = Game.gameState;
 				Game.gameState = "OPTIONS";
@@ -72,12 +76,15 @@ public class MenuPause extends Menu {
 				Game.previousGameState = Game.gameState;
 				Game.gameState = "STATUS";
 
-			} else if (options[currentOption].getNomePortugues() == "Voltar") {
+			} else if (options[currentOption].getNomePortugues() == "Voltar ao Menu Principal") {
 				currentOption = 0;
-				Game.previousGameState = Game.gameState;
-				Game.gameState = "NORMAL";
+				Game.previousGameState = "MENUPRINCIPAL";
+				Game.gameState = "MENUPRINCIPAL";
 			}
 		}
+	}
+	public static void currentOptionto0() {
+		currentOption = 0;
 	}
 
 	public void render(Graphics g) {
@@ -101,7 +108,7 @@ public class MenuPause extends Menu {
 		g.drawString("Carregar", larguraDesejadaUMTERCO, alturaDesejadaUMTERCO + spacingRows * 2);
 		g.drawString("Opções", larguraDesejadaUMTERCO, alturaDesejadaUMTERCO + spacingRows * 3);
 		g.drawString("Status do Jogo", larguraDesejadaUMTERCO, alturaDesejadaUMTERCO + spacingRows * 4);
-		g.drawString("Voltar", larguraDesejada - 150, ((alturaDesejada) - 50));
+		g.drawString("Voltar ao Menu Principal", larguraDesejada/2+60, ((alturaDesejada) - 30));
 
 		if (options[currentOption].getNomePortugues() == "Continuar") {
 			g.drawString(" > ", larguraDesejadaUMTERCO - 50, alturaDesejadaUMTERCO + spacingRows * 1);
@@ -111,8 +118,8 @@ public class MenuPause extends Menu {
 			g.drawString(" > ", larguraDesejadaUMTERCO - 50, alturaDesejadaUMTERCO + spacingRows * 3);
 		} else if (options[currentOption].getNomePortugues() == "Status") {
 			g.drawString(" > ", larguraDesejadaUMTERCO - 50, alturaDesejadaUMTERCO + spacingRows * 4);
-		} else if (options[currentOption].getNomePortugues() == "Voltar") {
-			g.drawString(" > ", larguraDesejada - 150 - 50, alturaDesejada - 50);
+		} else if (options[currentOption].getNomePortugues() == "Voltar ao Menu Principal") {
+			g.drawString(" > ", larguraDesejada/2+60-50, ((alturaDesejada) - 30));
 		}
 
 	}

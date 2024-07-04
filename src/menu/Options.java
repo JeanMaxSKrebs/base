@@ -5,7 +5,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 
 import base.Game;
-import base.GameSaveManager;
+import base.save.GameSaveManager;
 import graficos.UI;
 import tempo.DiaDaSemana;
 import tempo.Tempo;

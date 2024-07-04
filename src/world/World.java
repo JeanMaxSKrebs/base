@@ -369,4 +369,21 @@ public class World {
 			}
 		}
 	}
+
+	private static World instance;
+
+    public static World getInstance() {
+        if (instance == null) {
+            instance = new World();
+        }
+        return instance;
+    }
+
+    public static void setInstance(World world) {
+        instance = world;
+    }
+
+    public static void createWorld() {
+        // Implementação da criação do mundo com base no estado atual
+    }
 }

@@ -9,7 +9,8 @@ import java.util.Iterator;
 import javax.swing.JOptionPane;
 
 import base.Game;
-import base.GameSaveManager;
+import base.save.GameSaveManager;
+import base.save.Save;
 
 public class MenuSalvar extends Menu {
 
@@ -18,7 +19,6 @@ public class MenuSalvar extends Menu {
 
 	public MenuSalvar() {
 		super(options);
-		GameSaveManager.checkAndInitializeSaveNames();
 	}
 
 	public void tick() {
@@ -44,35 +44,74 @@ public class MenuSalvar extends Menu {
 		if (enter) {
 			enter = false;
 			if (currentOption < 3) {
-				GameSaveManager.slot = currentOption + 1;
+				GameSaveManager.setSlot(currentOption + 1);
+				GameSaveManager.checkAndInitializeSaveLoads();
 
 				if (GameSaveManager.saveNames[currentOption] == null) {
 					String saveName = JOptionPane.showInputDialog("Digite o nome do arquivo de salvamento:");
-					if (saveName != null && !saveName.trim().isEmpty()) {
-						saveName = saveName.trim();
-						GameSaveManager.initializeSavesForSlot(GameSaveManager.slot);
-						GameSaveManager.addSaveName(saveName);
-						GameSaveManager.saveNames[currentOption] = saveName;
-						for (int i = 1; i <= 3; i++) {
-							if (i == GameSaveManager.slot) {
-								GameSaveManager.saveExists[currentOption * i] = true;
-								GameSaveManager.saveExists[currentOption * i + 1] = true;
-								GameSaveManager.saveExists[currentOption * i + 2] = true;
-							}
-						}
 
+					if (saveName != null && !saveName.trim().isEmpty()) {
+						if (saveName.trim().length() > 3) {
+
+							saveName = saveName.trim();
+							Save.initializeSavesForSlot();
+							Save.addSaveName(saveName);
+							GameSaveManager.saveNames[currentOption] = saveName;
+							for (int i = 1; i <= 3; i++) {
+								if (i == GameSaveManager.slot) {
+									GameSaveManager.saveExists[currentOption * i] = true;
+									GameSaveManager.saveExists[currentOption * i + 1] = true;
+									GameSaveManager.saveExists[currentOption * i + 2] = true;
+								}
+							}
+						} else {
+							return;
+						}
+					} else {
+						return;
 					}
 					Game.gameState = "NORMAL";
 
 				} else {
-					Game.previousGameState = Game.gameState;
-					Game.gameState = "CARREGAR";
-				}
+					if (!Game.gameState2.equals("CARREGAR")) {
+						int response = JOptionPane.showConfirmDialog(null, "Deseja salvar por cima deste arquivo?",
+								"Confirmar Salvamento", JOptionPane.YES_NO_OPTION);
+						if (response != JOptionPane.NO_OPTION) {
+							String saveName = JOptionPane
+									.showInputDialog("Digite o nome do novo arquivo de salvamento:");
+							if (saveName != null && !saveName.trim().isEmpty()) {
+								if (saveName.trim().length() > 3) {
 
+									saveName = saveName.trim();
+									Save.initializeSavesForSlot();
+									Save.addSaveName(saveName);
+									GameSaveManager.saveNames[currentOption] = saveName;
+									for (int i = 1; i <= 3; i++) {
+										if (i == GameSaveManager.slot) {
+											GameSaveManager.saveExists[currentOption * i] = true;
+											GameSaveManager.saveExists[currentOption * i + 1] = true;
+											GameSaveManager.saveExists[currentOption * i + 2] = true;
+										}
+									}
+									Game.previousGameState = Game.gameState;
+									Game.gameState = "CARREGAR";
+								} else {
+									return;
+								}
+							}
+						} else {
+							Game.previousGameState = Game.gameState;
+							Game.gameState = "CARREGAR";
+						}
+					} else {
+						Game.previousGameState = Game.gameState;
+						Game.gameState = "CARREGAR";
+					}
+				}
 			} else if (options[currentOption].getNomePortugues().equals("Voltar")) {
 				currentOption = 0;
 				Game.gameState = "MENUPRINCIPAL";
-				
+				Game.gameState2 = "MENUPRINCIPAL";
 			}
 		}
 	}
@@ -83,7 +122,13 @@ public class MenuSalvar extends Menu {
 		g.setFont(new Font("Arial", Font.BOLD, 64));
 		g.fillRect(0, 0, larguraDesejada, alturaDesejada);
 		g.setColor(Color.WHITE);
-		g.drawString("Novo Jogo", larguraDesejada / 3, alturaDesejada / 5);
+
+		// gambiarra pra reutilizar o código
+		if (Game.gameState2 == "CARREGAR") {
+			g.drawString("Carregar", larguraDesejada / 3, alturaDesejada / 5);
+		} else {
+			g.drawString("Novo Jogo", larguraDesejada / 3, alturaDesejada / 5);
+		}
 		// menu
 		g.setFont(new Font("Arial", Font.BOLD, 48));
 
@@ -104,6 +149,7 @@ public class MenuSalvar extends Menu {
 			break;
 		case "Português":
 			for (int i = 0; i < options.length - 1; i++) {
+
 				String text = options[i].getNomePortugues();
 				if (i < 3 && GameSaveManager.saveNames[i] != null) {
 					text += " (" + GameSaveManager.saveNames[i] + ")";
@@ -118,10 +164,10 @@ public class MenuSalvar extends Menu {
 		int spacingWidth = 60;
 
 		if (currentOption >= options.length - 1) {
-			g.drawString(" > ", larguraDesejada - 325 - spacingWidth, alturaDesejada - 30);
+			drawOptionMarker(g, larguraDesejada - 325 - spacingWidth, alturaDesejada - 60);
 		} else {
-			g.drawString(" > ", larguraDesejadaUMTERCO - spacingWidth,
-					alturaDesejadaUMTERCO + spacingRows * currentOption);
+			drawOptionMarker(g, larguraDesejadaUMTERCO - spacingWidth,
+					alturaDesejadaUMTERCO + spacingRows * currentOption - 30);
 		}
 
 	}

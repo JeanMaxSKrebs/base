@@ -70,7 +70,7 @@ public class Inventory {
 
 		// Atualiza o inventário com os itens do jogador
 		int index = 0;
-		for (Item item : Player.getItensColetados()) {
+		for (Item item : Game.player.getItensColetados()) {
 			// Calcula a linha e a coluna para o item atual
 			int row = index / maximoCols;
 			int col = index % maximoCols;
@@ -81,7 +81,7 @@ public class Inventory {
 			// Incrementa o índice para o próximo item
 			index++;
 		}
-		for (Fruta fruta : Player.getFrutasColetadas()) {
+		for (Fruta fruta : Game.player.getFrutasColetadas()) {
 			// Calcula a linha e a coluna para o item atual
 			int row = index / maximoCols;
 			int col = index % maximoCols;
@@ -138,8 +138,8 @@ public class Inventory {
 				enter = false;
 //				System.out.println("currentOptionInventory");
 //				System.out.println(currentOptionInventory);
-				if (currentOptionInventory >= 0 && currentOptionInventory < Player.getItensColetados().size()
-						+ Player.getFrutasColetadas().size()) {
+				if (currentOptionInventory >= 0 && currentOptionInventory < Game.player.getItensColetados().size()
+						+ Game.player.getFrutasColetadas().size()) {
 					
 					 selectedItem = inventoryItens[currentOptionInventory];
 
@@ -151,8 +151,8 @@ public class Inventory {
 				}
 			}
 
-			if (currentOptionInventory >= 0 && currentOptionInventory < Player.getItensColetados().size()
-					+ Player.getFrutasColetadas().size()) {
+			if (currentOptionInventory >= 0 && currentOptionInventory < Game.player.getItensColetados().size()
+					+ Game.player.getFrutasColetadas().size()) {
 				showItemDetails = true;
 			} else {
 				showItemDetails = false;
@@ -219,11 +219,11 @@ public class Inventory {
 		g.setFont(new Font("Arial", Font.BOLD, 20));
 		g.drawString("Inventário", inventoryX, inventoryY - 20);
 
-		List<Item> playerItems = Player.getItensColetados();
+		List<Item> playerItems = Game.player.getItensColetados();
 		if (playerItems != null && !playerItems.isEmpty()) {
 			renderEachItem(g, slotSize, inventoryX, inventoryY, inventoryWidth, inventoryHeight);
 		}
-		List<Fruta> playerFruits = Player.getFrutasColetadas();
+		List<Fruta> playerFruits = Game.player.getFrutasColetadas();
 		if (playerFruits != null && !playerFruits.isEmpty()) {
 			renderEachFruit(g, slotSize, inventoryX, inventoryY, inventoryWidth, inventoryHeight);
 		}
@@ -279,9 +279,9 @@ public class Inventory {
 		g.fillRect(detailFrameX, detailFrameY, detailFrameWidth, detailFrameHeight);
 		g.setColor(Color.BLACK);
 
-		List<Item> playerItems = Player.getItensColetados();
+		List<Item> playerItems = Game.player.getItensColetados();
 		int playerItemsSize = playerItems.size();
-		List<Fruta> playerFrutas = Player.getFrutasColetadas();
+		List<Fruta> playerFrutas = Game.player.getFrutasColetadas();
 		int playerFrutasSize = playerFrutas.size();
 
 		if (currentOptionInventory >= 0 && currentOptionInventory <= index) {
@@ -343,7 +343,7 @@ public class Inventory {
 	private void renderEachItem(Graphics g, int slotSize, int inventoryX, int inventoryY, int inventoryWidth,
 			int inventoryHeight) {
 
-		for (Item item : Player.getItensColetados()) {
+		for (Item item : Game.player.getItensColetados()) {
 			int row = index / maximoRows; // Calculate the row for the current item
 			int col = index % maximoCols; // Calculate the column for the current item
 
@@ -382,7 +382,7 @@ public class Inventory {
 	public void renderEachFruit(Graphics g, int slotSize, int inventoryX, int inventoryY, int inventoryWidth,
 			int inventoryHeight) {
 
-		for (Fruta fruta : Player.getFrutasColetadas()) {
+		for (Fruta fruta : Game.player.getFrutasColetadas()) {
 			int row = index / maximoRows; // Calculate the row for the current fruta
 			int col = index % maximoCols; // Calculate the column for the current fruta
 

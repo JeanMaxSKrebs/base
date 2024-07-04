@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 
 import base.Game;
 import entities.Bala;
@@ -17,12 +18,17 @@ public class Tempo {
 	public static int offset = 1; // Ajusta o valor inicial de dias, meses e anos para 1
 	public static long timeStart; // Total time in seconds since game start
 	public static long timeElapsedSeconds; // Total time in seconds since game start
-	private int secondsInGameMinute = 1; // Adjust this to control in-game time progression
+	private static int secondsInGameMinute = 1; // Adjust this to control in-game time progression
 	public static int minutes;
 	public static int hours;
 	public static int days = 1;
 	public static int months = 1;
 	public static int years = 1;
+
+	public static int offsetmin = 50;
+	public static int offsethour = 23 * 60;
+	public static int offsetday = 60 * 60 * 24;
+	public static int offsetmonth = 60 * 60 * 24 * 28;
 
 	public static int restoDia = 0;
 	DiaDaSemana diaDaSemana = DIAS_DA_SEMANA[restoDia];
@@ -79,11 +85,6 @@ public class Tempo {
 
 		if (timeElapsedSeconds > 0) {
 
-			// Calcula minutos no jogo, considerando a velocidade ajustada
-			int offsetmin = 50;
-			int offsethour = 23 * 60;
-			int offsetday = 60 * 60 * 24;
-			int offsetmonth = 60 * 60 * 24 * 28;
 //			minutes = (int) (((timeElapsedSeconds / 60) * secondsInGameMinute) + offsetmin + offsethour + offsetday);
 			minutes = (int) (((timeElapsedSeconds / 60) * secondsInGameMinute));
 			// Calcula hora no jogo, considerando a velocidade ajustada
@@ -112,7 +113,7 @@ public class Tempo {
 			// Limit values
 			minutes %= 60;
 			hours %= 24;
-			days %= 29;
+			days %= 28;
 			months %= 13;
 
 			if (days == 0) {
@@ -147,20 +148,85 @@ public class Tempo {
 		}
 	}
 
-	public static long getNow(UnidadeTempo unidade) {
+	public static String getNowToString(String unidade, long timeElapsedSeconds) {
+		if (timeElapsedSeconds != 0) {
+			
+			minutes = (int) (((timeElapsedSeconds / 60) * secondsInGameMinute));
+			// Calcula hora no jogo, considerando a velocidade ajustada
+			hours = (int) (minutes / 60);
+
+			days = (int) (hours / 24) + offset;
+
+			months = (int) (days / 29) + offset;
+			// Calcula anos (considerando 12 meses por ano)
+			years = (int) (months / 13) + offset;
+
+			weeksTotal = hours / (24 * 7); // Calculate total weeks
+
+			restoLua = weeksTotal % 4;
+			setTimeElapsedSeconds(timeElapsedSeconds);
+			minutes %= 60;
+			hours %= 24;
+			days %= 28;
+			months %= 13;
+
+			switch (unidade) {
+			case "MINUTOS":
+				return String.valueOf(minutes); // Retorna os minutos atuais
+			case "HORAS":
+				return String.valueOf(hours); // Retorna as horas atuais
+			case "DIAS":
+				return String.valueOf(days); // Retorna os dias atuais, se for zero, retorna 1
+			case "MESES":
+				return String.valueOf(months); // Retorna os meses atuais, se for zero, retorna 1
+			case "ANOS":
+				return String.valueOf(years); // Retorna os anos atuais, se for zero, retorna 1
+			case "TODOS":
+
+				// Formatação com zeros à esquerda para garantir dois dígitos
+				String formattedHours = String.format("%02d", hours);
+				String formattedMinutes = String.format("%02d", minutes);
+				String formattedDays = String.format("%02d", days);
+				String formattedMonths = String.format("%02d", months);
+				String formattedYears = String.format("%02d", years);
+
+				System.out.println("///////////////////");
+				System.out.println(formattedHours);
+				System.out.println(formattedMinutes);
+				System.out.println(formattedDays);
+				System.out.println(months);
+				System.out.println(formattedMonths);
+				System.out.println("///////////////////");
+				String formattedAll = String.format("%s/%s/%s %s:%s ", formattedDays, formattedMonths, formattedYears,
+						formattedHours, formattedMinutes);
+				return formattedAll;
+			default:
+				return "Unidade de tempo não reconhecida"; // Retorna mensagem de erro se a unidade de tempo não for
+															// reconhecida
+			}
+		} else
+
+		{
+			return "";
+		}
+	}
+
+	public static Tempo getNow(String unidade) {
 		switch (unidade) {
-		case MINUTOS:
-			return minutes % 60; // Retorna os minutos atuais
-		case HORAS:
-			return hours % 24; // Retorna as horas atuais
-		case DIAS:
-			return days; // Retorna os dias atuais
-		case MESES:
-			return months; // Retorna os meses atuais
-		case ANOS:
-			return years; // Retorna os anos atuais
+		case "MINUTOS":
+			return new Tempo(minutes % 60, 0, 0, 0, 0);
+		case "HORAS":
+			return new Tempo(0, hours % 24, 0, 0, 0);
+		case "DIAS":
+			return new Tempo(0, 0, days, 0, 0);
+		case "MESES":
+			return new Tempo(0, 0, 0, months, 0);
+		case "ANOS":
+			return new Tempo(0, 0, 0, 0, years);
+		case "TODOS":
+			return new Tempo(minutes % 60, hours % 24, days, months, years);
 		default:
-			return -1; // Retorna -1 se a unidade de tempo não for reconhecida
+			throw new IllegalArgumentException("Unidade de tempo não reconhecida");
 		}
 	}
 
@@ -171,7 +237,7 @@ public class Tempo {
 	// Método para iniciar a contagem
 	public static void iniciarContagem(String contexto, double variavel) {
 		valoresAnteriores.put(contexto, variavel);
-	    int[] tempoAtual = {minutes, hours, days, years};
+		int[] tempoAtual = { minutes, hours, days, years };
 		tempoInicio.put(contexto, tempoAtual); // Armazena o tempo de início
 	}
 
@@ -189,7 +255,7 @@ public class Tempo {
 		int horaAtual = hours;
 		int diaAtual = days;
 		int anoAtual = years;
-	    int[] tempoAtual = {minutoAtual, horaAtual, diaAtual, anoAtual};
+		int[] tempoAtual = { minutoAtual, horaAtual, diaAtual, anoAtual };
 		int[] tempoInicial = tempoInicio.getOrDefault(contexto, tempoAtual);
 
 		double variavelAnterior = valoresAnteriores.getOrDefault(contexto, variavel);
@@ -209,28 +275,27 @@ public class Tempo {
 			break;
 		}
 
-	    // Calcula o tempo decorrido desde o início
-	    long tempoDecorrido = (minutoAtual - tempoInicial[0]) * 60 +
-	                          (horaAtual - tempoInicial[1]) * 60 * 60 +
-	                          (diaAtual - tempoInicial[2]) * 24 * 60 * 60 +
-	                          (anoAtual - tempoInicial[3]) * 365 * 24 * 60 * 60;
+		// Calcula o tempo decorrido desde o início
+		long tempoDecorrido = (minutoAtual - tempoInicial[0]) * 60 + (horaAtual - tempoInicial[1]) * 60 * 60
+				+ (diaAtual - tempoInicial[2]) * 24 * 60 * 60 + (anoAtual - tempoInicial[3]) * 365 * 24 * 60 * 60;
 
-	    // Verifica se o tempo passado é maior ou igual ao tempo limite e se a variável permaneceu inalterada
-	    if (tempoDecorrido >= tempoLimite && variavel == variavelAnterior) {
-	        return true; // Retorna true se o tempo passado for maior ou igual ao tempo limite e a variável permaneceu inalterada
-	    }
-	    
+		// Verifica se o tempo passado é maior ou igual ao tempo limite e se a variável
+		// permaneceu inalterada
+		if (tempoDecorrido >= tempoLimite && variavel == variavelAnterior) {
+			return true; // Retorna true se o tempo passado for maior ou igual ao tempo limite e a
+							// variável permaneceu inalterada
+		}
+
 		System.out.println(tempoAtual);
 		System.out.println(tempoDecorrido);
 		System.out.println(tempoLimite);
-
 
 		return false; // Retorna false caso contrário
 	}
 
 	// Enum para indicar qual variável será alterada
 	public enum UnidadeTempo {
-		ANOS, MESES, DIAS, HORAS, MINUTOS
+		ANOS, MESES, DIAS, HORAS, MINUTOS, TODOS
 	}
 
 	public void setUnidadeTempo(UnidadeTempo unidadeTempo) {
@@ -279,16 +344,27 @@ public class Tempo {
 	}
 
 	public static boolean isTimeToAutoSave() {
-	    return hours % 6 == 0 && minutes == 0; // Verifica se o número de minutos é um múltiplo de 6 e segundos é zero
+		return hours % 6 == 0 && minutes == 0; // Verifica se o número de minutos é um múltiplo de 6 e segundos é zero
 	}
-	
-	// Método para obter o tempo atual
+
 	public static Tempo getNow() {
-		return new Tempo(Tempo.minutes % 60, Tempo.hours % 24, Tempo.days, Tempo.months, Tempo.years);
+		return new Tempo(minutes, hours, days, months, years);
+	}
+
+	public static void setNow(Tempo tempo) {
+		minutes = tempo.getMinutes();
+		hours = tempo.getHours();
+		days = tempo.getDays();
+		months = tempo.getMonths();
+		years = tempo.getYears();
+	}
+
+	public static void setTimeElapsedSeconds(long timeElapsedSeconds) {
+		Tempo.timeElapsedSeconds = timeElapsedSeconds;
 	}
 
 	// Métodos getters
-	public long getMinutes() {
+	public int getMinutes() {
 		return minutes;
 	}
 

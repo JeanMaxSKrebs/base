@@ -3,6 +3,7 @@ package entities;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -29,7 +30,8 @@ import world.Specialdoor;
 import world.Tiledoor;
 import world.World;
 
-public class Player extends Entity {
+public class Player extends Entity implements Serializable {
+    private static final long serialVersionUID = 1L;
 
 	public boolean hasBagpack = false;
 	public boolean run = false;
@@ -122,11 +124,27 @@ public class Player extends Entity {
 //	public int tempoEsperaMax = 180; // 3 segundos
 	public int tempoEsperaMax = 30; // 3 segundos
 
+    // instância estática para o jogador
+    private static Player instance;
+    
+    private Player() {
+    	
+    }
+    
+    public static synchronized Player getInstance() {
+    	System.out.println("instance");
+    	System.out.println(instance);
+        if (instance == null) {
+            instance = new Player();
+        }
+        return instance;
+    }
+	
 	public Player(int x, int y, int width, int height, BufferedImage sprite) {
 		super(x, y, width, height, sprite);
 		itensColetados = new ArrayList<>();
 		frutasColetadas = new ArrayList<>();
-		comidasColetadas = new ArrayList<>();
+		setComidasColetadas(new ArrayList<>());
 
 		rightPlayer = new BufferedImage[qtdSprites];
 		leftPlayer = new BufferedImage[qtdSprites];
@@ -490,7 +508,7 @@ public class Player extends Entity {
 
 	public int countFrutaEspecifica(String nome) {
 		int fruitCount = 0;
-		List<Fruta> frutasColetadas = Player.getFrutasColetadas();
+		List<Fruta> frutasColetadas = getFrutasColetadas();
 		for (Fruta fruta : frutasColetadas) {
 			if (nome.equals(fruta.getNome().toUpperCase())) {
 				fruitCount++;
@@ -502,7 +520,7 @@ public class Player extends Entity {
 
 	public int countComidaEspecifica(String nome) {
 		int foodCount = 0;
-		List<Comida> comidasColetadas = Player.getComidasColetadas();
+		List<Comida> comidasColetadas = getComidasColetadas();
 		for (Comida comida : comidasColetadas) {
 			if (nome.equals(comida.getNome().toUpperCase())) {
 				foodCount++;
@@ -514,7 +532,7 @@ public class Player extends Entity {
 
 	public int countItemEspecifico(String nome) {
 		int itemCount = 0;
-		List<Item> itens = Player.getItensColetados();
+		List<Item> itens = getItensColetados();
 		for (Item item : itens) {
 			if (nome.equals(item.getNome().toUpperCase())) {
 				itemCount++;
@@ -944,22 +962,6 @@ public class Player extends Entity {
 		this.moved = moved;
 	}
 
-	public static List<Fruta> getFrutasColetadas() {
-		return frutasColetadas;
-	}
-
-	public static void setFrutasColetadas(List<Fruta> frutasColetadas) {
-		Player.frutasColetadas = frutasColetadas;
-	}
-
-	public static List<Comida> getComidasColetadas() {
-		return comidasColetadas;
-	}
-
-	public static void setComidasColetadas(List<Comida> comidasColetadas) {
-		Player.comidasColetadas = comidasColetadas;
-	}
-
 	public static double getSpeed() {
 		// TODO Auto-generated method stub
 		return speed;
@@ -969,15 +971,31 @@ public class Player extends Entity {
 		Player.speed = speed;
 	}
 
-	public static List<Item> getItensColetados() {
-		return itensColetados;
-	}
+	public List<Item> getItensColetados() {
+        return itensColetados;
+    }
 
-	public static void setItensColetados(List<Item> itens) {
-		Player.itensColetados = itens;
-	}
+    public List<Fruta> getFrutasColetadas() {
+        return frutasColetadas;
+    }
 
-	public static int getNivel() {
+    public List<Comida> getComidasColetadas() {
+        return comidasColetadas;
+    }
+
+    public void setItensColetados(List<Item> itensColetados) {
+        Player.itensColetados = itensColetados;
+    }
+
+    public void setFrutasColetadas(List<Fruta> frutasColetadas) {
+        Player.frutasColetadas = frutasColetadas;
+    }
+
+    public void setComidasColetadas(List<Comida> comidasColetadas) {
+        Player.comidasColetadas = comidasColetadas;
+    }
+
+	public int getNivel() {
 		return nivel;
 	}
 
@@ -1001,7 +1019,7 @@ public class Player extends Entity {
 		Player.velocidadeMaxima = velocidadeMaxima;
 	}
 
-	public static int getPremium() {
+	public int getPremium() {
 		return premium;
 	}
 
@@ -1110,7 +1128,9 @@ public class Player extends Entity {
 	}
 
 	public void setQtdNivel(int qtdNivel) {
-		this.qtdNivel = qtdNivel;
+		Player.qtdNivel = qtdNivel;
 	}
+
+	
 
 }

@@ -283,8 +283,8 @@ public class UI {
 
 		// Text to be displayed
 		String[] labels = { "Comidas:", "Itens:", "Inventário:", "Pause:" };
-		String[] values = { String.valueOf(Player.getComidasColetadas().size()),
-				String.valueOf(Player.getItensColetados().size()), "Pressione I", "Pressione P" };
+		String[] values = { String.valueOf(Game.player.getComidasColetadas().size()),
+				String.valueOf(Game.player.getItensColetados().size()), "Pressione I", "Pressione P" };
 
 		// Calculate the maximum width of the labels
 		int maxWidth = 0;

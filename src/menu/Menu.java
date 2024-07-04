@@ -13,14 +13,14 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 
 import base.Game;
-import base.GameSaveManager;
+import base.save.GameSaveManager;
 import entities.Player;
 import world.World;
 
 public abstract class Menu {
 
 	protected Option[] options;
-	protected int currentOption;
+	protected int currentOption = 0;
 	protected int maxOption;
 
 	public boolean up;
@@ -42,5 +42,17 @@ public abstract class Menu {
 			return input;
 		}
 		return input.substring(0, 1).toUpperCase() + input.substring(1).toLowerCase();
+	}
+	
+	// Método para desenhar o marcador de opção (símbolo '>' com retângulo atrás)
+	protected void drawOptionMarker(Graphics g, int x, int y) {
+	    // Desenha o retângulo atrás do símbolo '>'
+	    int rectX = x ;
+	    int rectY = y ;
+	    int rectWidth = 30;
+	    int rectHeight = 30;
+	    g.setColor(new Color(220, 220, 220)); // Cor do retângulo
+	    g.fillRect(rectX, rectY, rectWidth, rectHeight);
+
 	}
 }

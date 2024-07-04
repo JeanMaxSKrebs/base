@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.util.Iterator;
 
 import base.Game;
-import base.GameSaveManager;
+import base.save.GameSaveManager;
 import entities.Player;
 import world.World;
 
@@ -49,11 +49,16 @@ public class MenuPrincipal extends Menu {
 		}
 		if (enter) {
 			enter = false;
+
 			if (options[currentOption].getNomePortugues() == "Novo Jogo") {
+				GameSaveManager.checkAndInitializeSaveNames();
 				Game.gameState = "SALVAR";
+				Game.gameState2 = "MENUPRINCIPAL";
 
 			} else if (options[currentOption].getNomePortugues() == "Carregar") {
-				Game.gameState = "CARREGAR";
+				GameSaveManager.checkAndInitializeSaveNames();
+				Game.gameState = "SALVAR";
+				Game.gameState2 = "CARREGAR";
 
 			} else if (options[currentOption].getNomePortugues() == "Opções") {
 				Game.gameState = "OPTIONS";
@@ -61,7 +66,6 @@ public class MenuPrincipal extends Menu {
 
 			} else if (options[currentOption].getNomePortugues() == "Sair") {
 				System.exit(1);
-
 			}
 		}
 	}
@@ -86,18 +90,20 @@ public class MenuPrincipal extends Menu {
 
 		case "Inglês":
 			for (int i = 0; i < options.length - 1; i++) {
-				g.drawString(options[i].getNomeIngles(), larguraDesejadaUMTERCO, alturaDesejadaUMTERCO + spacingRows * i);
+				g.drawString(options[i].getNomeIngles(), larguraDesejadaUMTERCO,
+						alturaDesejadaUMTERCO + spacingRows * i);
 			}
-			
-			g.drawString(options[options.length-1].getNomeIngles(), larguraDesejada - 275, alturaDesejada - 30);
+
+			g.drawString(options[options.length - 1].getNomeIngles(), larguraDesejada - 275, alturaDesejada - 30);
 			break;
 
 		case "Português":
 			for (int i = 0; i < options.length - 1; i++) {
-				g.drawString(options[i].getNomePortugues(), larguraDesejadaUMTERCO, alturaDesejadaUMTERCO + spacingRows * i);
+				g.drawString(options[i].getNomePortugues(), larguraDesejadaUMTERCO,
+						alturaDesejadaUMTERCO + spacingRows * i);
 			}
-			
-			g.drawString(options[options.length-1].getNomePortugues(), larguraDesejada - 325, alturaDesejada - 30);
+
+			g.drawString(options[options.length - 1].getNomePortugues(), larguraDesejada - 325, alturaDesejada - 30);
 			break;
 		default:
 			break;
@@ -105,13 +111,13 @@ public class MenuPrincipal extends Menu {
 		int spacingWidth = 60;
 
 		if (options[currentOption].getNomePortugues() == "Novo Jogo") {
-			g.drawString(" > ", larguraDesejadaUMTERCO - spacingWidth, alturaDesejadaUMTERCO + spacingRows * 0);
+			drawOptionMarker(g, larguraDesejadaUMTERCO - spacingWidth, alturaDesejadaUMTERCO + spacingRows * 0 - 30);
 		} else if (options[currentOption].getNomePortugues() == "Carregar") {
-			g.drawString(" > ", larguraDesejadaUMTERCO - spacingWidth, alturaDesejadaUMTERCO + spacingRows * 1);
+			drawOptionMarker(g, larguraDesejadaUMTERCO - spacingWidth, alturaDesejadaUMTERCO + spacingRows * 1 - 30);
 		} else if (options[currentOption].getNomePortugues() == "Opções") {
-			g.drawString(" > ", larguraDesejadaUMTERCO - spacingWidth, alturaDesejadaUMTERCO + spacingRows * 2);
+			drawOptionMarker(g, larguraDesejadaUMTERCO - spacingWidth, alturaDesejadaUMTERCO + spacingRows * 2 - 30);
 		} else if (options[currentOption].getNomePortugues() == "Sair do Jogo") {
-			g.drawString(" > ", larguraDesejada - 325 - spacingWidth, alturaDesejada - 30);
+			drawOptionMarker(g, larguraDesejada - 325 - spacingWidth, alturaDesejada - 60);
 		}
 
 	}

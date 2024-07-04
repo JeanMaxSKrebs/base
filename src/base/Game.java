@@ -20,6 +20,8 @@ import java.util.TimerTask;
 
 import javax.swing.JFrame;
 
+import base.save.GameSaveManager;
+import base.save.Save;
 import entities.Bala;
 import entities.Enemy;
 import entities.Entity;
@@ -88,6 +90,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	public static World world;
 	public static String previousGameState = "MENUPRINCIPAL";
 	public static String gameState = "MENUPRINCIPAL";
+	public static String gameState2 = "MENUPRINCIPAL";
 	public static String ILHA = "INICIAL2";
 
 	public static UI ui;
@@ -584,6 +587,10 @@ public class Game extends Canvas implements Runnable, KeyListener {
 			}
 			if (e.getKeyCode() == KeyEvent.VK_K) {
 				movimentarEnemys = !movimentarEnemys;
+			}
+			
+			if (e.getKeyCode() == KeyEvent.VK_O) {
+				Save.updateSaveUser();
 			}
 
 			if (e.getKeyCode() == KeyEvent.VK_R) {

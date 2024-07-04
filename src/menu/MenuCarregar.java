@@ -3,10 +3,13 @@ package menu;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.io.File;
 
 import base.Game;
-import base.GameSaveManager;
+import base.save.GameSaveManager;
+import base.save.Load;
 
 public class MenuCarregar extends Menu {
 
@@ -18,7 +21,6 @@ public class MenuCarregar extends Menu {
 	}
 
 	public void tick() {
-
 		if (up) {
 			up = false;
 			currentOption--;
@@ -39,23 +41,24 @@ public class MenuCarregar extends Menu {
 
 		if (enter) {
 			enter = false;
+
 			if (currentOption < 3) {
-				System.out.println("Teste 1");
 				Game.gameState = "NORMAL";
-				// Aqui você pode chamar um método para carregar o jogo com o save selecionado
-//					GameSaveManager.loadPlayerFromSave();
-//				}
+				Load.loadPlayerFromSave(currentOption);
+				MenuPause.currentOptionto0();
+				currentOption = 0;
+
 			} else if (options[currentOption].getNomePortugues().equals("Voltar")) {
 				currentOption = 0;
-				if (Game.gameState != Game.previousGameState) {
-					Game.gameState = Game.previousGameState;
-					Game.previousGameState = "CARREGAR";
-				}
+				Game.gameState = Game.previousGameState;
 			}
 		}
 	}
 
 	public void render(Graphics g) {
+		Graphics2D g2d = (Graphics2D) g;
+		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
 		int larguraDesejada = Game.getWIDTH() * Game.getSCALE();
 		int alturaDesejada = Game.getHEIGHT() * Game.getSCALE();
 		g.setFont(new Font("Arial", Font.BOLD, 64));
@@ -66,79 +69,90 @@ public class MenuCarregar extends Menu {
 		// menu
 		g.setFont(new Font("Arial", Font.BOLD, 40));
 
-		int alturaDesejadaUMTERCO = alturaDesejada / 2;
-		int larguraDesejadaUMTERCO = larguraDesejada / 7 ;
+		int alturaDesejadaUMTERCO = alturaDesejada / 2 - 50;
+		int larguraDesejadaUMTERCO = larguraDesejada / 5;
 
 		String text = "ERRO";
-		String lastAccessText = "ultimoacesso";
+		String lastAccessText = " (Vazio)";
+		String combinedText = "ERRO (Vazio)";
 
-		int spacingRows = 80;
+		int spacingRows = 100;
 		switch (Game.linguagem) {
 		case "Inglês":
-			text = "Save Selected: " + GameSaveManager.saveNames[GameSaveManager.slot-1];
+			text = "Save Selected: " + GameSaveManager.saveNames[GameSaveManager.slot - 1];
+
 			g.drawString(text, larguraDesejada / 3 - 30, alturaDesejada / 3);
+			g.setFont(new Font("Arial", Font.BOLD, 30));
 
 			for (int i = 0; i < options.length - 1; i++) {
 				text = options[i].getNomeIngles();
-				lastAccessText = "Last Access: " + GameSaveManager.tempoDesdeUltimoAcesso();
-				switch (i) {
-				case 0:
-					text += " - " + lastAccessText;
-					break;
-				case 1:
-					text += " - " + lastAccessText;
-					break;
-				case 2:
-					text += " - " + lastAccessText;
-					break;
-				default:
-					text += " (Vazio)";
-					break;
+				lastAccessText = "Last Access: ";
+				if (i < 3 && GameSaveManager.saveLoads[i] != null) {
+					lastAccessText += GameSaveManager.saveLoads[i];
+
 				}
 
-				g.drawString(text, larguraDesejadaUMTERCO, alturaDesejadaUMTERCO + spacingRows * i);
+				combinedText = text + " - " + lastAccessText;
+
+				g.drawString(combinedText, larguraDesejadaUMTERCO, alturaDesejadaUMTERCO + spacingRows * i);
+
+				lastAccessText = "Game Time: ";
+
+				if (i < 3 && GameSaveManager.saveLoadsTempo[i] != null) {
+					lastAccessText += GameSaveManager.saveLoadsTempo[i];
+
+				}
+				g.drawString(lastAccessText, larguraDesejadaUMTERCO,
+						alturaDesejadaUMTERCO + spacingRows * i + 50);
+
 			}
-			g.drawString(options[options.length - 1].getNomeIngles(), larguraDesejada - 325, alturaDesejada - 30);
+			g.drawString(options[options.length - 1].getNomeIngles(), larguraDesejada - 150, alturaDesejada - 30);
 			break;
 
 		case "Português":
-			text = "Save Selecionado: " + GameSaveManager.saveNames[GameSaveManager.slot-1];
+			text = "Save Selecionado: " + GameSaveManager.saveNames[GameSaveManager.slot - 1];
+
 			g.drawString(text, larguraDesejada / 3 - 40, alturaDesejada / 3);
+			g.setFont(new Font("Arial", Font.BOLD, 30));
 
 			for (int i = 0; i < options.length - 1; i++) {
 				text = options[i].getNomePortugues();
-				lastAccessText = "Último acesso: " + GameSaveManager.tempoDesdeUltimoAcesso();
-				switch (i) {
-				case 0:
-					text += " - " + lastAccessText;
-					break;
-				case 1:
-					text += " - " + lastAccessText;
-					break;
-				case 2:
-					text += " - " + lastAccessText;
-					break;
-				default:
-					text += " (Vazio)";
-					break;
+				lastAccessText = "Último Acesso: ";
+				if (i < 3 && GameSaveManager.saveLoads[i] != null) {
+					lastAccessText += GameSaveManager.saveLoads[i];
+
 				}
-				g.drawString(text, larguraDesejadaUMTERCO, alturaDesejadaUMTERCO + spacingRows * i);
+
+				combinedText = text + " - " + lastAccessText;
+
+				g.drawString(combinedText, larguraDesejadaUMTERCO, alturaDesejadaUMTERCO + spacingRows * i);
+
+				lastAccessText = "Tempo de jogo: ";
+
+				if (i < 3 && GameSaveManager.saveLoadsTempo[i] != null) {
+					lastAccessText += GameSaveManager.saveLoadsTempo[i];
+
+				}
+				g.drawString(lastAccessText, larguraDesejadaUMTERCO,
+						alturaDesejadaUMTERCO + spacingRows * i + 50);
+
 			}
-			g.drawString(options[options.length - 1].getNomePortugues(), larguraDesejada - 325, alturaDesejada - 30);
+			g.drawString(options[options.length - 1].getNomePortugues(), larguraDesejada - 150, alturaDesejada - 30);
 			break;
 
 		default:
 			break;
 		}
 
-		int spacingWidth = 60;
+		int spacingWidth = 50;
 
 		if (currentOption >= options.length - 1) {
-			g.drawString(" > ", larguraDesejada - 325 - spacingWidth, alturaDesejada - 30);
+		    drawOptionMarker(g, larguraDesejada - 150 - spacingWidth, alturaDesejada - 55);
 		} else {
-			g.drawString(" > ", larguraDesejadaUMTERCO - spacingWidth,
-					alturaDesejadaUMTERCO + spacingRows * currentOption);
+		    drawOptionMarker(g, larguraDesejadaUMTERCO - spacingWidth,
+		            alturaDesejadaUMTERCO + spacingRows * currentOption);
 		}
 
 	}
+
 }
