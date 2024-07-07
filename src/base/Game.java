@@ -71,7 +71,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	public static Spritesheet spritesheet_Foods;
 	public static Spritesheet spritesheet_Fruits;
 	public static Spritesheet spritesheet_Trees;
-	public static Spritesheet spritesheet_Player;
+	public static transient Spritesheet spritesheet_Player;
 
 	public static Player player;
 	public static List<Entity> entities;

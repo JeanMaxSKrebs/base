@@ -49,22 +49,6 @@ public class GameSaveManager {
 
 	protected static String lineSearch = "Tempo Total de Jogo em TimeElapsedSeconds: ";
 
-	protected static String[] getValues() {
-		Player player = Player.getInstance();
-
-		String[] values = new String[] { String.valueOf(player.getNivel()), String.valueOf(player.getLife()),
-				String.valueOf(player.getStamine()), String.valueOf(player.getPremium()), "NORMAL", // Substitua
-																									// "NORMAL" pelo
-																									// valor real se
-																									// necessário
-				String.valueOf(Game.previousGameState) };
-		// Print de todos os valores
-		for (String value : values) {
-			System.out.println(value);
-		}
-		return values;
-	}
-
 	public static Map<String, String> loadHorariosFromSave() {// nunca usado
 		String fileName = "save_slot_" + slot + "_horario.txt";
 		Map<String, String> horariosMap = new HashMap<>();
@@ -234,7 +218,6 @@ public class GameSaveManager {
 			e.printStackTrace();
 		}
 		String formattedAll = Tempo.getNowToString("TODOS", timeElapsedSeconds);
-		System.out.println(timeElapsedSeconds);
 		return formattedAll;
 	}
 

@@ -4,8 +4,15 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.imageio.ImageIO;
 
 import base.Game;
 import entities.itens.Item;
@@ -15,10 +22,14 @@ import world.World;
 
 public class Fogueira extends Utensilio {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	protected boolean isLit;
 	protected Map<Comida, Integer> cookingFoods; // Map of cooking foods to their remaining cook time
 
-	protected BufferedImage[] spritesFogueira;
+	protected transient BufferedImage[] spritesFogueira;
 
 	protected static String nome = "Fogueira";
 
@@ -135,4 +146,32 @@ public class Fogueira extends Utensilio {
 		// Crie uma nova instância do subtipo de item usando o construtor de cópia
 		return new Fogueira(this);
 	}
+	
+    private void writeObject(ObjectOutputStream oos) throws IOException {
+        oos.defaultWriteObject(); // Serializa os campos não-transientes
+        
+        if (sprite != null) {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ImageIO.write(sprite, "png", baos);
+            byte[] imageBytes = baos.toByteArray();
+            oos.writeInt(imageBytes.length);
+            oos.write(imageBytes);
+        } else {
+            oos.writeInt(0); // Sem imagem
+        }
+    }
+
+    private void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException {
+        ois.defaultReadObject(); // Desserializa os campos não-transientes
+        
+        int length = ois.readInt();
+        if (length > 0) {
+            byte[] imageBytes = new byte[length];
+            ois.readFully(imageBytes);
+            ByteArrayInputStream bais = new ByteArrayInputStream(imageBytes);
+            sprite = ImageIO.read(bais);
+        } else {
+            sprite = null; // Sem imagem
+        }
+    }
 }

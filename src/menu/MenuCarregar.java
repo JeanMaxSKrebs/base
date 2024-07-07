@@ -44,7 +44,7 @@ public class MenuCarregar extends Menu {
 
 			if (currentOption < 3) {
 				Game.gameState = "NORMAL";
-				Load.loadPlayerFromSave(currentOption);
+				Load.loadCheckpoint(currentOption);
 				MenuPause.currentOptionto0();
 				currentOption = 0;
 

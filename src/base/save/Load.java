@@ -14,7 +14,7 @@ public class Load extends GameSaveManager {
 
 	private static ObjectInputStream ois;
 
-	public static void loadPlayerFromSave(int currentOption) {
+	public static void loadCheckpoint(int currentOption) {
 		String fileName = "Vazio";
 		String strI = String.valueOf(currentOption);
 
@@ -35,8 +35,6 @@ public class Load extends GameSaveManager {
 			ois = new ObjectInputStream(new FileInputStream(fileName));
 
 			Player playerFromDat = (Player) ois.readObject();
-			System.out.println("Player from dat: " + playerFromDat); // Adicione esta linha para ver o que está sendo
-																		// lido
 			if (playerFromDat != null) {
 				// Restante do código para atualizar o estado do jogador
 				updatePlayerStateFromDat(playerFromDat);
@@ -44,6 +42,7 @@ public class Load extends GameSaveManager {
 			} else {
 				System.out.println("Objeto Player lido do fluxo de entrada é nulo.");
 			}
+
 		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace(); // Trate ou registre adequadamente exceções de leitura
 		} finally {
@@ -73,70 +72,24 @@ public class Load extends GameSaveManager {
 					}
 				}
 			}
-
-			String key = parts[0];
-			String value = parts[1];
-
-			// Decodificar o valor
-			char[] valueChars = value.toCharArray();
-			for (int i = 0; i < valueChars.length; i++) {
-//					valueChars[i] -= encode;
-			}
-			value = new String(valueChars);
-
-			// Atualizar o estado do jogador com base na chave e valor
-			updatePlayerStateFromTxt(key, value);
-
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
-	}
-
-	private static void updatePlayerStateFromTxt(String key, String value) {
-		Player player = Player.getInstance();
-		System.out.println("teste");
-		switch (key) {
-		case "life":
-			System.out.println(player.life);
-			System.out.println(value);
-			player.life = Double.parseDouble(value);
-			break;
-		case "stamine":
-			player.stamine = Double.parseDouble(value);
-			break;
-		case "hunger":
-			player.hunger = Double.parseDouble(value);
-			break;
-		case "thirsth":
-			player.thirsth = Double.parseDouble(value);
-			break;
-		case "itensColetados":
-			// Lógica para restaurar itens coletados
-			break;
-		// Adicione mais cases conforme necessário para restaurar outras propriedades do
-		// jogador
 		}
 	}
 
 	private static void updatePlayerStateFromDat(Player playerFromDat) {
 		// Atualiza as variáveis de estado do jogador com base nos dados recebidos
 		if (playerFromDat != null) {
-			System.out.println(playerFromDat.getLife());
-			System.out.println(Game.player.getLife());
-			Game.player.setLife(playerFromDat.getLife());
-			Game.player.setStamine(playerFromDat.getStamine());
-			Game.player.setHunger(playerFromDat.getHunger());
-			Game.player.setThirsth(playerFromDat.getThirsth());
+			Game.player.setInstance(playerFromDat);
+			Game.player.updateFrom();
 
-			// Atualiza os itens coletados pelo jogador
-			Game.player.setItensColetados(playerFromDat.getItensColetados());
-			Game.player.setComidasColetadas(playerFromDat.getComidasColetadas());
-			Game.player.setFrutasColetadas(playerFromDat.getFrutasColetadas());
+//			Game.player.hasBagpack = playerFromDat.hasBagpack;
+
+//			Game.player.setInventory(playerFromDat.getInventory()
+			
+			// Atualiza outras variáveis de estado do jogo, se necessário
+			// Exemplo: Game.player.setInventory(playerFromDat.getInventory());
 		}
-		// Atualiza outras variáveis de estado do jogo, se necessário
-		// Exemplo: Game.player.setInventory(playerFromDat.getInventory());
-		// Certifique-se de implementar os métodos getters e setters necessários na
-		// classe Player.
 	}
 
 }

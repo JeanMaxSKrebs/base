@@ -3,6 +3,9 @@ package entities;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -31,9 +34,9 @@ import world.Tiledoor;
 import world.World;
 
 public class Player extends Entity implements Serializable {
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-	public boolean hasBagpack = false;
+	public boolean hasBagpack;
 	public boolean run = false;
 	public boolean left, right, up, down;
 	public int down_dir = 1, left_dir = 2, right_dir = 3, up_dir = 4, dirNone = 5;
@@ -56,9 +59,9 @@ public class Player extends Entity implements Serializable {
 	private static int dodgeChance = 20;
 	private static int armor = 0;
 
-	private static List<Item> itensColetados = new ArrayList<>();
-	private static List<Fruta> frutasColetadas = new ArrayList<>();
-	private static List<Comida> comidasColetadas = new ArrayList<>();
+	private transient List<Item> itensColetados = new ArrayList<>();
+	private transient List<Fruta> frutasColetadas = new ArrayList<>();
+	private transient List<Comida> comidasColetadas = new ArrayList<>();
 
 	private int qtdSprites = 4;
 	private int frames = 0, maxFrames = 20, index = 0, maxIndex = (qtdSprites - 1);
@@ -66,11 +69,11 @@ public class Player extends Entity implements Serializable {
 	private int framesOcioso = 0, maxFramesOcioso = 20, indexOcioso = 0, maxIndexOcioso = (qtdSpritesOcioso - 1);
 	private boolean moved;
 
-	private BufferedImage[] ocioso;
-	private BufferedImage[] rightPlayer;
-	private BufferedImage[] leftPlayer;
-	private BufferedImage[] downPlayer;
-	private BufferedImage[] upPlayer;
+	private transient BufferedImage[] ocioso;
+	private transient BufferedImage[] rightPlayer;
+	private transient BufferedImage[] leftPlayer;
+	private transient BufferedImage[] downPlayer;
+	private transient BufferedImage[] upPlayer;
 
 	public double life = 100;
 	public static double minLife = 0;
@@ -124,22 +127,99 @@ public class Player extends Entity implements Serializable {
 //	public int tempoEsperaMax = 180; // 3 segundos
 	public int tempoEsperaMax = 30; // 3 segundos
 
-    // instância estática para o jogador
-    private static Player instance;
+	private static Player instance;
+
+	private Player() {
+
+	}
     
-    private Player() {
-    	
-    }
-    
-    public static synchronized Player getInstance() {
-    	System.out.println("instance");
-    	System.out.println(instance);
-        if (instance == null) {
-            instance = new Player();
+	public Player getInstance() {
+		if (instance == null) {
+			instance = new Player();
+		}
+		return instance;
+	}
+
+	public void setInstance(Player player) {
+		instance = player;
+	}
+
+	// Método para atualizar a instância com os valores de outra instância
+	public void updateFrom() {
+		life = instance.life;
+		stamine = instance.stamine;
+		hunger = instance.hunger;
+		thirsth = instance.thirsth;
+		if (instance.itensColetados != null) {
+			itensColetados = new ArrayList<>(instance.itensColetados);
+		} else {
+			itensColetados = new ArrayList<>(); // Ou inicialize com sua implementação padrão
+		}
+
+		if (instance.comidasColetadas != null) {
+			comidasColetadas = new ArrayList<>(instance.comidasColetadas);
+		} else {
+			comidasColetadas = new ArrayList<>(); // Ou inicialize com sua implementação padrão
+		}
+
+		if (instance.frutasColetadas != null) {
+			frutasColetadas = new ArrayList<>(instance.frutasColetadas);
+		} else {
+			frutasColetadas = new ArrayList<>(); // Ou inicialize com sua implementação padrão
+		}
+		System.out.println("////////////// comeco");
+
+		System.out.println("instance");
+		System.out.println(instance);
+		System.out.println("hasBagpack");
+		System.out.println(hasBagpack);
+		setHasBagpack(instance.hasBagpack);
+		
+
+		System.out.println("other.hasBagpack");
+		System.out.println(instance.hasBagpack);
+		System.out.println("hasBagpack");
+		System.out.println(hasBagpack);
+		System.out.println("////////////// fim");
+
+	}
+    // Outros campos e métodos da classe Player
+	//serialização de arrays escrever 
+    private void writeObject(ObjectOutputStream oos) throws IOException {
+        oos.defaultWriteObject(); // Serializa os campos não-transientes
+        oos.writeInt(itensColetados.size());
+        for (Item item : itensColetados) {
+            oos.writeObject(item);
         }
-        return instance;
+        oos.writeInt(frutasColetadas.size());
+        for (Fruta fruta : frutasColetadas) {
+            oos.writeObject(fruta);
+        }
+        oos.writeInt(comidasColetadas.size());
+        for (Comida comida : comidasColetadas) {
+            oos.writeObject(comida);
+        }
     }
-	
+	//serialização de arrays ler 
+    private void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException {
+        ois.defaultReadObject(); // Desserializa os campos não-transientes
+        int itensSize = ois.readInt();
+        itensColetados = new ArrayList<>(itensSize);
+        for (int i = 0; i < itensSize; i++) {
+            itensColetados.add((Item) ois.readObject());
+        }
+        int frutasSize = ois.readInt();
+        frutasColetadas = new ArrayList<>(frutasSize);
+        for (int i = 0; i < frutasSize; i++) {
+            frutasColetadas.add((Fruta) ois.readObject());
+        }
+        int comidasSize = ois.readInt();
+        comidasColetadas = new ArrayList<>(comidasSize);
+        for (int i = 0; i < comidasSize; i++) {
+            comidasColetadas.add((Comida) ois.readObject());
+        }
+    }
+
 	public Player(int x, int y, int width, int height, BufferedImage sprite) {
 		super(x, y, width, height, sprite);
 		itensColetados = new ArrayList<>();
@@ -545,6 +625,8 @@ public class Player extends Entity implements Serializable {
 	int umaVez = 0;
 
 	public void tick() {
+		
+//		System.out.println(getHasBagpack());
 
 		velocidadeMaxima = 16;
 		updateSpeed();
@@ -564,7 +646,7 @@ public class Player extends Entity implements Serializable {
 		if (atirar) {
 			atirar = false;
 			if (balas > 0) {
-//					System.out.println("teste");
+//					System.out.println("teste balas");
 				balas--;
 				atirar = false;
 				int dx = 0;
@@ -896,6 +978,15 @@ public class Player extends Entity implements Serializable {
 //		g.setColor(Color.orange);
 //		g.drawRect(this.getX() + maskx - Camera.x, this.getY() + masky - Camera.y, mwidth, mheight);
 	}
+	
+
+	private void setHasBagpack(boolean hasBagpack) {
+		this.hasBagpack = hasBagpack;
+	}
+	
+	private boolean getHasBagpack() {
+		return hasBagpack;
+	}
 
 	public void heal(double amount) {
 		this.life += amount;
@@ -972,28 +1063,28 @@ public class Player extends Entity implements Serializable {
 	}
 
 	public List<Item> getItensColetados() {
-        return itensColetados;
-    }
+		return itensColetados;
+	}
 
-    public List<Fruta> getFrutasColetadas() {
-        return frutasColetadas;
-    }
+	public List<Fruta> getFrutasColetadas() {
+		return frutasColetadas;
+	}
 
-    public List<Comida> getComidasColetadas() {
-        return comidasColetadas;
-    }
+	public List<Comida> getComidasColetadas() {
+		return comidasColetadas;
+	}
 
-    public void setItensColetados(List<Item> itensColetados) {
-        Player.itensColetados = itensColetados;
-    }
+	public void setItensColetados(List<Item> itensColetados) {
+		this.itensColetados = itensColetados;
+	}
 
-    public void setFrutasColetadas(List<Fruta> frutasColetadas) {
-        Player.frutasColetadas = frutasColetadas;
-    }
+	public void setFrutasColetadas(List<Fruta> frutasColetadas) {
+		this.frutasColetadas = frutasColetadas;
+	}
 
-    public void setComidasColetadas(List<Comida> comidasColetadas) {
-        Player.comidasColetadas = comidasColetadas;
-    }
+	public void setComidasColetadas(List<Comida> comidasColetadas) {
+		this.comidasColetadas = comidasColetadas;
+	}
 
 	public int getNivel() {
 		return nivel;
@@ -1130,7 +1221,5 @@ public class Player extends Entity implements Serializable {
 	public void setQtdNivel(int qtdNivel) {
 		Player.qtdNivel = qtdNivel;
 	}
-
-	
 
 }

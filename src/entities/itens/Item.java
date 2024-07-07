@@ -3,7 +3,15 @@ package entities.itens;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.lang.reflect.Constructor;
+
+import javax.imageio.ImageIO;
 
 import base.Game;
 import entities.Entity;
@@ -13,13 +21,14 @@ import graficos.ItemAnimation;
 import world.Camera;
 import world.World;
 
-@SuppressWarnings("unused")
-public abstract class Item extends Entity {
+public abstract class Item extends Entity implements Serializable {
+	private static final long serialVersionUID = 1L;
+
 	protected String nome = "Item";
 	protected int quantidade = 0;
 
-	public static BufferedImage SPECIALKEY_EN = Game.spritesheet_Doors.getSprite(112, 0, 112, 112);
-	public static BufferedImage KEY_EN = Game.spritesheet_Doors.getSprite(336, 0, 112, 112);
+	public static transient BufferedImage SPECIALKEY_EN = Game.spritesheet_Doors.getSprite(112, 0, 112, 112);
+	public static transient BufferedImage KEY_EN = Game.spritesheet_Doors.getSprite(336, 0, 112, 112);
 
 	protected int qtdDirecoes = 3;
 
@@ -39,6 +48,34 @@ public abstract class Item extends Entity {
 		this.sprite = outroItem.sprite;
 		// Copie outros atributos, se houver
 	}
+
+	private void writeObject(ObjectOutputStream oos) throws IOException {
+        oos.defaultWriteObject(); // Serializa os campos não-transientes
+        
+        if (sprite != null) {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ImageIO.write(sprite, "png", baos);
+            byte[] imageBytes = baos.toByteArray();
+            oos.writeInt(imageBytes.length);
+            oos.write(imageBytes);
+        } else {
+            oos.writeInt(0); // Sem imagem
+        }
+    }
+
+    private void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException {
+        ois.defaultReadObject(); // Desserializa os campos não-transientes
+        
+        int length = ois.readInt();
+        if (length > 0) {
+            byte[] imageBytes = new byte[length];
+            ois.readFully(imageBytes);
+            ByteArrayInputStream bais = new ByteArrayInputStream(imageBytes);
+            sprite = ImageIO.read(bais);
+        } else {
+            sprite = null; // Sem imagem
+        }
+    }
 
 //	public void mudar(String itemName) {
 //		try {
@@ -100,9 +137,8 @@ public abstract class Item extends Entity {
 	public void decrementQuantity() {
 		quantidade--;
 	}
-	
-    public abstract Item clone();
 
+	public abstract Item clone();
 
 	public void tick() {
 

@@ -2,6 +2,13 @@ package entities.itens.comidas.frutas;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
+import javax.imageio.ImageIO;
 
 import base.Game;
 import entities.itens.Item;
@@ -9,12 +16,13 @@ import world.Camera;
 
 public class Maca extends Fruta {
 
-    public double regen = 2.0; // Exemplo: regeneração de 2.0
+    private static final long serialVersionUID = 1L;
+	public double regen = 2.0; // Exemplo: regeneração de 2.0
     public int tickRegen = 5; // Exemplo: a cada 5 ticks
     public double curaTotal = 10; // Exemplo: cura total de 10
     public static String nome = "Maçã";
 
-	private BufferedImage[] spritesMaca;
+	private transient BufferedImage[] spritesMaca;
 
 	public Maca(int x, int y, int width, int height, BufferedImage sprite) {
 		super(x, y, width, height, sprite, nome);
@@ -103,4 +111,31 @@ public class Maca extends Fruta {
 	public void setNome(String nome) {
 		Maca.nome = nome;
 	}
+    private void writeObject(ObjectOutputStream oos) throws IOException {
+        oos.defaultWriteObject(); // Serializa os campos não-transientes
+        
+        if (sprite != null) {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ImageIO.write(sprite, "png", baos);
+            byte[] imageBytes = baos.toByteArray();
+            oos.writeInt(imageBytes.length);
+            oos.write(imageBytes);
+        } else {
+            oos.writeInt(0); // Sem imagem
+        }
+    }
+
+    private void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException {
+        ois.defaultReadObject(); // Desserializa os campos não-transientes
+        
+        int length = ois.readInt();
+        if (length > 0) {
+            byte[] imageBytes = new byte[length];
+            ois.readFully(imageBytes);
+            ByteArrayInputStream bais = new ByteArrayInputStream(imageBytes);
+            sprite = ImageIO.read(bais);
+        } else {
+            sprite = null; // Sem imagem
+        }
+    }
 }

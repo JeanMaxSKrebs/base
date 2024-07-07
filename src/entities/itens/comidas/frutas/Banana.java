@@ -2,6 +2,13 @@ package entities.itens.comidas.frutas;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
+import javax.imageio.ImageIO;
 
 import base.Game;
 import entities.itens.Item;
@@ -10,12 +17,13 @@ import world.Camera;
 
 public class Banana extends Fruta {
 
-    public double regen = 1;
+    private static final long serialVersionUID = 1L;
+	public double regen = 1;
     public int tickRegen = 4;
     public double curaTotal = 4;
     public static String nome = "Banana";
 
-    private BufferedImage[] spritesBanana;
+    private transient BufferedImage[] spritesBanana;
 
     public Banana(int x, int y, int width, int height, BufferedImage sprite) {
         super(x, y, width, height, sprite, nome);
@@ -104,4 +112,31 @@ public class Banana extends Fruta {
 		Banana.nome = nome;
 	}
 	
+    private void writeObject(ObjectOutputStream oos) throws IOException {
+        oos.defaultWriteObject(); // Serializa os campos não-transientes
+        
+        if (sprite != null) {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ImageIO.write(sprite, "png", baos);
+            byte[] imageBytes = baos.toByteArray();
+            oos.writeInt(imageBytes.length);
+            oos.write(imageBytes);
+        } else {
+            oos.writeInt(0); // Sem imagem
+        }
+    }
+
+    private void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException {
+        ois.defaultReadObject(); // Desserializa os campos não-transientes
+        
+        int length = ois.readInt();
+        if (length > 0) {
+            byte[] imageBytes = new byte[length];
+            ois.readFully(imageBytes);
+            ByteArrayInputStream bais = new ByteArrayInputStream(imageBytes);
+            sprite = ImageIO.read(bais);
+        } else {
+            sprite = null; // Sem imagem
+        }
+    }
 }

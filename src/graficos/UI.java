@@ -282,9 +282,8 @@ public class UI {
 		FontMetrics fm = g.getFontMetrics();
 
 		// Text to be displayed
-		String[] labels = { "Comidas:", "Itens:", "Inventário:", "Pause:" };
-		String[] values = { String.valueOf(Game.player.getComidasColetadas().size()),
-				String.valueOf(Game.player.getItensColetados().size()), "Pressione I", "Pressione P" };
+		String[] labels = { "Inventário:", "Pause:" };
+		String[] values = {	"Pressione I", "Pressione P"};
 
 		// Calculate the maximum width of the labels
 		int maxWidth = 0;

@@ -3,8 +3,6 @@ package menu;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
-import java.io.File;
-import java.util.Iterator;
 
 import javax.swing.JOptionPane;
 
@@ -43,66 +41,21 @@ public class MenuSalvar extends Menu {
 
 		if (enter) {
 			enter = false;
+
 			if (currentOption < 3) {
 				GameSaveManager.setSlot(currentOption + 1);
 				GameSaveManager.checkAndInitializeSaveLoads();
-
+				MenuSalvarFunctions.OptionPaneLanguage();
+				
 				if (GameSaveManager.saveNames[currentOption] == null) {
-					String saveName = JOptionPane.showInputDialog("Digite o nome do arquivo de salvamento:");
-
-					if (saveName != null && !saveName.trim().isEmpty()) {
-						if (saveName.trim().length() > 3) {
-
-							saveName = saveName.trim();
-							Save.initializeSavesForSlot();
-							Save.addSaveName(saveName);
-							GameSaveManager.saveNames[currentOption] = saveName;
-							for (int i = 1; i <= 3; i++) {
-								if (i == GameSaveManager.slot) {
-									GameSaveManager.saveExists[currentOption * i] = true;
-									GameSaveManager.saveExists[currentOption * i + 1] = true;
-									GameSaveManager.saveExists[currentOption * i + 2] = true;
-								}
-							}
-						} else {
-							return;
-						}
-					} else {
-						return;
-					}
+					MenuSalvarFunctions.showInputDialogNewSave(currentOption);
 					Game.gameState = "NORMAL";
 
 				} else {
 					if (!Game.gameState2.equals("CARREGAR")) {
-						int response = JOptionPane.showConfirmDialog(null, "Deseja salvar por cima deste arquivo?",
-								"Confirmar Salvamento", JOptionPane.YES_NO_OPTION);
-						if (response != JOptionPane.NO_OPTION) {
-							String saveName = JOptionPane
-									.showInputDialog("Digite o nome do novo arquivo de salvamento:");
-							if (saveName != null && !saveName.trim().isEmpty()) {
-								if (saveName.trim().length() > 3) {
-
-									saveName = saveName.trim();
-									Save.initializeSavesForSlot();
-									Save.addSaveName(saveName);
-									GameSaveManager.saveNames[currentOption] = saveName;
-									for (int i = 1; i <= 3; i++) {
-										if (i == GameSaveManager.slot) {
-											GameSaveManager.saveExists[currentOption * i] = true;
-											GameSaveManager.saveExists[currentOption * i + 1] = true;
-											GameSaveManager.saveExists[currentOption * i + 2] = true;
-										}
-									}
-									Game.previousGameState = Game.gameState;
-									Game.gameState = "CARREGAR";
-								} else {
-									return;
-								}
-							}
-						} else {
-							Game.previousGameState = Game.gameState;
-							Game.gameState = "CARREGAR";
-						}
+						MenuSalvarFunctions.showInputDialogNewSaveOverwritten(currentOption);
+						
+		
 					} else {
 						Game.previousGameState = Game.gameState;
 						Game.gameState = "CARREGAR";

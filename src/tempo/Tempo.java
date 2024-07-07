@@ -164,7 +164,6 @@ public class Tempo {
 			weeksTotal = hours / (24 * 7); // Calculate total weeks
 
 			restoLua = weeksTotal % 4;
-			setTimeElapsedSeconds(timeElapsedSeconds);
 			minutes %= 60;
 			hours %= 24;
 			days %= 28;
@@ -190,13 +189,6 @@ public class Tempo {
 				String formattedMonths = String.format("%02d", months);
 				String formattedYears = String.format("%02d", years);
 
-				System.out.println("///////////////////");
-				System.out.println(formattedHours);
-				System.out.println(formattedMinutes);
-				System.out.println(formattedDays);
-				System.out.println(months);
-				System.out.println(formattedMonths);
-				System.out.println("///////////////////");
 				String formattedAll = String.format("%s/%s/%s %s:%s ", formattedDays, formattedMonths, formattedYears,
 						formattedHours, formattedMinutes);
 				return formattedAll;

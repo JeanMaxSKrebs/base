@@ -10,25 +10,25 @@ import world.Camera;
 
 public abstract class Entity {
 
-	public static BufferedImage ENEMY_EN = Game.spritesheet.getSprite(0, 224, 32, 32);
+	public static transient BufferedImage ENEMY_EN = Game.spritesheet.getSprite(0, 224, 32, 32);
 
-	public static BufferedImage HPBAG_EN = Game.spritesheet.getSprite(128, 32, 32, 32);
-	public static BufferedImage STAMINEBAG_EN = Game.spritesheet.getSprite(160, 32, 32, 32);
+	public static transient BufferedImage HPBAG_EN = Game.spritesheet.getSprite(128, 32, 32, 32);
+	public static transient BufferedImage STAMINEBAG_EN = Game.spritesheet.getSprite(160, 32, 32, 32);
 
-	public static BufferedImage ITEM_EN = Game.spritesheet_Items.getSprite(0, 0, 112, 112);
+	public static transient BufferedImage ITEM_EN = Game.spritesheet_Items.getSprite(0, 0, 112, 112);
 
-	public static BufferedImage FOGUEIRA_IT = Game.spritesheet_Items.getSprite(0, 112, 112, 112);
+	public static transient BufferedImage FOGUEIRA_IT = Game.spritesheet_Items.getSprite(0, 112, 112, 112);
 
-	public static BufferedImage COMIDA_IT = Game.spritesheet_Foods.getSprite(0, 0, 112, 112);
+	public static transient BufferedImage COMIDA_IT = Game.spritesheet_Foods.getSprite(0, 0, 112, 112);
 
-	public static BufferedImage FRUTA_CO = Game.spritesheet_Fruits.getSprite(0, 0, 64, 64);
+	public static transient BufferedImage FRUTA_CO = Game.spritesheet_Fruits.getSprite(0, 0, 64, 64);
 
 	protected double x;
 	protected double y;
 	protected int width;
 	protected int height;
 
-	protected BufferedImage sprite;
+	protected transient BufferedImage sprite;
 	
 	protected int maskx, masky, mwidth, mheight;
 

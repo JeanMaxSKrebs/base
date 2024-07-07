@@ -1,12 +1,23 @@
 package entities.itens.comidas;
 
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
+import javax.imageio.ImageIO;
 
 import entities.Player;
 import entities.itens.Item;
 
 public abstract class Comida extends Item {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	public String nome = "Comida";
 	public double regen = 4; // Amount of health regenerated
 	public int tickRegen = 5; // Ticks between regeneration events
@@ -64,4 +75,31 @@ public abstract class Comida extends Item {
 	public void setCooked(boolean cooked) {
 		isCooked = cooked;
 	}
+    private void writeObject(ObjectOutputStream oos) throws IOException {
+        oos.defaultWriteObject(); // Serializa os campos não-transientes
+        
+        if (sprite != null) {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ImageIO.write(sprite, "png", baos);
+            byte[] imageBytes = baos.toByteArray();
+            oos.writeInt(imageBytes.length);
+            oos.write(imageBytes);
+        } else {
+            oos.writeInt(0); // Sem imagem
+        }
+    }
+
+    private void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException {
+        ois.defaultReadObject(); // Desserializa os campos não-transientes
+        
+        int length = ois.readInt();
+        if (length > 0) {
+            byte[] imageBytes = new byte[length];
+            ois.readFully(imageBytes);
+            ByteArrayInputStream bais = new ByteArrayInputStream(imageBytes);
+            sprite = ImageIO.read(bais);
+        } else {
+            sprite = null; // Sem imagem
+        }
+    }
 }

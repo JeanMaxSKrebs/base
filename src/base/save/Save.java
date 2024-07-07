@@ -11,6 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
+import base.Game;
 import entities.Player;
 import tempo.Tempo;
 import tempo.Tempo.UnidadeTempo;
@@ -29,59 +30,55 @@ public class Save extends GameSaveManager {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static void saveTxt(String fileName) {
 		// Salvando como arquivo .txt
 		try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
-	        // Adiciona data e hora atual no formato brasileiro
-	        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-	        sdf.setTimeZone(TimeZone.getTimeZone("America/Sao_Paulo"));
-	        String currentTime = sdf.format(new Date());
-	        
-	        Tempo currentGameTime = Tempo.getNow();
-	        
-	        String unidade = "TODOS";
-	        String currentGameTimeString = Tempo.getNowToString(unidade, 0);
-	        // Obtém o tempo do jogo
+			// Adiciona data e hora atual no formato brasileiro
+			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+			sdf.setTimeZone(TimeZone.getTimeZone("America/Sao_Paulo"));
+			String currentTime = sdf.format(new Date());
 
-	        // Escreve a data/hora atual e o tempo do jogo no arquivo
-	        writer.write("Data/Hora Atual: " + currentTime);
-	        writer.newLine();
-	        writer.write("Tempo Total de Jogo em TimeElapsedSeconds: " + Tempo.timeElapsedSeconds);
-	        writer.newLine();
-	        writer.write("Tempo Total de Jogo: " + currentGameTime);
-	        writer.newLine();
-	        System.out.println("currentGameTimeString");
-	        System.out.println(currentGameTimeString);
-	        writer.write("Tempo Total de Jogo: " + currentGameTimeString);
-	        writer.newLine();
+			Tempo currentGameTime = Tempo.getNow();
 
-	        String[] options = GameSaveManager.getOptions();
-	        String[] values = GameSaveManager.getValues();
+			String unidade = "TODOS";
+			String currentGameTimeString = Tempo.getNowToString(unidade, Tempo.timeElapsedSeconds);
+			// Obtém o tempo do jogo
 
-	        for (int i = 0; i < options.length; i++) {
-	            writer.write(options[i] + ": " + values[i]);
-	            writer.newLine();
-	        }
+			// Escreve a data/hora atual e o tempo do jogo no arquivo
+			writer.write("Data/Hora Atual: " + currentTime);
+			writer.newLine();
+			writer.write("Tempo Total de Jogo em TimeElapsedSeconds: " + Tempo.timeElapsedSeconds);
+			writer.newLine();
+			writer.write("Tempo Total de Jogo: " + currentGameTime);
+			writer.newLine();
+			writer.write("Tempo Total de Jogo: " + currentGameTimeString);
+			writer.newLine();
 
-	        System.out.println("Save successful.");
-	    } catch (IOException e) {
-	        e.printStackTrace();
-	    }
+//	        System.out.println("Save successful.");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
-    public static void saveDat(String fileName) {
-        // Salvando como arquivo .dat
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(fileName))) {
-            oos.writeObject(Player.getInstance()); // Assuming Player is a singleton
-            System.out.println("Save successful.");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-    
+	public static void saveDat(String fileName) {
+		// Salvando como arquivo .dat
+		try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(fileName))) {
+ 
+			Game.player.setInstance(Game.player);
+			Player instance = Game.player.getInstance();
+			oos.writeObject(instance); // Assuming Player is a singleton
+			System.out.println(instance);
+			System.out.println("Has Bagpack: " + Game.player.hasBagpack);
+			System.out.println("Has Bagpack: " + instance.hasBagpack);
+			System.out.println("Save successful.");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 	public static void saveCheckpoint(String checkpointType) {
-		
+
 		String fileName = "Vazio";
 		fileName = getFileName(checkpointType, ".txt");
 		saveTxt(fileName);
@@ -92,7 +89,7 @@ public class Save extends GameSaveManager {
 //		System.out.println("Saving checkpoint: " + fileName);
 
 	}
-	
+
 	public static void saveHorarios() {
 		String fileName = SAVE_DIRECTORY + "save_slot_" + slot + "_horario.txt";
 		try (PrintWriter writer = new PrintWriter(new FileWriter(fileName))) {
@@ -105,7 +102,7 @@ public class Save extends GameSaveManager {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static void addSaveName(String saveName) {
 		File file = new File(SAVE_DIRECTORY + "save_slot_" + slot + "_name.txt");
 		try {
@@ -118,7 +115,7 @@ public class Save extends GameSaveManager {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static void updateSaveUser() {
 		try {
 			saveCheckpoint("_User");
@@ -127,7 +124,7 @@ public class Save extends GameSaveManager {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static void updateSaveLastBed() {
 		saveCheckpoint("_LastBed");
 	}

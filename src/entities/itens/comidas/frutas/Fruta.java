@@ -1,6 +1,13 @@
 package entities.itens.comidas.frutas;
 
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
+import javax.imageio.ImageIO;
 
 import base.Game;
 import entities.Player;
@@ -9,26 +16,27 @@ import entities.itens.comidas.Comida;
 import entities.itens.utensilios.Fogueira;
 
 public abstract class Fruta extends Comida implements Comparable<Fruta> {
+	private static final long serialVersionUID = 1L;
 	// A IMAGEM PADRÃO FICA NO SUPERIOR // ENTITY
-	public static BufferedImage TOMATE_FR = Game.spritesheet_Fruits.getSprite(0, 64 * 1, 64, 64);
-	public static BufferedImage UVA_FR = Game.spritesheet_Fruits.getSprite(0, 64 * 2, 64, 64);
-	public static BufferedImage MORANGO_FR = Game.spritesheet_Fruits.getSprite(0, 64 * 3, 64, 64);
-	public static BufferedImage MACA_FR = Game.spritesheet_Fruits.getSprite(0, 64 * 4, 64, 64);
-	public static BufferedImage MELÃO_FR = Game.spritesheet_Fruits.getSprite(0, 64 * 5, 64, 64);
-	public static BufferedImage BATATA_FR = Game.spritesheet_Fruits.getSprite(0, 64 * 6, 64, 64);
-	public static BufferedImage BANANA_FR = Game.spritesheet_Fruits.getSprite(0, 64 * 7, 64, 64);
-	public static BufferedImage MELANCIA_FR = Game.spritesheet_Fruits.getSprite(0, 64*8, 64, 64);
-	public static BufferedImage NOZ_FR = Game.spritesheet_Fruits.getSprite(0, 64*9, 64, 64);
+	public static transient BufferedImage TOMATE_FR = Game.spritesheet_Fruits.getSprite(0, 64 * 1, 64, 64);
+	public static transient BufferedImage UVA_FR = Game.spritesheet_Fruits.getSprite(0, 64 * 2, 64, 64);
+	public static transient BufferedImage MORANGO_FR = Game.spritesheet_Fruits.getSprite(0, 64 * 3, 64, 64);
+	public static transient BufferedImage MACA_FR = Game.spritesheet_Fruits.getSprite(0, 64 * 4, 64, 64);
+	public static transient BufferedImage MELÃO_FR = Game.spritesheet_Fruits.getSprite(0, 64 * 5, 64, 64);
+	public static transient BufferedImage BATATA_FR = Game.spritesheet_Fruits.getSprite(0, 64 * 6, 64, 64);
+	public static transient BufferedImage BANANA_FR = Game.spritesheet_Fruits.getSprite(0, 64 * 7, 64, 64);
+	public static transient BufferedImage MELANCIA_FR = Game.spritesheet_Fruits.getSprite(0, 64*8, 64, 64);
+	public static transient BufferedImage NOZ_FR = Game.spritesheet_Fruits.getSprite(0, 64*9, 64, 64);
 
 	// Nomes das frutas
-	private static final String[] NOMES_FRUTAS = { "TOMATE", "UVA", "MORANGO", "MACA", "MELAO", "BATATA", "BANANA",
+	private static final transient String[] NOMES_FRUTAS = { "TOMATE", "UVA", "MORANGO", "MACA", "MELAO", "BATATA", "BANANA",
 			"MELANCIA", "NOZ" };
 
 	// Array para armazenar as imagens das frutas
-	public static BufferedImage[] FRUTAS_SPRITES = new BufferedImage[getNomesFrutas().length];
+	public static transient BufferedImage[] FRUTAS_SPRITES = new BufferedImage[getNomesFrutas().length];
 
 	@SuppressWarnings("unused")
-	protected BufferedImage sprite;
+	protected transient BufferedImage sprite;
 
 	protected int qtdDirecoes = 3;
 
@@ -101,4 +109,32 @@ public abstract class Fruta extends Comida implements Comparable<Fruta> {
 	public void setSprite(BufferedImage sprite) {
 		this.sprite = sprite;
 	}
+	
+    private void writeObject(ObjectOutputStream oos) throws IOException {
+        oos.defaultWriteObject(); // Serializa os campos não-transientes
+        
+        if (sprite != null) {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ImageIO.write(sprite, "png", baos);
+            byte[] imageBytes = baos.toByteArray();
+            oos.writeInt(imageBytes.length);
+            oos.write(imageBytes);
+        } else {
+            oos.writeInt(0); // Sem imagem
+        }
+    }
+
+    private void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException {
+        ois.defaultReadObject(); // Desserializa os campos não-transientes
+        
+        int length = ois.readInt();
+        if (length > 0) {
+            byte[] imageBytes = new byte[length];
+            ois.readFully(imageBytes);
+            ByteArrayInputStream bais = new ByteArrayInputStream(imageBytes);
+            sprite = ImageIO.read(bais);
+        } else {
+            sprite = null; // Sem imagem
+        }
+    }
 }
